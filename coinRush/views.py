@@ -17,3 +17,4 @@ def login(request):
 
 def logout(request):
     return render(request, "index.html")
+
