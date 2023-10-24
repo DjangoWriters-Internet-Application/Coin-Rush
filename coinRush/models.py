@@ -12,14 +12,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(default="", unique=True, blank=True, max_length=255)
     name = models.CharField(max_length=255, blank=True, default="")
 
-    profile_pic = models.ImageField(null=True, blank=True)
-    photo_id = models.ImageField(null=True, blank=True)
+    # profile_pic = models.ImageField(null=True, blank=True)
+    # photo_id = models.ImageField(null=True, blank=True)
 
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
 
-    created_date = models.DateTimeField(default=timezone.now())
+    # created_date = models.DateTimeField(default=timezone.now())
     last_login = models.DateTimeField(blank=True, null=True)
 
     objects = AuthUserManager()
