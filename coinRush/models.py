@@ -118,3 +118,31 @@ class Learn(models.Model):
 
     def __str__(self):
         return self.title
+
+class NFT(models.Model):
+    CURRENCY_CHOICES = [
+        ('USD', 'US Dollar'),
+        ('BTC', 'Bitcoin'),
+        ('ETH', 'Ethereum'),
+    ]
+
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='nft_images/')
+    description = models.TextField()
+    quantity = models.PositiveIntegerField(default=1)
+    is_for_sale = models.BooleanField(default=False)
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES, default='USD')
+    is_bidding_allowed = models.BooleanField(default=False)
+    
+    def __str__(self):
+        return self.owner
+
+class Bid(models.Model):
+    nft = models.ForeignKey(NFT, on_delete=models.CASCADE)
+    bidder = models.ForeignKey(User, on_delete=models.CASCADE)
+    bid_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return self.bidder
