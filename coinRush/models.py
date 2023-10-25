@@ -111,13 +111,26 @@ class News(models.Model):
     def __str__(self):
         return self.title
 
+class CourseCategory(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = "Course Categories"
+
 class Learn(models.Model):
     title = models.CharField(max_length=100)
-    description = models.TextField()
-    external_link = models.URLField(blank=True, null=True)
+    description = models.TextField(blank=True)
+    category = models.ForeignKey(CourseCategory, on_delete=models.CASCADE, default=1)
+    external_link = models.URLField(null=True)
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        verbose_name_plural = "Courses"
 
 class NFT(models.Model):
     CURRENCY_CHOICES = [

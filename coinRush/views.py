@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import Transaction,UserHolding,User
+from .models import Transaction,UserHolding, User, Learn, CourseCategory
 # from django.contrib.auth.decorators import login_required
 
 # Create your views here.
@@ -38,3 +38,13 @@ def user_holdings(request):
         response.write(para)
     return response
     # return render(request, 'user_holdings.html', {'holdings': holdings})
+
+def categories_course(request):
+    categories = CourseCategory.objects.all()
+    response = "Categories and Courses:\n" + '<br>'
+    for category in categories:
+        response += f"\nCategory: {category.name}\n" + '<br>'
+        courses = Learn.objects.filter(category=category)
+        for course in courses:
+            response += '<li>' + f"Course: {course.title} - {course.description}\n" + '</li><br>'
+    return HttpResponse(response)

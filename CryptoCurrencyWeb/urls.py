@@ -24,6 +24,7 @@ urlpatterns = [
     path("", TemplateView.as_view(template_name="index.html"), name="home"),
     path("accounts/", include("django.contrib.auth.urls")),
     path("transaction-history/",views.transaction_history,name='transaction-history'),
-    path("user-holdings/",views.user_holdings,name='user-holdings')
+    path("user-holdings/",views.user_holdings,name='user-holdings'),
+    path("courses/", views.categories_course, name='categories_course')
     # path("", include("coinRush.urls")),
 ]
