@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import Transaction,UserHolding, User, Learn, CourseCategory
+from .models import Transaction,UserHolding, User, Learn, CourseCategory, News
+
 # from django.contrib.auth.decorators import login_required
 
 # Create your views here.
@@ -18,6 +19,15 @@ def login(request):
 
 def logout(request):
     return render(request, "index.html")
+
+
+def news(request):
+    context = {
+        'title': "Latest Crypto News",
+        'news':  News.objects.all()
+    }
+    return render(request, "News/index.html", context)
+
 
 def transaction_history(request):
     user = request.user  # Assuming users are authenticated
@@ -48,3 +58,5 @@ def categories_course(request):
         for course in courses:
             response += '<li>' + f"Course: {course.title} - {course.description}\n" + '</li><br>'
     return HttpResponse(response)
+
+
