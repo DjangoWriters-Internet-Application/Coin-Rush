@@ -39,25 +39,24 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.name or self.email.split("@")[0]
 
 
-
 class Post(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    post_comments = models.ManyToManyField('Comment', related_name='post_comments', blank=True)
+    # post_comments = models.ManyToManyField('Comment', blank=True)
 
     def __str__(self):
         return self.title
 
 class Comment(models.Model):
     content = models.TextField()
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Comment by {self.created_by.username}"
+        return f"Comment by {self.created_by.name}"
 
 
 # Define a model for Stock
