@@ -1,0 +1,81 @@
+{% extends "Base/base.html" %}
+{% load static %}
+{% block extraHead %}
+    <link rel="stylesheet" href="{% static 'css/news.css' %}">
+{% endblock extraHead %}
+
+{% block content %}
+
+  <div class="container">
+    <h1 class="mt-5">Discussion Forum</h1>
+    <div class="row mt-4">
+        <div class="col-md-8">
+            {% for post in posts %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ post.title }}</h5>
+                        <p class="card-text">
+                            {{ post.content|truncatewords:50 }}
+                        </p>
+                        <p class="card-text"><small class="text-muted">Posted by {{ post.created_by }} on {{ post.created_at|date:"F j, Y" }}</small></p>
+                        <p class="card-text"><i class="fa fa-eye"></i> {{ post.views }} views</p>
+                        <a href="{% url 'discussion_single' post.id %}" class="btn btn-primary">View Comments</a>
+                    </div>
+                </div>
+            {% endfor %}
+            <div class="pagination justify-content-center">
+                <ul class="pagination">
+                    {% if posts.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link btn btn-light" href="?page=1" aria-label="First">
+                                <span aria-hidden="true">First</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link btn btn-light" href="?page={{ posts.previous_page_number }}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    <li class="page-item disabled">
+                        <span class="page-link btn btn-light">Page {{ posts.number }} of {{ posts.paginator.num_pages }}</span>
+                    </li>
+                    {% if posts.has_next %}
+                        <li class="page-item">
+                            <a class="page-link btn btn-light" href="?page={{ posts.next_page_number }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link btn btn-light" href="?page={{ posts.paginator.num_pages }}" aria-label="Last">
+                                <span aria-hidden="true">Last</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Create a New Topic</h5>
+                    <form id="newTopicForm">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="topicTitle" placeholder="Topic Title" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea class="form-control" id="topicContent" rows="4" placeholder="Topic Content" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Topic</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock content %}
