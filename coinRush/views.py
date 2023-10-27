@@ -34,22 +34,12 @@ def news(request):
 def transaction_history(request):
     user = request.user  # Assuming users are authenticated
     transactions = Transaction.objects.filter(user=user).order_by('-timestamp')
-    response = HttpResponse()
-    for transaction in transactions:
-        para = '<p>' + str(transaction) + '</p>'
-        response.write(para)
-    return response
-    # return render(request, 'transaction_history.html', {'transactions': transactions})4
+    return render(request, 'transaction/transaction_history.html', {'transactions': transactions})
 
 def user_holdings(request):
     user = request.user  # Assuming users are authenticated
     holdings = UserHolding.objects.filter(user=user)
-    response=HttpResponse()
-    for holding in holdings:
-        para='<p>'+str(holding)+'</p>'
-        response.write(para)
-    return response
-    # return render(request, 'user_holdings.html', {'holdings': holdings})
+    return render(request, 'userholding/user_holdings.html', {'holdings': holdings,'user':user})
 
 def categories_course(request):
     categories = CourseCategory.objects.all()
