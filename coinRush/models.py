@@ -43,7 +43,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Post(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     post_comments = models.ManyToManyField('Comment', related_name='post_comments', blank=True)
 
@@ -53,7 +53,7 @@ class Post(models.Model):
 class Comment(models.Model):
     content = models.TextField()
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
