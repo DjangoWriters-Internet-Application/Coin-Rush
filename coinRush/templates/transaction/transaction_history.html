@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Coin-Rush Transaction </title>
+</head>
+<body>
+    <h1>Transaction History</h1>
+    {% if transactions %}
+        {% for transaction in transactions%}
+            <p>{{transaction}}</p>
+        {% endfor %}
+    {% else %}
+        <p>No transaction history available</p>
+    {%endif%}
+</body>
+</html>
