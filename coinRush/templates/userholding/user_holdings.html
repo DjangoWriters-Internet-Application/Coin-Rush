@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Coin-Rush User Holding</title>
+</head>
+<body>
+<h1>{{user.name|capfirst}} Holding</h1>
+    {% if holdings %}
+        {% for holding in holdings%}
+            <p>{{holding}}</p>
+        {% endfor %}
+    {% else %}
+        <p>No current holdings</p>
+    {%endif%}
+</body>
+</html>
