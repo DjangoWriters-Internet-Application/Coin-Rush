@@ -43,15 +43,7 @@ def user_holdings(request):
 
 def categories_course(request):
     categories = CourseCategory.objects.all()
-    response = "Categories and Courses:\n" + '<br>'
-    for category in categories:
-        response += f"\nCategory: {category.name}\n" + '<br>'
-        courses = Learn.objects.filter(category=category)
-        for course in courses:
-            response += '<li>' + f"Course: {course.title} - {course.description}\n" + '</li><br>'
-    return HttpResponse(response)
-
-
+    return render(request, 'Learn/learning.html', {'categories': categories})
 
 def discussion(request):
     post_list = Post.objects.all()  # Replace with your queryset for your posts
