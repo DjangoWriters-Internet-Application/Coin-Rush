@@ -21,6 +21,5 @@ from coinRush import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-
     path("", include("coinRush.urls")),
 ]
