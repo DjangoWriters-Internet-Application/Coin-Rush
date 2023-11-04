@@ -2,7 +2,7 @@ from django.shortcuts import render,get_object_or_404
 from django.http import HttpResponse
 from django.core.paginator import Paginator
 
-from .models import Transaction,UserHolding, User, Learn, CourseCategory, News,Post,Comment
+from .models import Transaction,UserHolding, User, Learn, CourseCategory, News,Post,Comment, Stock
 
 # from django.contrib.auth.decorators import login_required
 
@@ -64,3 +64,7 @@ def discussion_single(request,post_id):
     comments_page = paginator.get_page(page)
 
     return render(request, 'posts/discussion_single.html', {'post': post, 'comments': comments_page})
+
+def show_stocks(request):
+    stocks = Stock.objects.all()
+    return render(request, 'Stocks/showStocks.html', {'stocks': stocks})
