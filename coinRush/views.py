@@ -13,6 +13,7 @@ from .models import (
     News,
     Post,
     Comment,
+    Stock,
 )
 
 # from django.contrib.auth.decorators import login_required
@@ -107,3 +108,7 @@ def discussion_single(request, post_id):
         "posts/discussion_single.html",
         {"post": post, "comments": comments_page},
     )
+
+def show_stocks(request):
+    stocks = Stock.objects.all()
+    return render(request, 'Stocks/showStocks.html', {'stocks': stocks})

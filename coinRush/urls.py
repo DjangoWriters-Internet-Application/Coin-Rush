@@ -14,4 +14,5 @@ urlpatterns = [
     path("courses/", views.categories_course, name="categories_course"),
     path("discussion/", views.discussion, name="discussion"),
     path("discussion/<int:post_id>", views.discussion_single, name="discussion_single"),
+    path("show_stocks/", views.show_stocks, name='show_stocks'),
 ]
