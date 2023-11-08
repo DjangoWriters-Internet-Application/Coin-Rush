@@ -8,20 +8,16 @@
     <div class="container">
         <div class="row">
             {% for category in categories %}
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4>{{ category.name }}</h4>
-                            <ol>
-                                {% for course in category.learn_set.all %}
-                                    <li>
-                                        {{ course.title }} <br><h6>Description -</h6> {{ course.description }}<br>
-                                        <a href="{{ course.external_link }}">{{ course.external_link }}</a>
-                                    </li>
-                                {% endfor %}
-                            </ol>
+                <h4>{{ category.name }}</h4>
+                <div class="course-cards d-flex flex-nowrap overflow-auto">
+                    {% for course in category.learn_set.all %}
+                        <div class="card mr-3">
+                            <div class="card-body">
+                                {{ course.title }} <br><h6>Description -</h6> {{ course.description }}<br>
+                                <a href="{{ course.external_link }}">{{ course.external_link }}</a>
+                            </div>
                         </div>
-                    </div>
+                    {% endfor %}
                 </div>
             {% endfor %}
         </div>
