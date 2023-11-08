@@ -1,0 +1,27 @@
+<!-- main_page.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFT Marketplace</title>
+    <!-- Add your CSS and styling links here -->
+</head>
+<body>
+    <h1>NFT Marketplace</h1>
+    <div class="nft-cards">
+        {% for nft in nfts %}
+            {% if nft.is_for_sale %}
+                <div class="nft-card">
+                    <a href="{% url 'nft_detail' nft.id %}">
+                        <img src="{{ nft.image.url }}" alt="{{ nft.description }}">
+                        <h3>{{ nft.description }}</h3>
+                        <p>Owner: {{ nft.owner.username }}</p>
+                        <p>Price: {{ nft.price }} {{ nft.currency }}</p>
+                    </a>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</body>
+</html>

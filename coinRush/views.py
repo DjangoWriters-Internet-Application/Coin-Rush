@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
+from .models import NFT
 
 
 # Create your views here.
@@ -18,3 +19,11 @@ def login(request):
 def logout(request):
     return render(request, "index.html")
 
+
+def main_page(request):
+    nfts = NFT.objects.all()
+    return render(request, 'NFTmarketplace.html', {'nfts': nfts})
+
+def nft_detail(request, nft_id):
+    nft = get_object_or_404(NFT, pk=nft_id)
+    return render(request, 'NFT.html', {'nft': nft})

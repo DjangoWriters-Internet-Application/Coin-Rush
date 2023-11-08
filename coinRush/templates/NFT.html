@@ -1,0 +1,25 @@
+<!-- nft_detail.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFT Details</title>
+    <!-- Add your CSS and styling links here -->
+</head>
+<body>
+    <div class="nft-card-details">
+        <img src="{{ nft.image.url }}" alt="{{ nft.description }}">
+        <h2>{{ nft.description }}</h2>
+        <p>Owner: {{ nft.owner.username }}</p>
+        <p>Price: {{ nft.price }} {{ nft.currency }}</p>
+        <p>{{ nft.description }}</p>
+        {% if nft.is_for_sale %}
+            <button>Buy Now</button>
+        {% endif %}
+        {% if nft.is_bidding_allowed %}
+            <button>Bid Now</button>
+        {% endif %}
+    </div>
+</body>
+</html>
