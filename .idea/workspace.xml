@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="2c1604f2-4a48-491f-b1c4-4c0af06d1c4c" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/coinRush/migrations/0021_alter_user_created_date_newscomments.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/coinRush/templates/NewsDetails/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/coinRush/templates/Payment/payment_form.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/coinRush/templates/Payment/payment_success.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Coin-Rush.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Coin-Rush.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/coinrush.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/prettier.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CryptoCurrencyWeb/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/CryptoCurrencyWeb/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/static/css/news.css" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/static/css/news.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/Base/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/Base/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/Base/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/Base/navbar.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/News/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/News/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/layout.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/layout.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DjangoConsoleOptions" custom-start-script="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)">
+    <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="2XtjZ9WIMvv1EQ3Jlg8TSTmuFHW" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "ameya",
+    "last_opened_file_path": "/Users/ameya_a/Desktop/Coin-Rush/coinRush/templates",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/coinRush/templates" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Django Server.Coin-Rush">
+    <configuration name="managers" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Coin-Rush" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/coinRush" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/coinRush/managers.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="models" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Coin-Rush" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/coinRush" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/coinRush/models.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Coin-Rush" type="Python.DjangoServer" factoryName="Django server">
+      <module name="Coin-Rush" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="DJANGO_SETTINGS_MODULE" value="CryptoCurrencyWeb.settings" />
+      </envs>
+      <option name="SDK_HOME" value="$PROJECT_DIR$/venv/bin/python" />
+      <option name="SDK_NAME" value="Python 3.9 (Coin-Rush)" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="launchJavascriptDebuger" value="false" />
+      <option name="port" value="8000" />
+      <option name="host" value="" />
+      <option name="additionalOptions" value="" />
+      <option name="browserUrl" value="" />
+      <option name="runTestServer" value="false" />
+      <option name="runNoReload" value="false" />
+      <option name="useCustomRunCommand" value="false" />
+      <option name="customRunCommand" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.managers" />
+        <item itemvalue="Python.models" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="2c1604f2-4a48-491f-b1c4-4c0af06d1c4c" name="Changes" comment="" />
+      <created>1699455323035</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1699455323035</updated>
+      <workItem from="1699455324083" duration="2806000" />
+      <workItem from="1699459909767" duration="9004000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/Coin_Rush$models.coverage" NAME="models Coverage Results" MODIFIED="1699455454498" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/coinRush" />
+    <SUITE FILE_PATH="coverage/Coin_Rush$managers.coverage" NAME="managers Coverage Results" MODIFIED="1699455540318" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/coinRush" />
+  </component>
+</project>

@@ -4,8 +4,9 @@ from django.core.paginator import Paginator
 from django.contrib.auth import login
 from django.conf import settings
 import stripe
+from django.urls import reverse
 
-from .forms import RegistrationForm, PostForm, CommentForm
+from .forms import RegistrationForm, PostForm, CommentForm, NewsCommentForm
 from .models import (
     Transaction,
     UserHolding,
@@ -19,7 +20,9 @@ from .models import (
 )
 
 # from django.contrib.auth.decorators import login_required
-stripe.api_key = settings.STRIPE_PRIVATE_KEY
+import stripe
+from django.conf import settings
+stripe.api_key=settings.STRIPE_PRIVATE_KEY
 
 # Create your views here.
 
@@ -72,9 +75,9 @@ def register(request):
 #         form = LoginForm()
 #         return render(request, "registration/login.html", {"form": form})
 
-
 def news(request):
-    context = {"title": "Latest Crypto News", "news": News.objects.all()}
+    news_url = reverse('news')
+    context = {"title": "Latest Crypto News", "news": News.objects.all(), "news_url":news_url}
     return render(request, "News/index.html", context)
 
 
@@ -185,3 +188,12 @@ def buy_stock(request):
 
     stocks = Stock.objects.all()
     return render(request, 'Stocks/buy_stock.html', {'stocks': stocks, 'error_message': error_message, 'PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY})
+
+
+def newsDetails(request, news_id):
+    if (request.method == 'POST'):
+        comment = NewsCommentForm(request.POST)
+
+    newsDetails = get_object_or_404(News, pk=news_id)
+    form = NewsCommentForm()
+    return render(request, 'NewsDetails/index.html', {'news': newsDetails, 'form': form})
