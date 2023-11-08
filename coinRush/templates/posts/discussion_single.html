@@ -15,7 +15,20 @@
         </div>
     </div>
 
+    <h4 class="mt-4">Add a Comment</h4>
+    {% if user.is_authenticated %}
+    <form method="post" class="mt-3">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ form.content }}
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Comment</button>
+    </form>
+    {% else %}
+        <p>Please login to add comment..</p>
+    {% endif %}
     <h2 class="mt-4">Comments</h2>
+
     <div class="card mt-3">
         <div class="card-body">
             {% if comments|length == 0 %}
