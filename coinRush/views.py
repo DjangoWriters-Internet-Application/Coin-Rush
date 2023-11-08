@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.core.paginator import Paginator
 from django.contrib.auth import login
 
-from .forms import RegistrationForm, PostForm
+from .forms import RegistrationForm, PostForm, CommentForm
 from .models import (
     Transaction,
     UserHolding,
@@ -86,7 +86,7 @@ def categories_course(request):
     return render(request, "Learn/learning.html", {"categories": categories})
 
 def discussion(request):
-    post_list = Post.objects.all()  # Replace with your queryset for your posts
+    post_list = Post.objects.all().order_by('-created_at')  # Replace with your queryset for your posts
     paginator = Paginator(post_list, 2)  # Show 5 posts per page
     page = request.GET.get("page")
     posts = paginator.get_page(page)
@@ -96,7 +96,7 @@ def discussion(request):
             post = form.save(commit=False)
             post.created_by = request.user  # Assign the logged-in user
             post.save()
-            return redirect('posts/discussion_all.html', pk=post.pk)  # Redirect to the post detail page
+            return redirect('discussion')
     else:
         form = PostForm()
 
@@ -113,10 +113,22 @@ def discussion_single(request, post_id):
     page = request.GET.get("page")
     comments_page = paginator.get_page(page)
 
+    if request.method=='POST':
+        form= CommentForm(request.POST)
+        if form.is_valid():
+            comment=form.save(commit=False)
+            comment.post=post
+            comment.created_by=request.user
+            comment.save()
+            return redirect('discussion_single', post_id=post_id)
+
+    else:
+        form=CommentForm()
+
     return render(
         request,
         "posts/discussion_single.html",
-        {"post": post, "comments": comments_page},
+        {"post": post, "comments": comments_page, 'form':form},
     )
 
 def show_stocks(request):
