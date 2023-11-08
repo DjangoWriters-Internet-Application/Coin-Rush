@@ -24,8 +24,16 @@ def home(request):
     return render(request, "index.html")
 
 
-# def signup(request):
-#     return render(request, "registration/signup.html")
+def about(request):
+    return render(request, "about.html")
+
+
+def services(request):
+    return render(request, "services.html")
+
+
+def roadmap(request):
+    return render(request, "roadmap.html")
 
 
 def register(request):
@@ -37,7 +45,8 @@ def register(request):
 
             login(request, user)
 
-            return redirect("home")  # Redirect to the home page after registration
+            # Redirect to the home page after registration
+            return redirect("home")
 
         context["errors"] = form.errors
         context["form"] = form
@@ -85,23 +94,25 @@ def categories_course(request):
     categories = CourseCategory.objects.all()
     return render(request, "Learn/learning.html", {"categories": categories})
 
+
 def discussion(request):
-    post_list = Post.objects.all().order_by('-created_at')  # Replace with your queryset for your posts
+    post_list = Post.objects.all().order_by(
+        "-created_at"
+    )  # Replace with your queryset for your posts
     paginator = Paginator(post_list, 2)  # Show 5 posts per page
     page = request.GET.get("page")
     posts = paginator.get_page(page)
-    if request.method == 'POST':
+    if request.method == "POST":
         form = PostForm(request.POST)
         if form.is_valid():
             post = form.save(commit=False)
             post.created_by = request.user  # Assign the logged-in user
             post.save()
-            return redirect('discussion')
+            return redirect("discussion")
     else:
         form = PostForm()
 
-    return render(request, "posts/discussion_all.html", {"posts": posts,'form':form})
-
+    return render(request, "posts/discussion_all.html", {"posts": posts, "form": form})
 
 
 def discussion_single(request, post_id):
@@ -113,24 +124,25 @@ def discussion_single(request, post_id):
     page = request.GET.get("page")
     comments_page = paginator.get_page(page)
 
-    if request.method=='POST':
-        form= CommentForm(request.POST)
+    if request.method == "POST":
+        form = CommentForm(request.POST)
         if form.is_valid():
-            comment=form.save(commit=False)
-            comment.post=post
-            comment.created_by=request.user
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.created_by = request.user
             comment.save()
-            return redirect('discussion_single', post_id=post_id)
+            return redirect("discussion_single", post_id=post_id)
 
     else:
-        form=CommentForm()
+        form = CommentForm()
 
     return render(
         request,
         "posts/discussion_single.html",
-        {"post": post, "comments": comments_page, 'form':form},
+        {"post": post, "comments": comments_page, "form": form},
     )
+
 
 def show_stocks(request):
     stocks = Stock.objects.all()
-    return render(request, 'Stocks/showStocks.html', {'stocks': stocks})
+    return render(request, "Stocks/showStocks.html", {"stocks": stocks})
