@@ -16,7 +16,7 @@ urlpatterns = [
     path("news/<int:news_id>", views.newsDetails, name="news_details"),
     path("transaction-history/", views.transaction_history, name="transaction-history"),
     path("user-holdings/", views.user_holdings, name="user-holdings"),
-    path("courses/", views.categories_course, name="categories_course"),
+    path("courses/", views.categories_course, name="courses"),
     path("discussion/", views.discussion, name="discussion"),
     path("discussion/<int:post_id>",
          views.discussion_single, name="discussion_single"),
