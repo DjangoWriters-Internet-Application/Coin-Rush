@@ -4,9 +4,8 @@ from django.core.paginator import Paginator
 from django.contrib.auth import login
 from django.conf import settings
 import stripe
-from django.urls import reverse
 
-from .forms import RegistrationForm, PostForm, CommentForm, NewsCommentForm
+from .forms import RegistrationForm, PostForm, CommentForm
 from .models import (
     Transaction,
     UserHolding,
@@ -20,9 +19,7 @@ from .models import (
 )
 
 # from django.contrib.auth.decorators import login_required
-import stripe
-from django.conf import settings
-stripe.api_key=settings.STRIPE_PRIVATE_KEY
+stripe.api_key = settings.STRIPE_PRIVATE_KEY
 
 # Create your views here.
 
@@ -37,10 +34,6 @@ def about(request):
 
 def services(request):
     return render(request, "services.html")
-
-
-def roadmap(request):
-    return render(request, "roadmap.html")
 
 
 def register(request):
@@ -75,9 +68,9 @@ def register(request):
 #         form = LoginForm()
 #         return render(request, "registration/login.html", {"form": form})
 
+
 def news(request):
-    news_url = reverse('news')
-    context = {"title": "Latest Crypto News", "news": News.objects.all(), "news_url":news_url}
+    context = {"title": "Latest Crypto News", "news": News.objects.all()}
     return render(request, "News/index.html", context)
 
 
@@ -187,13 +180,4 @@ def buy_stock(request):
             print(f"Stripe CardError: {error_message}")
 
     stocks = Stock.objects.all()
-    return render(request, 'Stocks/buy_stock.html', {'stocks': stocks, 'error_message': error_message, 'PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY})
-
-
-def newsDetails(request, news_id):
-    if (request.method == 'POST'):
-        comment = NewsCommentForm(request.POST)
-
-    newsDetails = get_object_or_404(News, pk=news_id)
-    form = NewsCommentForm()
-    return render(request, 'NewsDetails/index.html', {'news': newsDetails, 'form': form})
+    return render(request, 'Stocks/buy_stock.html', {'stocks': [stocks[0]], 'error_message': error_message, 'PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY})
