@@ -157,3 +157,4 @@ class Bid(models.Model):
     
     def __str__(self):
         return self.bidder
+
