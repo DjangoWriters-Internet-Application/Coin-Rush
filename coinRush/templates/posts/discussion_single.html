@@ -18,10 +18,14 @@
     <h2 class="mt-4">Comments</h2>
     <div class="card mt-3">
         <div class="card-body">
+            {% if comments|length == 0 %}
+                <p>No comments...</p>
+            {% else %}
             {% for comment in comments %}
                 <p>{{ comment.content }}</p>
                 <p><small class="text-muted">Comment by {{ comment.created_by }} on {{ comment.created_at|date:"F j, Y" }}</small></p>
             {% endfor %}
+            {% endif %}
         </div>
     </div>
 
