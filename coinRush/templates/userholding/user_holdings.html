@@ -1,30 +1,31 @@
-{% extends "layout.html" %}
-{% block title %}Coin-Rush User Holding{% endblock %}
+{% extends "Base/base.html" %}
+
+{% block title %}User Holding{% endblock %}
 {% block content %}
-    <h1>{{user.name|capfirst}}'s Holding</h1>
+<h1>{{user.name|capfirst}}'s Holding</h1>
 
 {% if holdings %}
 <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Stock</th>
-                    <th>Company</th>
-                    <th>Current Price</th>
-                    <th>Quantity</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for holding in holdings%}
-            <tr>
-                <th>{{holding.stock}}</th>
-                <th>{{holding.stock.company_name}}</th>
-                <th>{{holding.stock.current_price}}</th>
-                <th>{{holding.quantity}}</th>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>No current holdings</p>
-    {%endif%}
+    <thead>
+        <tr>
+            <th>Stock</th>
+            <th>Company</th>
+            <th>Current Price</th>
+            <th>Quantity</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for holding in holdings%}
+        <tr>
+            <th>{{holding.stock}}</th>
+            <th>{{holding.stock.company_name}}</th>
+            <th>{{holding.stock.current_price}}</th>
+            <th>{{holding.quantity}}</th>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No current holdings</p>
+{%endif%}
 {% endblock %}
