@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.core.paginator import Paginator
 from django.contrib.auth import login
 
-from .forms import RegistrationForm
+from .forms import RegistrationForm, PostForm
 from .models import (
     Transaction,
     UserHolding,
@@ -85,13 +85,23 @@ def categories_course(request):
     categories = CourseCategory.objects.all()
     return render(request, "Learn/learning.html", {"categories": categories})
 
-
 def discussion(request):
     post_list = Post.objects.all()  # Replace with your queryset for your posts
     paginator = Paginator(post_list, 2)  # Show 5 posts per page
     page = request.GET.get("page")
     posts = paginator.get_page(page)
-    return render(request, "posts/discussion_all.html", {"posts": posts})
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.created_by = request.user  # Assign the logged-in user
+            post.save()
+            return redirect('posts/discussion_all.html', pk=post.pk)  # Redirect to the post detail page
+    else:
+        form = PostForm()
+
+    return render(request, "posts/discussion_all.html", {"posts": posts,'form':form})
+
 
 
 def discussion_single(request, post_id):
