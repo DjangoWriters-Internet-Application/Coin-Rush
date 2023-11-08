@@ -54,6 +54,10 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+# Set session engine and other session-related settings
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
+SESSION_COOKIE_AGE = 300  # Set the session timeout to 300 seconds (5 minutes)
+
 ROOT_URLCONF = "CryptoCurrencyWeb.urls"
 
 TEMPLATES = [
@@ -127,6 +131,6 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_REDIRECT_URL = "home"
-LOGOUT_REDIRECT_URL = "home"
+LOGOUT_REDIRECT_URL = ""
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "static/images")

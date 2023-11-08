@@ -1,17 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Coin-Rush User Holding</title>
-</head>
-<body>
-<h1>{{user.name|capfirst}} Holding</h1>
-    {% if holdings %}
-        {% for holding in holdings%}
-            <p>{{holding}}</p>
-        {% endfor %}
+{% extends "layout.html" %}
+{% block title %}Coin-Rush User Holding{% endblock %}
+{% block content %}
+    <h1>{{user.name|capfirst}}'s Holding</h1>
+
+{% if holdings %}
+<table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Stock</th>
+                    <th>Company</th>
+                    <th>Current Price</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for holding in holdings%}
+            <tr>
+                <th>{{holding.stock}}</th>
+                <th>{{holding.stock.company_name}}</th>
+                <th>{{holding.stock.current_price}}</th>
+                <th>{{holding.quantity}}</th>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     {% else %}
         <p>No current holdings</p>
     {%endif%}
-</body>
-</html>
+{% endblock %}
