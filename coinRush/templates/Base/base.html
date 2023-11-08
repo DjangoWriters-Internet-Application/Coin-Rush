@@ -22,7 +22,8 @@
 
     {% include 'Base/navbar.html' %}
 
-    <div class="container">
+    <div class="container-fluid">
+        {{request.user}}
         {% block content %}
         {% endblock %}
     </div>

@@ -11,6 +11,6 @@
 __pycache__/
 *.egg-info/
 *.egg
-db.sqlite3
+#db.sqlite3
 
 # Add other patterns as required...
