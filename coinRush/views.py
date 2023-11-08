@@ -81,19 +81,13 @@ def news(request):
 def transaction_history(request):
     user = request.user  # Assuming users are authenticated
     transactions = Transaction.objects.filter(user=user).order_by("-timestamp")
-    return render(
-        request, "transaction/transaction_history.html", {
-            "transactions": transactions}
-    )
+    return render(request, "transaction/transaction_history.html", { "transactions": transactions})
 
 
 def user_holdings(request):
     user = request.user  # Assuming users are authenticated
     holdings = UserHolding.objects.filter(user=user)
-    return render(
-        request, "userholding/user_holdings.html", {
-            "holdings": holdings, "user": user}
-    )
+    return render(request, "userholding/user_holdings.html", {"holdings": holdings, "user": user})
 
 
 def categories_course(request):
@@ -190,4 +184,4 @@ def buy_stock(request):
             print(f"Stripe CardError: {error_message}")
 
     stocks = Stock.objects.all()
-    return render(request, 'buy_stock.html', {'stocks': stocks, 'error_message': error_message, 'PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY})
+    return render(request, 'Stocks/buy_stock.html', {'stocks': stocks, 'error_message': error_message, 'PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY})
