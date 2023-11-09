@@ -36,10 +36,6 @@ def services(request):
     return render(request, "services.html")
 
 
-def roadmap(request):
-    return render(request, "roadmap.html")
-
-
 def register(request):
     context = {"form": "", "errors": ""}
     if request.method == "POST":
@@ -184,4 +180,4 @@ def buy_stock(request):
             print(f"Stripe CardError: {error_message}")
 
     stocks = Stock.objects.all()
-    return render(request, 'Stocks/buy_stock.html', {'stocks': stocks, 'error_message': error_message, 'PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY})
+    return render(request, 'Stocks/buy_stock.html', {'stocks': [stocks[0]], 'error_message': error_message, 'PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY})
