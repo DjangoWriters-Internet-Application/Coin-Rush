@@ -2,8 +2,11 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.core.paginator import Paginator
 from django.contrib.auth import login
+from django.conf import settings
+import stripe
+from django.urls import reverse
 
-from .forms import RegistrationForm, PostForm, CommentForm
+from .forms import RegistrationForm, PostForm, CommentForm, NewsCommentForm
 from .models import (
     Transaction,
     UserHolding,
@@ -17,9 +20,13 @@ from .models import (
 )
 
 # from django.contrib.auth.decorators import login_required
-
+import stripe
+from django.conf import settings
+stripe.api_key=settings.STRIPE_PRIVATE_KEY
 
 # Create your views here.
+
+
 def home(request):
     return render(request, "index.html")
 
@@ -68,26 +75,22 @@ def register(request):
 #         form = LoginForm()
 #         return render(request, "registration/login.html", {"form": form})
 
-
 def news(request):
-    context = {"title": "Latest Crypto News", "news": News.objects.all()}
+    news_url = reverse('news')
+    context = {"title": "Latest Crypto News", "news": News.objects.all(), "news_url":news_url}
     return render(request, "News/index.html", context)
 
 
 def transaction_history(request):
     user = request.user  # Assuming users are authenticated
     transactions = Transaction.objects.filter(user=user).order_by("-timestamp")
-    return render(
-        request, "transaction/transaction_history.html", {"transactions": transactions}
-    )
+    return render(request, "transaction/transaction_history.html", { "transactions": transactions})
 
 
 def user_holdings(request):
     user = request.user  # Assuming users are authenticated
     holdings = UserHolding.objects.filter(user=user)
-    return render(
-        request, "userholding/user_holdings.html", {"holdings": holdings, "user": user}
-    )
+    return render(request, "userholding/user_holdings.html", {"holdings": holdings, "user": user})
 
 
 def categories_course(request):
@@ -146,3 +149,51 @@ def discussion_single(request, post_id):
 def show_stocks(request):
     stocks = Stock.objects.all()
     return render(request, "Stocks/showStocks.html", {"stocks": stocks})
+
+
+def buy_stock(request):
+    error_message = ''
+    if request.method == 'POST':
+        stock_symbol = request.POST.get('stock_symbol')
+        print(f"Received stock symbol: {stock_symbol}")
+        quantity = int(request.POST['quantity'])
+        stock = Stock.objects.get(symbol=stock_symbol)
+        total_price = stock.current_price * quantity  # Calculate total price
+
+        # Handle Stripe payment
+        token = request.POST['stripeToken']
+        try:
+            charge = stripe.Charge.create(
+                amount=int(total_price * 100),  # Amount in cents
+                currency='cad',
+                source=token,
+                description=f"Stock Purchase: {stock_symbol}",
+            )
+
+            # Record the transaction
+            transaction = Transaction(
+                user=request.user, stock=stock, transaction_type='Buy', quantity=quantity, price=total_price)
+            transaction.save()
+
+            # Update user holdings
+            holding, created = UserHolding.objects.get_or_create(
+                user=request.user, stock=stock)
+            holding.quantity += quantity
+            holding.save()
+            print(holding)
+            return redirect('transaction-history')
+        except stripe.error.CardError as e:
+            error_message = e.error.message
+            print(f"Stripe CardError: {error_message}")
+
+    stocks = Stock.objects.all()
+    return render(request, 'Stocks/buy_stock.html', {'stocks': stocks, 'error_message': error_message, 'PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY})
+
+
+def newsDetails(request, news_id):
+    if (request.method == 'POST'):
+        comment = NewsCommentForm(request.POST)
+
+    newsDetails = get_object_or_404(News, pk=news_id)
+    form = NewsCommentForm()
+    return render(request, 'NewsDetails/index.html', {'news': newsDetails, 'form': form})

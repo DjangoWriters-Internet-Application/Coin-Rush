@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module version="4">
+<<<<<<< HEAD
   <component name="PyDocumentationSettings">
     <option name="format" value="PLAIN" />
     <option name="myDocStringFormat" value="Plain" />
@@ -11,5 +12,10 @@
         <option value="$MODULE_DIR$/coinRush/templates" />
       </list>
     </option>
+=======
+  <component name="NewModuleRootManager">
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+>>>>>>> 30005169d634eeab675dc415fbe11273094372d8
   </component>
 </module>
