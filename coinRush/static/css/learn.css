@@ -1,0 +1,79 @@
+.container{
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+.card {
+  max-width: 320px;
+  border-width: 1px;
+  border: none;
+  border-color: rgba(219, 234, 254, 1);
+  border-radius: 1rem;
+  background-color: rgba(255, 255, 255, 1);
+  padding: 1rem;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 2rem;
+  text-decoration: none;
+}
+.header {
+  display: inline-block;
+  align-items: center;
+  grid-gap: 1rem;
+  gap: 1rem;
+}
+
+.header img{
+  border-radius: 10px;
+}
+
+h4{
+  font-weight: 400;
+  color: #3754ff;
+  margin-top: 2rem;
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.rate > input{
+  display: none;
+}
+
+.rate{
+  display: inline-block;
+  border: 0;
+}
+
+.rate > label{
+  float: right;
+}
+
+/*Showing thead stars*/
+.rate > label:before{
+  display: inline-block;
+  font-size: 1.1rem;
+  font-family: FontAwesome;
+  content: "\f005";
+  margin: 0;
+  padding: 0.3rem .2rem;
+  cursor: pointer;
+}
+
+/*Half star*/
+.rate .half:before{
+  content: "\f089";
+  position: absolute;
+  padding-right: 0;
+}
+
+/*Click and hover*/
+input:checked ~ label, label:hover ~ label{
+  color: #ffb503;
+}
+
+/*Hover highlight*/
+input:checked + label:hover, input:checked ~ label:hover,input:checked ~ label:hover ~ label,
+label:hover ~ input:checked ~ label{
+  color: #cc9000;
+}

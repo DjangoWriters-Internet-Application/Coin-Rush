@@ -1,5 +1,9 @@
 from django import forms
+<<<<<<< HEAD
+from .models import User, Post, Comment, NewsComments, Feedback
+=======
 from .models import User, Post, Comment,Transaction
+>>>>>>> 9683ce4c0d2637669ef27804c14c320e3dbd8461
 from django.contrib.auth.forms import UserCreationForm
 
 
@@ -35,6 +39,18 @@ class CommentForm(forms.ModelForm):
 
 class BuyStockForm(forms.ModelForm):
     class Meta:
+<<<<<<< HEAD
+        model=NewsComments
+        fields=['comment']
+        widgets={
+            'comment': forms.Textarea(attrs={'id':'news-comment-text','rows':'2','placeholder': 'Add Comment...', 'required': 'true'})
+        }
+
+class FeedbackRatingForm(forms.ModelForm):
+    class Meta:
+        model = Feedback
+        fields = ['subject', 'feedback', 'rating']
+=======
         model = Transaction
         fields = ['quantity']
 
@@ -45,3 +61,4 @@ class BuyStockForm(forms.ModelForm):
 class PaymentForm(forms.Form):
     # Include the fields necessary for Stripe payment
     stripeToken = forms.CharField(widget=forms.HiddenInput())
+>>>>>>> 9683ce4c0d2637669ef27804c14c320e3dbd8461
