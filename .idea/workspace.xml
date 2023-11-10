@@ -5,14 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c1604f2-4a48-491f-b1c4-4c0af06d1c4c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/coinRush/static/css/learn.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/templates/Learn/learning-details.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Coin-Rush.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Coin-Rush.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/admin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/coinRush/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/Learn/learning-details.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/Learn/learning-details.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/coinRush/templates/Learn/learning.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/Learn/learning.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,24 +44,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "abhishek",
-    "last_opened_file_path": "E:/UoWSemester3/IADS/Final-Project/CryptoCurrencyWeb/settings.py",
-    "list.type.of.created.stylesheet": "SCSS",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;abhishek&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;E:/UoWSemester3/IADS/Final-Project/CryptoCurrencyWeb/settings.py&quot;,
+    &quot;list.type.of.created.stylesheet&quot;: &quot;SCSS&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.completion&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="E:\UoWSemester3\IADS\Final-Project" />
@@ -155,7 +155,8 @@
       <updated>1699455323035</updated>
       <workItem from="1699455324083" duration="2806000" />
       <workItem from="1699459909767" duration="9004000" />
-      <workItem from="1699560395425" duration="15207000" />
+      <workItem from="1699560395425" duration="18151000" />
+      <workItem from="1699579103052" duration="5246000" />
     </task>
     <servers />
   </component>

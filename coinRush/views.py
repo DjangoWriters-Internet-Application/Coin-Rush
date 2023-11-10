@@ -97,6 +97,11 @@ def categories_course(request):
     categories = CourseCategory.objects.all()
     return render(request, "Learn/learning.html", {"categories": categories})
 
+def subject_info(request, slug):
+    subject = get_object_or_404(Learn, slug=slug)
+    description = subject.description
+    return render(request, "Learn/learning-details.html", {"subject": subject, "description": description})
+    # return render(request, "Learn/learning-details.html", {"context": context})
 
 def discussion(request):
     post_list = Post.objects.all().order_by(

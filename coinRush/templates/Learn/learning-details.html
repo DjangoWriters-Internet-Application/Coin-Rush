@@ -3,7 +3,7 @@
 {% block extraHead %}
 
 <!--    <link rel="stylesheet" href="{% static 'css/news.css' %}">-->
-    <link rel="stylesheet" href="{% static 'css/learn.css' %} ">
+<!--    <link rel="stylesheet" href="{% static 'css/learn.css' %} ">-->
 {% endblock extraHead %}
 
 {% block content %}
@@ -28,5 +28,8 @@
 <!--            {% endfor %}-->
 <!--        </div>-->
 <!--    </div>-->
+
+<h2>{{subject.title}}</h2>
+<p>{{subject.description}}</p>
 
 {% endblock content %}

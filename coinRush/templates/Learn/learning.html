@@ -34,7 +34,8 @@
       <h3>{{ category.name }}</h3>
       <hr>
       {% for course in category.learn_set.all %}
-      <a class="card" href="#">
+      <a class="card" href="/learn/{{ course.slug }}/">
+<!--        <li onclick="window.location = 'learn/{{ x.slug }}'">{{ x.firstname }} {{ x.lastname }}</li>-->
         <div class="header">
           <img class="img-fluid me-2" src="{% static 'images/bg.jpg' %}" alt="">
             <h4>{{ course.title }}</h4>
