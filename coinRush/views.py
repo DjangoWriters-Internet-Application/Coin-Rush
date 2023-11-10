@@ -5,14 +5,17 @@ from django.contrib.auth import login
 from django.conf import settings
 import stripe
 from django.urls import reverse
+from django.contrib import messages
+from django.core.exceptions import *
 
-from .forms import RegistrationForm, PostForm, CommentForm, NewsCommentForm
+from .forms import RegistrationForm, PostForm, CommentForm, NewsCommentForm, FeedbackRatingForm
 from .models import (
     Transaction,
     UserHolding,
     User,
     Learn,
     CourseCategory,
+    Feedback,
     News,
     Post,
     Comment,
@@ -101,7 +104,29 @@ def subject_info(request, slug):
     subject = get_object_or_404(Learn, slug=slug)
     description = subject.description
     return render(request, "Learn/learning-details.html", {"subject": subject, "description": description})
-    # return render(request, "Learn/learning-details.html", {"context": context})
+
+def submit_feedback(request, sub_id):
+    url = request.META.get('HTTP_REFERER')
+    if request.method == "POST":
+        try:
+            feedbacks = Feedback.objects.get(user__id=request.user.id, topic__id=sub_id)
+            form = FeedbackRatingForm(request.POST, instance=feedbacks)
+            form.save()
+            messages.success(request, 'Thank you! Your feedback has been updated.')
+            return redirect(url)
+        except Feedback.DoesNotExist:
+            form = FeedbackRatingForm(request.POST)
+            if form.is_valid():
+                data = Feedback()
+                data.subject = form.cleaned_data['subject']
+                data.rating = form.cleaned_data['rating']
+                data.feedback = form.cleaned_data['feedback']
+                data.ip = request.META.get('REMOTE_ADDR')  # Change this line
+                data.topic_id = sub_id
+                data.user_id = request.user.id
+                data.save()
+                messages.success(request, 'Thank you! Your feedback has been submitted.')
+                return redirect(url)
 
 def discussion(request):
     post_list = Post.objects.all().order_by(

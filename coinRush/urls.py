@@ -18,6 +18,7 @@ urlpatterns = [
     path("user-holdings/", views.user_holdings, name="user-holdings"),
     path("learn/", views.categories_course, name="courses"),
     path("learn/<slug:slug>/", views.subject_info, name="subject_info"),
+    path("submit_feedback/<int:sub_id>/", views.submit_feedback, name="submit_feedback"),
     path("discussion/", views.discussion, name="discussion"),
     path("discussion/<int:post_id>",
          views.discussion_single, name="discussion_single"),

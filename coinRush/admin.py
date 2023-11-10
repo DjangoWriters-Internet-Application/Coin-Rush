@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import User,Post,Comment,Stock,StockPrice,Transaction,UserHolding, News, NewsComments, Learn, CourseCategory
+from .models import User,Post,Comment,Stock,StockPrice,Transaction,UserHolding, News, NewsComments, Learn, CourseCategory, Feedback
 
 class MemberAdmin(admin.ModelAdmin):
     list_display = ("title", "description",)
@@ -15,6 +15,7 @@ admin.site.register(UserHolding)
 admin.site.register(News)
 admin.site.register(Learn, MemberAdmin)
 admin.site.register(CourseCategory)
+admin.site.register(Feedback)
 admin.site.register(Post)
 admin.site.register(Comment)
 admin.site.register(NewsComments)

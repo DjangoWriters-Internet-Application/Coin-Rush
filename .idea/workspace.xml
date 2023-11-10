@@ -5,13 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c1604f2-4a48-491f-b1c4-4c0af06d1c4c" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/coinRush/templates/Learn/alerts.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/coinRush/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/forms.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/coinRush/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/static/css/learn.css" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/static/css/learn.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/Base/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/Base/base.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/coinRush/templates/Learn/learning-details.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/Learn/learning-details.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/coinRush/templates/Learn/learning.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/Learn/learning.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/coinRush/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/coinRush/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -156,7 +161,7 @@
       <workItem from="1699455324083" duration="2806000" />
       <workItem from="1699459909767" duration="9004000" />
       <workItem from="1699560395425" duration="18151000" />
-      <workItem from="1699579103052" duration="5246000" />
+      <workItem from="1699579103052" duration="18651000" />
     </task>
     <servers />
   </component>

@@ -6,43 +6,20 @@
 {% endblock extraHead %}
 
 {% block content %}
-<!--    <div class="container">-->
-<!--        <div class="row">-->
-<!--            {% for category in categories %}-->
-<!--                <div class="col-lg-4 col-md-6 mb-4">-->
-<!--                    <div class="card">-->
-<!--                        <div class="card-body">-->
-<!--                            <h4>{{ category.name }}</h4>-->
-<!--                            <ol>-->
-<!--                                {% for course in category.learn_set.all %}-->
-<!--                                    <li>-->
-<!--                                        {{ course.title }} <br><h6>Description -</h6> {{ course.description }}<br>-->
-<!--                                        <a href="{{ course.external_link }}">{{ course.external_link }}</a>-->
-<!--                                    </li>-->
-<!--                                {% endfor %}-->
-<!--                            </ol>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            {% endfor %}-->
-<!--        </div>-->
-<!--    </div>-->
-
 <div class="container">
     <div class="row">
-      {% for category in categories %}
-      <h3>{{ category.name }}</h3>
-      <hr>
-      {% for course in category.learn_set.all %}
-      <a class="card" href="/learn/{{ course.slug }}/">
-<!--        <li onclick="window.location = 'learn/{{ x.slug }}'">{{ x.firstname }} {{ x.lastname }}</li>-->
-        <div class="header">
-          <img class="img-fluid me-2" src="{% static 'images/bg.jpg' %}" alt="">
-            <h4>{{ course.title }}</h4>
-        </div>
-      </a>
-      {% endfor %}
-      {% endfor %}
+        {% for category in categories %}
+        <h3>{{ category.name }}</h3>
+        <hr>
+        {% for course in category.learn_set.all %}
+        <a class="card" href="/learn/{{ course.slug }}/">
+            <div class="header">
+                <img class="img-fluid me-2" src="{% static 'images/bg.jpg' %}" alt="">
+                <h4>{{ course.title }}</h4>
+            </div>
+        </a>
+        {% endfor %}
+        {% endfor %}
     </div>
-  </div>
+</div>
 {% endblock content %}

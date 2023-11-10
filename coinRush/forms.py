@@ -1,5 +1,5 @@
 from django import forms
-from .models import User, Post, Comment, NewsComments
+from .models import User, Post, Comment, NewsComments, Feedback
 from django.contrib.auth.forms import UserCreationForm
 
 
@@ -40,3 +40,8 @@ class NewsCommentForm(forms.ModelForm):
         widgets={
             'comment': forms.Textarea(attrs={'id':'news-comment-text','rows':'2','placeholder': 'Add Comment...', 'required': 'true'})
         }
+
+class FeedbackRatingForm(forms.ModelForm):
+    class Meta:
+        model = Feedback
+        fields = ['subject', 'feedback', 'rating']
