@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.core.paginator import Paginator
 from django.contrib.auth import login
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 import stripe
 
 from .forms import RegistrationForm, PostForm, CommentForm, NewsCommentForm
@@ -18,7 +19,7 @@ from .models import (
     Stock,
 )
 
-# from django.contrib.auth.decorators import login_required
+
 stripe.api_key = settings.STRIPE_PRIVATE_KEY
 
 # Create your views here.
@@ -26,7 +27,7 @@ stripe.api_key = settings.STRIPE_PRIVATE_KEY
 
 def home(request):
     stocks = Stock.objects.all()
-    return render(request, "index.html",{"stocks": stocks})
+    return render(request, "index.html", {"stocks": stocks})
 
 
 def about(request):
@@ -37,10 +38,15 @@ def services(request):
     return render(request, "services.html")
 
 
+def logout(request):
+    logout(user)
+    return redirect("/")
+
+
 def register(request):
     context = {"form": "", "errors": ""}
     if request.method == "POST":
-        form = RegistrationForm(request.POST)
+        form = RegistrationForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save()
 
@@ -75,16 +81,21 @@ def news(request):
     return render(request, "News/index.html", context)
 
 
+@login_required(login_url="/login/")
 def transaction_history(request):
     user = request.user  # Assuming users are authenticated
     transactions = Transaction.objects.filter(user=user).order_by("-timestamp")
-    return render(request, "transaction/transaction_history.html", { "transactions": transactions})
+    return render(
+        request, "transaction/transaction_history.html", {"transactions": transactions}
+    )
 
 
 def user_holdings(request):
     user = request.user  # Assuming users are authenticated
     holdings = UserHolding.objects.filter(user=user)
-    return render(request, "userholding/user_holdings.html", {"holdings": holdings, "user": user})
+    return render(
+        request, "userholding/user_holdings.html", {"holdings": holdings, "user": user}
+    )
 
 
 def categories_course(request):
@@ -129,11 +140,11 @@ def discussion_single(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     comments = post.comment_set.all().order_by("-created_at")
 
-
     # Add pagination for comments (e.g., 5 comments per page)
     paginator = Paginator(comments, 1)
     page = request.GET.get("page")
     comments_page = paginator.get_page(page)
+
 
     if(request.method=="GET" and page==None and request.GET.get('fl')!=None):
         post.views+=1
@@ -163,12 +174,12 @@ def show_stocks(request):
     return render(request, "Stocks/showStocks.html", {"stocks": stocks})
 
 
-def buy_stock(request,stock_symbol):
-    error_message = ''
-    if request.method == 'POST':
+def buy_stock(request, stock_symbol):
+    error_message = ""
+    if request.method == "POST":
         # stock_symbol = request.POST.get('stock_symbol')
         print(f"Received stock symbol: {stock_symbol}")
-        quantity = int(request.POST.get('quantity', 0))
+        quantity = int(request.POST.get("quantity", 0))
         if quantity <= 0:
             raise ValueError("Quantity should be a positive integer.")
 
@@ -176,38 +187,55 @@ def buy_stock(request,stock_symbol):
         total_price = stock.current_price * quantity  # Calculate total price
 
         # Handle Stripe payment
-        token = request.POST['stripeToken']
+        token = request.POST["stripeToken"]
         try:
             charge = stripe.Charge.create(
                 amount=int(total_price * 100),  # Amount in cents
-                currency='cad',
+                currency="cad",
                 source=token,
                 description=f"Stock Purchase: {stock_symbol}",
             )
 
             # Record the transaction
             transaction = Transaction(
-                user=request.user, stock=stock, transaction_type='Buy', quantity=quantity, price=total_price)
+                user=request.user,
+                stock=stock,
+                transaction_type="Buy",
+                quantity=quantity,
+                price=total_price,
+            )
             transaction.save()
 
             # Update user holdings
             holding, created = UserHolding.objects.get_or_create(
-                user=request.user, stock=stock)
+                user=request.user, stock=stock
+            )
             holding.quantity += quantity
             holding.save()
             print(holding)
-            return redirect('transaction-history')
+            return redirect("transaction-history")
         except stripe.error.CardError as e:
             error_message = e.error.message
             print(f"Stripe CardError: {error_message}")
 
     stocks = Stock.objects.get(symbol=stock_symbol)
-    return render(request, 'Stocks/buy_stock.html', {'stock': stocks, 'error_message': error_message, 'PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY})
+    return render(
+        request,
+        "Stocks/buy_stock.html",
+        {
+            "stock": stocks,
+            "error_message": error_message,
+            "PUBLIC_KEY": settings.STRIPE_PUBLIC_KEY,
+        },
+    )
+
 
 def newsDetails(request, news_id):
-    if (request.method == 'POST'):
+    if request.method == "POST":
         comment = NewsCommentForm(request.POST)
 
     newsDetails = get_object_or_404(News, pk=news_id)
     form = NewsCommentForm()
-    return render(request, 'NewsDetails/index.html', {'news': newsDetails, 'form': form})
+    return render(
+        request, "NewsDetails/index.html", {"news": newsDetails, "form": form}
+    )
