@@ -25,7 +25,8 @@ stripe.api_key = settings.STRIPE_PRIVATE_KEY
 
 
 def home(request):
-    return render(request, "index.html")
+    stocks = Stock.objects.all()
+    return render(request, "index.html",{"stocks": stocks})
 
 
 def about(request):
