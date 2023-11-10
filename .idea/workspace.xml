@@ -5,6 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c1604f2-4a48-491f-b1c4-4c0af06d1c4c" name="Changes" comment="">
+<<<<<<< HEAD
+=======
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+>>>>>>> 0f100470375d847177329a18bf2945fc6879d8b5
       <change beforePath="$PROJECT_DIR$/coinRush/templates/Base/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/Base/navbar.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -34,7 +38,11 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
+<<<<<<< HEAD
     "git-widget-placeholder": "11028d0e",
+=======
+    "git-widget-placeholder": "main",
+>>>>>>> 0f100470375d847177329a18bf2945fc6879d8b5
     "last_opened_file_path": "/Users/ameya_a/Desktop/Coin-Rush/coinRush/templates",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -143,7 +151,10 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+<<<<<<< HEAD
   <component name="VcsManagerConfiguration">
     <option name="LAST_COMMIT_MESSAGE" value="" />
   </component>
+=======
+>>>>>>> 0f100470375d847177329a18bf2945fc6879d8b5
 </project>
