@@ -11,7 +11,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(default="", unique=True, blank=True, max_length=255)
     name = models.CharField(max_length=255, blank=True, default="")
 
-    profile_pic = models.ImageField(null=True, blank=True)
+    profile_pic = models.ImageField(upload_to="profile_pics/", null=True, blank=True)
     photo_id = models.ImageField(null=True, blank=True)
 
     is_staff = models.BooleanField(default=False)
@@ -43,9 +43,11 @@ class Post(models.Model):
     content = models.TextField()
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    views=models.PositiveIntegerField(default=0)
+    views = models.PositiveIntegerField(default=0)
+
     def __str__(self):
         return self.title
+
 
 class Comment(models.Model):
     content = models.TextField()
@@ -68,6 +70,7 @@ class Stock(models.Model):
     def __str__(self):
         return self.symbol
 
+
 # Define a model for StockPrice (to store historical price data)
 class StockPrice(models.Model):
     stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
@@ -77,17 +80,19 @@ class StockPrice(models.Model):
     def __str__(self):
         return f"{self.stock.symbol} - {self.date}"
 
+
 class Transaction(models.Model):
-    TYPE = [('BUY', 'Buy'), ('SELL', 'Sell')]
+    TYPE = [("BUY", "Buy"), ("SELL", "Sell")]
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
-    transaction_type = models.CharField(max_length=10,choices=TYPE, default='BUY')
+    transaction_type = models.CharField(max_length=10, choices=TYPE, default="BUY")
     quantity = models.PositiveIntegerField(default=0)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.user.email} - {self.transaction_type}{self.quantity} {self.stock.symbol} @ {self.price}"
+
 
 class UserHolding(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -108,11 +113,13 @@ class News(models.Model):
     def __str__(self):
         return self.title
 
+
 class NewsComments(models.Model):
     news = models.ForeignKey(News, on_delete=models.CASCADE)
     comment = models.CharField(max_length=225)
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
 
 class CourseCategory(models.Model):
     name = models.CharField(max_length=100)
@@ -122,6 +129,7 @@ class CourseCategory(models.Model):
 
     class Meta:
         verbose_name_plural = "Course Categories"
+
 
 class Learn(models.Model):
     title = models.CharField(max_length=100)
@@ -135,31 +143,32 @@ class Learn(models.Model):
     class Meta:
         verbose_name_plural = "Courses"
 
+
 class NFT(models.Model):
     CURRENCY_CHOICES = [
-        ('USD', 'US Dollar'),
-        ('BTC', 'Bitcoin'),
-        ('ETH', 'Ethereum'),
+        ("USD", "US Dollar"),
+        ("BTC", "Bitcoin"),
+        ("ETH", "Ethereum"),
     ]
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='nft_images/')
+    image = models.ImageField(upload_to="nft_images/")
     description = models.TextField()
     quantity = models.PositiveIntegerField(default=1)
     is_for_sale = models.BooleanField(default=False)
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES, default='USD')
+    currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES, default="USD")
     is_bidding_allowed = models.BooleanField(default=False)
-    
+
     def __str__(self):
         return self.owner
+
 
 class Bid(models.Model):
     nft = models.ForeignKey(NFT, on_delete=models.CASCADE)
     bidder = models.ForeignKey(User, on_delete=models.CASCADE)
     bid_amount = models.DecimalField(max_digits=10, decimal_places=2)
     timestamp = models.DateTimeField(auto_now_add=True)
-    
+
     def __str__(self):
         return self.bidder
-
