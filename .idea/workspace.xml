@@ -5,7 +5,89 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c1604f2-4a48-491f-b1c4-4c0af06d1c4c" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/coinrush.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/prettier.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/coinRush/migrations/0003_alter_stock_image_alter_user_created_date.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/ADA.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/ADA_Wx60Hih.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/ETH.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/ETH_24JdVdq.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/LINK.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/LINK_N8QdPfv.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/abc.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/abc_o91B5cP.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/bitcoin.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/bitcoin_vSmVqzP.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/bitcoin_xV9867y.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/stock_pics/LINK.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/M1.PNG" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/profile_pics/Me.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/profile_pics/Me_MXx42VB.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/stock_pics/ADA.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/stock_pics/ADA_Vyf5lCt.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/stock_pics/ADA_Wx60Hih.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/stock_pics/ETH.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/stock_pics/ETH_24JdVdq.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/stock_pics/ETH_GdM0oM8.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/stock_pics/LINK.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/stock_pics/LINK_N8QdPfv.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/stock_pics/abc.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/stock_pics/abc_K1n78LH.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/stock_pics/abc_o91B5cP.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/stock_pics/bitcoin.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/stock_pics/bitcoin_lMa9wpm.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/stock_pics/bitcoin_vSmVqzP.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/stock_pics/bitcoin_xV9867y.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Coin-Rush.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Coin-Rush.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CryptoCurrencyWeb/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/CryptoCurrencyWeb/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CryptoCurrencyWeb/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/CryptoCurrencyWeb/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/migrations/0001_initial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/migrations/0002_user_groups_user_user_permissions.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/migrations/0003_alter_user_created_date.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/migrations/0004_alter_user_created_date.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/migrations/0005_user_is_staff_alter_user_created_date.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/migrations/0006_alter_user_created_date.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/migrations/0007_comment_stock_alter_user_created_date_stockprice_and_more.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/migrations/0008_alter_user_created_date_transaction.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/migrations/0009_alter_user_created_date.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/migrations/0010_alter_user_created_date.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/migrations/0011_alter_user_created_date.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/migrations/0012_alter_transaction_transaction_type_and_more.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/migrations/0013_news_alter_user_created_date.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/migrations/0014_learn_alter_user_created_date.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/migrations/0015_alter_user_created_date.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/migrations/0016_coursecategory_alter_learn_description_and_more.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/migrations/0017_alter_coursecategory_options_alter_learn_options_and_more.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/migrations/0018_alter_comment_post_alter_user_created_date.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/migrations/0019_remove_post_post_comments_alter_user_created_date.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/migrations/0020_alter_user_created_date.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/migrations/0021_alter_user_created_date.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/migrations/0002_alter_user_created_date.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/migrations/0021_alter_user_created_date_newscomments.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/Base/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/Base/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/Base/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/Base/navbar.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/News/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/News/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/NewsDetails/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/NewsDetails/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/Payment/payment_form.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/Payment/payment_success.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/Stocks/buy_stock.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/Stocks/buy_stock.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/Stocks/showStocks.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/layout.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/layout.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/posts/discussion_all.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/posts/discussion_all.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/posts/discussion_single.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/posts/discussion_single.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/registration/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/registration/register.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,24 +119,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/UoWSemester3/IADS/Coin-Rush&quot;,
-    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "Merging dev",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "E:/UoWSemester3/IADS/Coin-Rush",
+    "list.type.of.created.stylesheet": "CSS",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="E:\UoWSemester3\IADS\Coin-Rush" />
@@ -149,6 +232,8 @@
       <workItem from="1699455324083" duration="2806000" />
       <workItem from="1699459909767" duration="9004000" />
       <workItem from="1699643370598" duration="468000" />
+      <workItem from="1699643876391" duration="765000" />
+      <workItem from="1699655977408" duration="1081000" />
     </task>
     <servers />
   </component>

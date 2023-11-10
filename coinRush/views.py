@@ -3,11 +3,14 @@ from django.http import HttpResponse
 from django.core.paginator import Paginator
 from django.contrib.auth import login
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 import stripe
 from django.urls import reverse
 from django.contrib import messages
 from django.core.exceptions import *
+
 from .forms import RegistrationForm, PostForm, CommentForm, NewsCommentForm, FeedbackRatingForm
+
 from .models import (
     Transaction,
     UserHolding,
@@ -21,16 +24,15 @@ from .models import (
     Stock,
 )
 
-# from django.contrib.auth.decorators import login_required
-import stripe
-from django.conf import settings
-stripe.api_key=settings.STRIPE_PRIVATE_KEY
+
+stripe.api_key = settings.STRIPE_PRIVATE_KEY
 
 # Create your views here.
 
 
 def home(request):
-    return render(request, "index.html")
+    stocks = Stock.objects.all()
+    return render(request, "index.html", {"stocks": stocks})
 
 
 def about(request):
@@ -41,14 +43,15 @@ def services(request):
     return render(request, "services.html")
 
 
-def roadmap(request):
-    return render(request, "roadmap.html")
+def logout(request):
+    logout(user)
+    return redirect("/")
 
 
 def register(request):
     context = {"form": "", "errors": ""}
     if request.method == "POST":
-        form = RegistrationForm(request.POST)
+        form = RegistrationForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save()
 
@@ -77,22 +80,27 @@ def register(request):
 #         form = LoginForm()
 #         return render(request, "registration/login.html", {"form": form})
 
+
 def news(request):
-    news_url = reverse('news')
-    context = {"title": "Latest Crypto News", "news": News.objects.all(), "news_url":news_url}
+    context = {"title": "Latest Crypto News", "news": News.objects.all()}
     return render(request, "News/index.html", context)
 
 
+@login_required(login_url="/login/")
 def transaction_history(request):
     user = request.user  # Assuming users are authenticated
     transactions = Transaction.objects.filter(user=user).order_by("-timestamp")
-    return render(request, "transaction/transaction_history.html", { "transactions": transactions})
+    return render(
+        request, "transaction/transaction_history.html", {"transactions": transactions}
+    )
 
 
 def user_holdings(request):
     user = request.user  # Assuming users are authenticated
     holdings = UserHolding.objects.filter(user=user)
-    return render(request, "userholding/user_holdings.html", {"holdings": holdings, "user": user})
+    return render(
+        request, "userholding/user_holdings.html", {"holdings": holdings, "user": user}
+    )
 
 
 def categories_course(request):
@@ -129,8 +137,21 @@ def submit_feedback(request, sub_id):
 
 
 def discussion(request):
+
+    ord_by=request.GET.get("order_by")
+    order_string="-views"
+    if ord_by==None or ord_by=='max-views' or ord_by=="":
+        order_string = "-views"
+    elif ord_by=='min-views':
+        order_string='views'
+    elif ord_by=='latest':
+        order_string='-created_at'
+    elif ord_by=='oldest':
+        order_string = 'created_at'
+
+
     post_list = Post.objects.all().order_by(
-        "-created_at"
+        order_string
     )  # Replace with your queryset for your posts
     paginator = Paginator(post_list, 2)  # Show 5 posts per page
     page = request.GET.get("page")
@@ -157,6 +178,11 @@ def discussion_single(request, post_id):
     page = request.GET.get("page")
     comments_page = paginator.get_page(page)
 
+
+    if(request.method=="GET" and page==None and request.GET.get('fl')!=None):
+        post.views+=1
+        post.save()
+
     if request.method == "POST":
         form = CommentForm(request.POST)
         if form.is_valid():
@@ -181,49 +207,68 @@ def show_stocks(request):
     return render(request, "Stocks/showStocks.html", {"stocks": stocks})
 
 
-def buy_stock(request):
-    error_message = ''
-    if request.method == 'POST':
-        stock_symbol = request.POST.get('stock_symbol')
+def buy_stock(request, stock_symbol):
+    error_message = ""
+    if request.method == "POST":
+        # stock_symbol = request.POST.get('stock_symbol')
         print(f"Received stock symbol: {stock_symbol}")
-        quantity = int(request.POST['quantity'])
+        quantity = int(request.POST.get("quantity", 0))
+        if quantity <= 0:
+            raise ValueError("Quantity should be a positive integer.")
+
         stock = Stock.objects.get(symbol=stock_symbol)
         total_price = stock.current_price * quantity  # Calculate total price
 
         # Handle Stripe payment
-        token = request.POST['stripeToken']
+        token = request.POST["stripeToken"]
         try:
             charge = stripe.Charge.create(
                 amount=int(total_price * 100),  # Amount in cents
-                currency='cad',
+                currency="cad",
                 source=token,
                 description=f"Stock Purchase: {stock_symbol}",
             )
 
             # Record the transaction
             transaction = Transaction(
-                user=request.user, stock=stock, transaction_type='Buy', quantity=quantity, price=total_price)
+                user=request.user,
+                stock=stock,
+                transaction_type="Buy",
+                quantity=quantity,
+                price=total_price,
+            )
             transaction.save()
 
             # Update user holdings
             holding, created = UserHolding.objects.get_or_create(
-                user=request.user, stock=stock)
+                user=request.user, stock=stock
+            )
             holding.quantity += quantity
             holding.save()
             print(holding)
-            return redirect('transaction-history')
+            return redirect("transaction-history")
         except stripe.error.CardError as e:
             error_message = e.error.message
             print(f"Stripe CardError: {error_message}")
 
-    stocks = Stock.objects.all()
-    return render(request, 'Stocks/buy_stock.html', {'stocks': stocks, 'error_message': error_message, 'PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY})
+    stocks = Stock.objects.get(symbol=stock_symbol)
+    return render(
+        request,
+        "Stocks/buy_stock.html",
+        {
+            "stock": stocks,
+            "error_message": error_message,
+            "PUBLIC_KEY": settings.STRIPE_PUBLIC_KEY,
+        },
+    )
 
 
 def newsDetails(request, news_id):
-    if (request.method == 'POST'):
+    if request.method == "POST":
         comment = NewsCommentForm(request.POST)
 
     newsDetails = get_object_or_404(News, pk=news_id)
     form = NewsCommentForm()
-    return render(request, 'NewsDetails/index.html', {'news': newsDetails, 'form': form})
+    return render(
+        request, "NewsDetails/index.html", {"news": newsDetails, "form": form}
+    )
