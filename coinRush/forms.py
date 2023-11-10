@@ -1,5 +1,5 @@
 from django import forms
-from .models import User, Post, Comment
+from .models import User, Post, Comment,Transaction
 from django.contrib.auth.forms import UserCreationForm
 
 
@@ -32,3 +32,16 @@ class CommentForm(forms.ModelForm):
             'content':forms.Textarea(
             attrs={'class':'form-control','id':'add-comment','rows':'2','placeholder': 'Add Comment...', 'required': 'true'}
         ),}
+
+class BuyStockForm(forms.ModelForm):
+    class Meta:
+        model = Transaction
+        fields = ['quantity']
+
+    widgets = {
+        'quantity': forms.NumberInput(attrs={'required': 'required', 'min': '1'}),
+    }
+
+class PaymentForm(forms.Form):
+    # Include the fields necessary for Stripe payment
+    stripeToken = forms.CharField(widget=forms.HiddenInput())

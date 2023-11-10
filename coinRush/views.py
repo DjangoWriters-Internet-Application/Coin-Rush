@@ -144,12 +144,15 @@ def show_stocks(request):
     return render(request, "Stocks/showStocks.html", {"stocks": stocks})
 
 
-def buy_stock(request):
+def buy_stock(request,stock_symbol):
     error_message = ''
     if request.method == 'POST':
-        stock_symbol = request.POST.get('stock_symbol')
+        # stock_symbol = request.POST.get('stock_symbol')
         print(f"Received stock symbol: {stock_symbol}")
-        quantity = int(request.POST['quantity'])
+        quantity = int(request.POST.get('quantity', 0))
+        if quantity <= 0:
+            raise ValueError("Quantity should be a positive integer.")
+
         stock = Stock.objects.get(symbol=stock_symbol)
         total_price = stock.current_price * quantity  # Calculate total price
 
@@ -179,5 +182,5 @@ def buy_stock(request):
             error_message = e.error.message
             print(f"Stripe CardError: {error_message}")
 
-    stocks = Stock.objects.all()
-    return render(request, 'Stocks/buy_stock.html', {'stocks': [stocks[0]], 'error_message': error_message, 'PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY})
+    stocks = Stock.objects.get(symbol=stock_symbol)
+    return render(request, 'Stocks/buy_stock.html', {'stock': stocks, 'error_message': error_message, 'PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY})

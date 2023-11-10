@@ -83,7 +83,7 @@ class Transaction(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
     transaction_type = models.CharField(max_length=10,choices=TYPE, default='BUY')
-    quantity = models.PositiveIntegerField()
+    quantity = models.PositiveIntegerField(default=0)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     timestamp = models.DateTimeField(auto_now_add=True)
 
@@ -93,7 +93,7 @@ class Transaction(models.Model):
 class UserHolding(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField()
+    quantity = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"{self.user.email} - {self.quantity} {self.stock.symbol}"

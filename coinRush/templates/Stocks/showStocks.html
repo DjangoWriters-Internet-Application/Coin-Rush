@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "Base/base.html" %}
 {% block title %}Coin-Rush Stocks{% endblock %}
 {% block content %}
     <h1>Stocks</h1>
@@ -12,6 +12,7 @@
                     <th>Price</th>
                     <th>Market Cap</th>
                     <th>Last Updated</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -22,6 +23,10 @@
                 <th>{{stock.current_price}}</th>
                 <th>{{stock.market_cap}}</th>
                 <th>{{stock.last_updated}}</th>
+                <th>   <a href="{% url 'buy_stock' stock.symbol %}" class="btn btn-primary">
+ <i class="bi bi-cart"></i>
+</a>
+</th>
             </tr>
             {% endfor %}
             </tbody>
