@@ -66,7 +66,6 @@ class Stock(models.Model):
     last_updated = models.DateTimeField(auto_now=True)
     image = models.ImageField(upload_to='',blank=True, null=True)
 
-
     def __str__(self):
         return self.symbol
 
