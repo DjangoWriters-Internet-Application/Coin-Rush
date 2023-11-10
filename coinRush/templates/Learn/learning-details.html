@@ -1,6 +1,7 @@
 {% extends 'Base/base.html' %}
 {% load static %}
 {% block extraHead %}
+
 <!--    <link rel="stylesheet" href="{% static 'css/news.css' %}">-->
     <link rel="stylesheet" href="{% static 'css/learn.css' %} ">
 {% endblock extraHead %}
@@ -28,20 +29,4 @@
 <!--        </div>-->
 <!--    </div>-->
 
-<div class="container">
-    <div class="row">
-      {% for category in categories %}
-      <h3>{{ category.name }}</h3>
-      <hr>
-      {% for course in category.learn_set.all %}
-      <a class="card" href="#">
-        <div class="header">
-          <img class="img-fluid me-2" src="{% static 'images/bg.jpg' %}" alt="">
-            <h4>{{ course.title }}</h4>
-        </div>
-      </a>
-      {% endfor %}
-      {% endfor %}
-    </div>
-  </div>
 {% endblock content %}
