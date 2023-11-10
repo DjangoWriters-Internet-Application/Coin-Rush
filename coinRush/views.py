@@ -40,7 +40,7 @@ def services(request):
 
 def logout(request):
     logout(user)
-    return redirect("")
+    return redirect("/")
 
 
 def register(request):
