@@ -116,10 +116,15 @@ def discussion_single(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     comments = post.comment_set.all().order_by("-created_at")
 
+
     # Add pagination for comments (e.g., 5 comments per page)
     paginator = Paginator(comments, 1)
     page = request.GET.get("page")
     comments_page = paginator.get_page(page)
+
+    if(request.method=="GET" and page==None):
+        post.views+=1
+        post.save()
 
     if request.method == "POST":
         form = CommentForm(request.POST)
