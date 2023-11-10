@@ -93,8 +93,21 @@ def categories_course(request):
 
 
 def discussion(request):
+
+    ord_by=request.GET.get("order_by")
+    order_string="-views"
+    if ord_by==None or ord_by=='max-views' or ord_by=="":
+        order_string = "-views"
+    elif ord_by=='min-views':
+        order_string='views'
+    elif ord_by=='latest':
+        order_string='-created_at'
+    elif ord_by=='oldest':
+        order_string = 'created_at'
+
+
     post_list = Post.objects.all().order_by(
-        "-created_at"
+        order_string
     )  # Replace with your queryset for your posts
     paginator = Paginator(post_list, 2)  # Show 5 posts per page
     page = request.GET.get("page")
@@ -122,7 +135,7 @@ def discussion_single(request, post_id):
     page = request.GET.get("page")
     comments_page = paginator.get_page(page)
 
-    if(request.method=="GET" and page==None):
+    if(request.method=="GET" and page==None and request.GET.get('fl')!=None):
         post.views+=1
         post.save()
 
