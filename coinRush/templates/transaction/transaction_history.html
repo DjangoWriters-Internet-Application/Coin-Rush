@@ -1,34 +1,32 @@
-{% extends "layout.html" %}
-{% block title %}Coin-Rush Transaction{% endblock %}
-{% block content %}
+{% extends "Base/base.html" %} {% block title %}Transaction{% endblock %}
+{%block content %}
     <h1>Transaction History</h1>
 
     {% if transactions %}
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Type</th>
-                    <th>Date</th>
-                    <th>Stock</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for transaction in transactions%}
-            <tr>
-                <th>{{transaction.transaction_type}}</th>
-                <th>{{transaction.timestamp}}</th>
-                <th>{{transaction.stock}}</th>
-                <th>{{transaction.quantity}}</th>
-                <th>{{transaction.price}}</th>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Date</th>
+          <th>Stock</th>
+          <th>Quantity</th>
+          <th>Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for transaction in transactions%}
+        <tr>
+          <th>{{transaction.transaction_type}}</th>
+          <th>{{transaction.timestamp}}</th>
+          <th>{{transaction.stock}}</th>
+          <th>{{transaction.quantity}}</th>
+          <th>{{transaction.price}}</th>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
     {% else %}
-        <p>No transaction history available</p>
+    <p>No transaction history available</p>
     {%endif%}
 {% endblock %}
-
-

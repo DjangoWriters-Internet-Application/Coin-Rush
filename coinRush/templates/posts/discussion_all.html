@@ -6,7 +6,7 @@
 
 {% block content %}
 
-  <div class="container">
+  <div class="container-fluid">
     <h1 class="mt-5">Discussion Forum</h1>
     <div class="row mt-4">
         <div class="col-md-8">
@@ -60,15 +60,31 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Create a New Topic</h5>
-                    <form id="newTopicForm">
+                    {% if user.is_authenticated %}
+                    <form id="newTopicForm" method="post">
+<!--                        <div class="form-group">-->
+<!--                            <input type="text" class="form-control" id="topicTitle" placeholder="Topic Title" required>-->
+<!--                        </div>-->
+<!--                        <div class="form-group">-->
+<!--                            <textarea class="form-control" id="topicContent" rows="4" placeholder="Topic Content" required></textarea>-->
+<!--                        </div>-->
+<!--                        <button type="submit" class="btn btn-primary">Create Topic</button>-->
+                             {% csrf_token %}
                         <div class="form-group">
-                            <input type="text" class="form-control" id="topicTitle" placeholder="Topic Title" required>
+                              {{ form.title.label_tag }}
+                              {{ form.title }}
                         </div>
                         <div class="form-group">
-                            <textarea class="form-control" id="topicContent" rows="4" placeholder="Topic Content" required></textarea>
+                            {{ form.content.label_tag }}
+                              {{ form.content }}
                         </div>
+
                         <button type="submit" class="btn btn-primary">Create Topic</button>
                     </form>
+                    </form>
+                    {% else %}
+                        <p>Please login to start a discussion</p>
+                    {% endif %}
                 </div>
             </div>
         </div>

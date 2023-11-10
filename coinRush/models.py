@@ -102,12 +102,19 @@ class UserHolding(models.Model):
 class News(models.Model):
     title = models.CharField(max_length=255)
     sub_title = models.CharField(max_length=255)
-    # image = models.ImageField(upload_to='news_images/')
     description = models.TextField(max_length=1000)
     publish_datetime = models.DateTimeField()
-
     def __str__(self):
         return self.title
+
+
+class NewsComments(models.Model):
+    news = models.ForeignKey(News, on_delete=models.CASCADE)
+    comment = models.CharField(max_length=225)
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
 
 class CourseCategory(models.Model):
     name = models.CharField(max_length=100)
@@ -122,13 +129,27 @@ class Learn(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     category = models.ForeignKey(CourseCategory, on_delete=models.CASCADE, default=1)
-    external_link = models.URLField(null=True)
+    slug = models.SlugField(default="", null=False)
 
     def __str__(self):
         return self.title
 
     class Meta:
         verbose_name_plural = "Courses"
+
+class Feedback(models.Model):
+    topic = models.ForeignKey(Learn, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    subject = models.CharField(max_length=100, blank=True)
+    feedback = models.TextField(max_length=500, blank=True)
+    rating = models.FloatField()
+    ip = models.CharField(max_length=20, blank=True)
+    status = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.subject
 
 class NFT(models.Model):
     CURRENCY_CHOICES = [
@@ -157,3 +178,4 @@ class Bid(models.Model):
     
     def __str__(self):
         return self.bidder
+
