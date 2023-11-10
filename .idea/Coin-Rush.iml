@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module version="4">
+<<<<<<< HEAD
   <component name="FacetManager">
     <facet type="django" name="Django">
       <configuration>
@@ -15,6 +16,19 @@
   <component name="NewModuleRootManager">
     <orderEntry type="jdk" jdkName="Python 3.10 (DistanceEd)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+=======
+  <component name="PyDocumentationSettings">
+    <option name="format" value="PLAIN" />
+    <option name="myDocStringFormat" value="Plain" />
+  </component>
+  <component name="TemplatesService">
+    <option name="TEMPLATE_CONFIGURATION" value="Django" />
+    <option name="TEMPLATE_FOLDERS">
+      <list>
+        <option value="$MODULE_DIR$/coinRush/templates" />
+      </list>
+    </option>
+>>>>>>> 9683ce4c0d2637669ef27804c14c320e3dbd8461
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Django" />

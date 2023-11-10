@@ -4,11 +4,16 @@ from django.core.paginator import Paginator
 from django.contrib.auth import login
 from django.conf import settings
 import stripe
+<<<<<<< HEAD
 from django.urls import reverse
 from django.contrib import messages
 from django.core.exceptions import *
 
 from .forms import RegistrationForm, PostForm, CommentForm, NewsCommentForm, FeedbackRatingForm
+=======
+
+from .forms import RegistrationForm, PostForm, CommentForm
+>>>>>>> 9683ce4c0d2637669ef27804c14c320e3dbd8461
 from .models import (
     Transaction,
     UserHolding,
@@ -23,15 +28,14 @@ from .models import (
 )
 
 # from django.contrib.auth.decorators import login_required
-import stripe
-from django.conf import settings
-stripe.api_key=settings.STRIPE_PRIVATE_KEY
+stripe.api_key = settings.STRIPE_PRIVATE_KEY
 
 # Create your views here.
 
 
 def home(request):
-    return render(request, "index.html")
+    stocks = Stock.objects.all()
+    return render(request, "index.html",{"stocks": stocks})
 
 
 def about(request):
@@ -40,10 +44,6 @@ def about(request):
 
 def services(request):
     return render(request, "services.html")
-
-
-def roadmap(request):
-    return render(request, "roadmap.html")
 
 
 def register(request):
@@ -78,9 +78,9 @@ def register(request):
 #         form = LoginForm()
 #         return render(request, "registration/login.html", {"form": form})
 
+
 def news(request):
-    news_url = reverse('news')
-    context = {"title": "Latest Crypto News", "news": News.objects.all(), "news_url":news_url}
+    context = {"title": "Latest Crypto News", "news": News.objects.all()}
     return render(request, "News/index.html", context)
 
 
@@ -181,12 +181,15 @@ def show_stocks(request):
     return render(request, "Stocks/showStocks.html", {"stocks": stocks})
 
 
-def buy_stock(request):
+def buy_stock(request,stock_symbol):
     error_message = ''
     if request.method == 'POST':
-        stock_symbol = request.POST.get('stock_symbol')
+        # stock_symbol = request.POST.get('stock_symbol')
         print(f"Received stock symbol: {stock_symbol}")
-        quantity = int(request.POST['quantity'])
+        quantity = int(request.POST.get('quantity', 0))
+        if quantity <= 0:
+            raise ValueError("Quantity should be a positive integer.")
+
         stock = Stock.objects.get(symbol=stock_symbol)
         total_price = stock.current_price * quantity  # Calculate total price
 
@@ -216,14 +219,5 @@ def buy_stock(request):
             error_message = e.error.message
             print(f"Stripe CardError: {error_message}")
 
-    stocks = Stock.objects.all()
-    return render(request, 'Stocks/buy_stock.html', {'stocks': stocks, 'error_message': error_message, 'PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY})
-
-
-def newsDetails(request, news_id):
-    if (request.method == 'POST'):
-        comment = NewsCommentForm(request.POST)
-
-    newsDetails = get_object_or_404(News, pk=news_id)
-    form = NewsCommentForm()
-    return render(request, 'NewsDetails/index.html', {'news': newsDetails, 'form': form})
+    stocks = Stock.objects.get(symbol=stock_symbol)
+    return render(request, 'Stocks/buy_stock.html', {'stock': stocks, 'error_message': error_message, 'PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY})
