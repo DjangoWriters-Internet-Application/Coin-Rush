@@ -24,4 +24,6 @@ urlpatterns = [
          views.discussion_single, name="discussion_single"),
     path("show_stocks/", views.show_stocks, name="show_stocks"),
     path('buy-stock/<str:stock_symbol>/', views.buy_stock, name='buy_stock'),
+    path('nft/', views.nftmarketplace, name='NFTMarketPlace'),
+    path('nft/<int:nft_id>/', views.nft_detail, name='nft_detail'),
 ]
