@@ -174,8 +174,7 @@ class NFT(models.Model):
     currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES, default="USD")
     is_bidding_allowed = models.BooleanField(default=False)
 
-    def __str__(self):
-        return self.owner
+
 
 
 class Bid(models.Model):
@@ -184,5 +183,3 @@ class Bid(models.Model):
     bid_amount = models.DecimalField(max_digits=10, decimal_places=2)
     timestamp = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return self.bidder

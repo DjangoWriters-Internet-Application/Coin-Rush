@@ -22,6 +22,8 @@ from .models import (
     Post,
     Comment,
     Stock,
+    NFT,
+    Bid
 )
 
 
@@ -272,3 +274,11 @@ def newsDetails(request, news_id):
     return render(
         request, "NewsDetails/index.html", {"news": newsDetails, "form": form}
     )
+    
+def nftmarketplace(request):
+    nfts = NFT.objects.all()
+    return render(request, 'Nft/NFTmarketplace.html', {'nfts': nfts})
+
+def nft_detail(request, nft_id):
+    nft = get_object_or_404(NFT, pk=nft_id)
+    return render(request, 'nft/NFT.html', {'nft': nft})
