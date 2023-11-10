@@ -1,4 +1,4 @@
-{% extends "Base/base.html" %}
+{% extends "layout.html" %}
 {% load static %}
 {% block extraHead %}
     <link rel="stylesheet" href="{% static 'css/news.css' %}">
@@ -8,18 +8,16 @@
     <div class="container">
         <div class="row g-2">
             {% for n in news %}
-                <div class="col-4">
+                <div class="col-6">
                     <div class="p-3">
-                        <a class="news-card-link" href="{% url 'news_details' news_id=n.id %}">
-                            <div class="news-card">
-                                <h2 class="title">{{ n.title }}{{ n.id }}</h2>
-                                <p class="sub-title">{{ n.sub_title }}</p>
-                                <p class="description">{{ n.description }}</p>
-                            </div>
-                        </a>
+                        <div class="news-card">
+                            <h2 class="title">{{ n.title }}</h2>
+                            <p class="sub-title">{{ n.sub_title }}</p>
+                            <p class="description">{{ n.description }}</p>
+                        </div>
                     </div>
                 </div>
-                {% if forloop.counter|divisibleby:3 and not forloop.last %}
+                {% if forloop.counter|divisibleby:2 and not forloop.last %}
                     </div>
                     <div class="row g-2">
                 {% endif %}

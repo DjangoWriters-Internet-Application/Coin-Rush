@@ -1,1 +1,39 @@
-{% extends 'Base/base.html' %} {% block title %} Home {% endblock %} {% block content %} {% endblock %}
+{% extends "Base/base.html" %}
+{% block title %}Coin-Rush Stocks{% endblock %}
+{% block content %}
+    <h1>Stocks</h1>
+
+    {% if stocks %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Symbol</th>
+                    <th>Company Name</th>
+                    <th>Price</th>
+                    <th>Market Cap</th>
+                    <th>Last Updated</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for stock in stocks%}
+            <tr>
+                <th>{{stock.symbol}}</th>
+                <th>{{stock.company_name}}</th>
+                <th>{{stock.current_price}}</th>
+                <th>{{stock.market_cap}}</th>
+                <th>{{stock.last_updated}}</th>
+                <th>   <a href="{% url 'buy_stock' stock.symbol %}" class="btn btn-primary">
+ <i class="bi bi-cart"></i>
+</a>
+</th>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No stock data available</p>
+    {%endif%}
+{% endblock %}
+
+

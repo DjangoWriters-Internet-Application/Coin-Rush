@@ -83,7 +83,7 @@ class Transaction(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
     transaction_type = models.CharField(max_length=10,choices=TYPE, default='BUY')
-    quantity = models.PositiveIntegerField()
+    quantity = models.PositiveIntegerField(default=0)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     timestamp = models.DateTimeField(auto_now_add=True)
 
@@ -93,7 +93,7 @@ class Transaction(models.Model):
 class UserHolding(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField()
+    quantity = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"{self.user.email} - {self.quantity} {self.stock.symbol}"
@@ -102,19 +102,12 @@ class UserHolding(models.Model):
 class News(models.Model):
     title = models.CharField(max_length=255)
     sub_title = models.CharField(max_length=255)
+    # image = models.ImageField(upload_to='news_images/')
     description = models.TextField(max_length=1000)
     publish_datetime = models.DateTimeField()
+
     def __str__(self):
         return self.title
-
-
-class NewsComments(models.Model):
-    news = models.ForeignKey(News, on_delete=models.CASCADE)
-    comment = models.CharField(max_length=225)
-    created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-
 
 class CourseCategory(models.Model):
     name = models.CharField(max_length=100)
