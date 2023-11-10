@@ -129,21 +129,34 @@ class CourseCategory(models.Model):
         return self.name
 
     class Meta:
-        verbose_name_plural = "Course Categories"
+        verbose_name_plural = "Topics"
 
 
 class Learn(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     category = models.ForeignKey(CourseCategory, on_delete=models.CASCADE, default=1)
-    external_link = models.URLField(null=True)
+    slug = models.SlugField(default="", null=False)
 
     def __str__(self):
         return self.title
 
     class Meta:
-        verbose_name_plural = "Courses"
+        verbose_name_plural = "Subjects"
 
+class Feedback(models.Model):
+    topic = models.ForeignKey(Learn, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    subject = models.CharField(max_length=100, blank=True)
+    feedback = models.TextField(max_length=500, blank=True)
+    rating = models.FloatField()
+    ip = models.CharField(max_length=20, blank=True)
+    status = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.subject
 
 class NFT(models.Model):
     CURRENCY_CHOICES = [

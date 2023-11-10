@@ -1,7 +1,8 @@
 from django import forms
+
 from django.contrib.auth.forms import UserCreationForm
 
-from .models import User, Post, Comment, Transaction, NewsComments
+from .models import User, Post, Comment, Transaction, NewsComments, Feedback
 
 class RegistrationForm(UserCreationForm):
     class Meta:
@@ -86,3 +87,9 @@ class NewsCommentForm(forms.ModelForm):
                 }
             )
         }
+
+class FeedbackRatingForm(forms.ModelForm):
+    class Meta:
+        model = Feedback
+        fields = ['subject', 'feedback', 'rating']
+
