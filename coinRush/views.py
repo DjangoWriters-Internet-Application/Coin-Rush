@@ -5,7 +5,7 @@ from django.contrib.auth import login
 from django.conf import settings
 import stripe
 
-from .forms import RegistrationForm, PostForm, CommentForm
+from .forms import RegistrationForm, PostForm, CommentForm, NewsCommentForm
 from .models import (
     Transaction,
     UserHolding,
@@ -190,3 +190,11 @@ def buy_stock(request,stock_symbol):
 
     stocks = Stock.objects.get(symbol=stock_symbol)
     return render(request, 'Stocks/buy_stock.html', {'stock': stocks, 'error_message': error_message, 'PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY})
+
+def newsDetails(request, news_id):
+    if (request.method == 'POST'):
+        comment = NewsCommentForm(request.POST)
+
+    newsDetails = get_object_or_404(News, pk=news_id)
+    form = NewsCommentForm()
+    return render(request, 'NewsDetails/index.html', {'news': newsDetails, 'form': form})

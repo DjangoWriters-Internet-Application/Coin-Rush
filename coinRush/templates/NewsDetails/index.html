@@ -1,0 +1,26 @@
+{% extends "Base/base.html" %}
+{% load static %}
+{% block extraHead %}
+    <link rel="stylesheet" href="{% static 'css/news.css' %}">
+{% endblock extraHead %}
+
+{% block content %}
+    <div class="container">
+        <div class="row g-2">
+            <div>
+                <h2 class="title">{{ news.title }}</h2>
+                <p class="sub-title">{{ news.sub_title }}</p>
+                <p class="description">{{ news.description }}</p>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <form method="post" action="{% url 'news_details' news_id=news.id %}">
+        {% csrf_token %}
+        {{ form }}
+        <button type="submit" >Comment </button>
+    </form>
+
+{% endblock content %}

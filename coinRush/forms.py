@@ -1,5 +1,5 @@
 from django import forms
-from .models import User, Post, Comment,Transaction
+from .models import User, Post, Comment,Transaction,NewsComments
 from django.contrib.auth.forms import UserCreationForm
 
 
@@ -45,3 +45,12 @@ class BuyStockForm(forms.ModelForm):
 class PaymentForm(forms.Form):
     # Include the fields necessary for Stripe payment
     stripeToken = forms.CharField(widget=forms.HiddenInput())
+
+
+class NewsCommentForm(forms.ModelForm):
+    class Meta:
+        model=NewsComments
+        fields=['comment']
+        widgets={
+            'comment': forms.Textarea(attrs={'id':'news-comment-text','rows':'2','placeholder': 'Add Comment...', 'required': 'true'})
+        }
