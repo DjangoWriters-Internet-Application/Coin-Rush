@@ -3,29 +3,38 @@ from django.http import HttpResponse
 from django.core.paginator import Paginator
 from django.contrib.auth import login
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 import stripe
+from django.urls import reverse
+from django.contrib import messages
+from django.core.exceptions import *
 
-from .forms import RegistrationForm, PostForm, CommentForm,BuyStockForm,SellStockForm
+from .forms import RegistrationForm, PostForm, CommentForm, NewsCommentForm, FeedbackRatingForm, BuyStockForm, SellStockForm
+
 from .models import (
     Transaction,
     UserHolding,
     User,
     Learn,
     CourseCategory,
+    Feedback,
     News,
     Post,
     Comment,
     Stock,
+    NFT,
+    Bid
 )
 
-# from django.contrib.auth.decorators import login_required
+
 stripe.api_key = settings.STRIPE_PRIVATE_KEY
 
 # Create your views here.
 
 
 def home(request):
-    return render(request, "index.html")
+    stocks = Stock.objects.all()
+    return render(request, "index.html", {"stocks": stocks})
 
 
 def about(request):
@@ -36,10 +45,15 @@ def services(request):
     return render(request, "services.html")
 
 
+def logout(request):
+    logout(user)
+    return redirect("/")
+
+
 def register(request):
     context = {"form": "", "errors": ""}
     if request.method == "POST":
-        form = RegistrationForm(request.POST)
+        form = RegistrationForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save()
 
@@ -74,10 +88,14 @@ def news(request):
     return render(request, "News/index.html", context)
 
 
+@login_required(login_url="/login/")
 def transaction_history(request):
     user = request.user  # Assuming users are authenticated
     transactions = Transaction.objects.filter(user=user).order_by("-timestamp")
-    return render(request, "transaction/transaction_history.html", { "transactions": transactions})
+    return render(
+        request, "transaction/transaction_history.html", {
+            "transactions": transactions}
+    )
 
 
 def categories_course(request):
@@ -85,9 +103,54 @@ def categories_course(request):
     return render(request, "Learn/learning.html", {"categories": categories})
 
 
+def subject_info(request, slug):
+    subject = get_object_or_404(Learn, slug=slug)
+    description = subject.description
+    return render(request, "Learn/learning-details.html", {"subject": subject, "description": description})
+
+
+def submit_feedback(request, sub_id):
+    url = request.META.get('HTTP_REFERER')
+    if request.method == "POST":
+        try:
+            feedbacks = Feedback.objects.get(
+                user__id=request.user.id, topic__id=sub_id)
+            form = FeedbackRatingForm(request.POST, instance=feedbacks)
+            form.save()
+            messages.success(
+                request, 'Thank you! Your feedback has been updated.')
+            return redirect(url)
+        except Feedback.DoesNotExist:
+            form = FeedbackRatingForm(request.POST)
+            if form.is_valid():
+                data = Feedback()
+                data.subject = form.cleaned_data['subject']
+                data.rating = form.cleaned_data['rating']
+                data.feedback = form.cleaned_data['feedback']
+                data.ip = request.META.get('REMOTE_ADDR')  # Change this line
+                data.topic_id = sub_id
+                data.user_id = request.user.id
+                data.save()
+                messages.success(
+                    request, 'Thank you! Your feedback has been submitted.')
+                return redirect(url)
+
+
 def discussion(request):
+
+    ord_by = request.GET.get("order_by")
+    order_string = "-views"
+    if ord_by == None or ord_by == 'max-views' or ord_by == "":
+        order_string = "-views"
+    elif ord_by == 'min-views':
+        order_string = 'views'
+    elif ord_by == 'latest':
+        order_string = '-created_at'
+    elif ord_by == 'oldest':
+        order_string = 'created_at'
+
     post_list = Post.objects.all().order_by(
-        "-created_at"
+        order_string
     )  # Replace with your queryset for your posts
     paginator = Paginator(post_list, 2)  # Show 5 posts per page
     page = request.GET.get("page")
@@ -114,6 +177,10 @@ def discussion_single(request, post_id):
     page = request.GET.get("page")
     comments_page = paginator.get_page(page)
 
+    if (request.method == "GET" and page == None and request.GET.get('fl') != None):
+        post.views += 1
+        post.save()
+
     if request.method == "POST":
         form = CommentForm(request.POST)
         if form.is_valid():
@@ -136,7 +203,6 @@ def discussion_single(request, post_id):
 def show_stocks(request):
     stocks = Stock.objects.all()
     return render(request, "Stocks/showStocks.html", {"stocks": stocks})
-
 
 
 def buy_stock(request, stock_symbol):
@@ -183,6 +249,7 @@ def buy_stock(request, stock_symbol):
                   {'stock': stocks, 'error_message': error_message, 'PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY,
                    'form': form})
 
+
 def user_holdings(request):
     holdings = UserHolding.objects.filter(user=request.user)
     sell_form = SellStockForm()
@@ -226,3 +293,23 @@ def user_holdings(request):
     return render(request, 'userholding/user_holdings.html',
                   {'user': request.user, 'holdings': holdings, 'sell_form': sell_form})
 
+
+def newsDetails(request, news_id):
+    if request.method == "POST":
+        comment = NewsCommentForm(request.POST)
+
+    newsDetails = get_object_or_404(News, pk=news_id)
+    form = NewsCommentForm()
+    return render(
+        request, "NewsDetails/index.html", {"news": newsDetails, "form": form}
+    )
+
+
+def nftmarketplace(request):
+    nfts = NFT.objects.all()
+    return render(request, 'Nft/NFTmarketplace.html', {'nfts': nfts})
+
+
+def nft_detail(request, nft_id):
+    nft = get_object_or_404(NFT, pk=nft_id)
+    return render(request, 'nft/NFT.html', {'nft': nft})

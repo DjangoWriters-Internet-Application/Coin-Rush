@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module version="4">
+<<<<<<< HEAD
+  <component name="NewModuleRootManager">
+    <orderEntry type="jdk" jdkName="Python 3.10 (DistanceEd)" jdkType="Python SDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
+=======
+<<<<<<< Updated upstream
   <component name="PyDocumentationSettings">
     <option name="format" value="PLAIN" />
     <option name="myDocStringFormat" value="Plain" />
@@ -11,5 +17,10 @@
         <option value="$MODULE_DIR$/coinRush/templates" />
       </list>
     </option>
+=======
+  <component name="TemplatesService">
+    <option name="TEMPLATE_CONFIGURATION" value="Django" />
+>>>>>>> Stashed changes
+>>>>>>> 61e1b559545ad6957da06ad0880338cc22a303ee
   </component>
 </module>
