@@ -5,7 +5,7 @@ from django.contrib.auth import login
 from django.conf import settings
 import stripe
 
-from .forms import RegistrationForm, PostForm, CommentForm
+from .forms import RegistrationForm, PostForm, CommentForm,BuyStockForm,SellStockForm
 from .models import (
     Transaction,
     UserHolding,
@@ -80,12 +80,6 @@ def transaction_history(request):
     return render(request, "transaction/transaction_history.html", { "transactions": transactions})
 
 
-def user_holdings(request):
-    user = request.user  # Assuming users are authenticated
-    holdings = UserHolding.objects.filter(user=user)
-    return render(request, "userholding/user_holdings.html", {"holdings": holdings, "user": user})
-
-
 def categories_course(request):
     categories = CourseCategory.objects.all()
     return render(request, "Learn/learning.html", {"categories": categories})
@@ -144,43 +138,91 @@ def show_stocks(request):
     return render(request, "Stocks/showStocks.html", {"stocks": stocks})
 
 
-def buy_stock(request,stock_symbol):
+
+def buy_stock(request, stock_symbol):
     error_message = ''
-    if request.method == 'POST':
-        # stock_symbol = request.POST.get('stock_symbol')
-        print(f"Received stock symbol: {stock_symbol}")
-        quantity = int(request.POST.get('quantity', 0))
-        if quantity <= 0:
-            raise ValueError("Quantity should be a positive integer.")
-
-        stock = Stock.objects.get(symbol=stock_symbol)
-        total_price = stock.current_price * quantity  # Calculate total price
-
-        # Handle Stripe payment
-        token = request.POST['stripeToken']
-        try:
-            charge = stripe.Charge.create(
-                amount=int(total_price * 100),  # Amount in cents
-                currency='cad',
-                source=token,
-                description=f"Stock Purchase: {stock_symbol}",
-            )
-
-            # Record the transaction
-            transaction = Transaction(
-                user=request.user, stock=stock, transaction_type='Buy', quantity=quantity, price=total_price)
-            transaction.save()
-
-            # Update user holdings
-            holding, created = UserHolding.objects.get_or_create(
-                user=request.user, stock=stock)
-            holding.quantity += quantity
-            holding.save()
-            print(holding)
-            return redirect('transaction-history')
-        except stripe.error.CardError as e:
-            error_message = e.error.message
-            print(f"Stripe CardError: {error_message}")
-
     stocks = Stock.objects.get(symbol=stock_symbol)
-    return render(request, 'Stocks/buy_stock.html', {'stock': stocks, 'error_message': error_message, 'PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY})
+
+    if request.method == 'POST':
+        form = BuyStockForm(request.POST)
+
+        if form.is_valid():
+            quantity = form.cleaned_data['quantity']
+            stock = stocks
+            total_price = stock.current_price * quantity  # Calculate total price
+
+            # Handle Stripe payment
+            token = form.cleaned_data['stripeToken']
+            try:
+                charge = stripe.Charge.create(
+                    amount=int(total_price * 100),  # Amount in cents
+                    currency='cad',
+                    source=token,
+                    description=f"Stock Purchase: {stock_symbol}",
+                )
+
+                # Record the transaction
+                transaction = Transaction(
+                    user=request.user, stock=stock, transaction_type='Buy', quantity=quantity, price=total_price)
+                transaction.save()
+
+                # Update user holdings
+                holding, created = UserHolding.objects.get_or_create(
+                    user=request.user, stock=stock)
+                holding.quantity += quantity
+                holding.save()
+                print(holding)
+                return redirect('transaction-history')
+            except stripe.error.CardError as e:
+                error_message = e.error.message
+                print(f"Stripe CardError: {error_message}")
+    else:
+        form = BuyStockForm()
+
+    return render(request, 'Stocks/buy_stock.html',
+                  {'stock': stocks, 'error_message': error_message, 'PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY,
+                   'form': form})
+
+def user_holdings(request):
+    holdings = UserHolding.objects.filter(user=request.user)
+    sell_form = SellStockForm()
+
+    if request.method == 'POST':
+        sell_form = SellStockForm(request.POST)
+
+        if sell_form.is_valid():
+            stock_symbol = sell_form.cleaned_data['stock_symbol']
+            quantity_to_sell = sell_form.cleaned_data['quantity']
+            # Retrieve the stock based on the stock_symbol
+            stock = Stock.objects.get(symbol=stock_symbol)
+            holding = holdings.filter(stock=stock).first()
+            # Check if the user has enough quantity to sell
+            if holding and quantity_to_sell > 0 and quantity_to_sell <= holding.quantity:
+                # Calculate total sell price
+                sell_price = stock.current_price * quantity_to_sell
+
+                # Create a sell transaction
+                sell_transaction = Transaction(
+                    user=request.user,
+                    stock=stock,
+                    transaction_type='Sell',
+                    quantity=quantity_to_sell,
+                    price=sell_price
+                )
+                sell_transaction.save()
+
+                # Update user holdings
+                holding.quantity -= quantity_to_sell
+                holding.save()
+                if holding.quantity == 0:
+                    holding.delete()
+
+                return redirect('user-holdings')
+            else:
+                # Add a custom error message to the form
+                error_message = 'Invalid quantity to sell. Please select a valid quantity.'
+                sell_form.add_error('quantity', error_message)
+
+    return render(request, 'userholding/user_holdings.html',
+                  {'user': request.user, 'holdings': holdings, 'sell_form': sell_form})
+

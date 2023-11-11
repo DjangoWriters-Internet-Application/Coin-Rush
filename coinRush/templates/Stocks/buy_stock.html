@@ -1,9 +1,13 @@
 {% extends 'Base/base.html' %}
-{% block extraHead %}<script src="https://js.stripe.com/v3/"></script>{% endblock %}
+{% block extraHead %}
+    <script src="https://js.stripe.com/v3/"></script>
+{#    <link href="{% static 'buy_stock.css' %}" rel="stylesheet"/>#}
+{% endblock %}
 {% block content %}
     <h1>Buy Stock</h1>
     <form method="post">
         {% csrf_token %}
+        {{ form.quantity.errors }}
         <table>
             <tr>
                 <th>Stock Symbol</th>
@@ -16,8 +20,9 @@
                 <td>{{ stock.symbol }}</td>
                 <td>{{ stock.company_name }}</td>
                 <td>${{ stock.current_price }}</td>
-                <td><input type="text" name="stock_symbol" value="{{ stock.symbol }}" hidden>
-                    <input type="number" name="quantity" min="1" required>
+                <td>
+                    {{ form.quantity }}
+                    <input type="hidden" name="stock_symbol" value="{{ stock.symbol }}">
                 </td>
             </tr>
         </table>
@@ -27,11 +32,10 @@
         </div>
         <!-- Used to display form errors. -->
         <div id="card-errors" role="alert"></div>
-        <input type="hidden" name="stripeToken">
+        {{ form.stripeToken }}
         <button type="submit">Buy</button>
     </form>
     <script>
-
         var stripe = Stripe('{{PUBLIC_KEY }}');
         var elements = stripe.elements();
         // Rest of the Stripe integration script as shown in the previous example
