@@ -4,7 +4,32 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2c1604f2-4a48-491f-b1c4-4c0af06d1c4c" name="Changes" comment="" />
+    <list default="true" id="2c1604f2-4a48-491f-b1c4-4c0af06d1c4c" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/static/images/topic_images/a-brief-introduction-to-technical-analysis.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/topic_images/crypto-coins-and-tokens.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/topic_images/how-does-defi-work.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/topic_images/how-to-buy-an-nft.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/topic_images/how-to-keep-your-crypto-safe.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/topic_images/proof-of-work-vs-proof-of-stake.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/topic_images/what-are-crypto-future-contracts.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-a-blockchain-consensus-mechanism.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-a-liquidity-pool-and-how-to-use-one.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-an-nft-rarity-ranking.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-an-nft.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-bitcoin-white-paper.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-bitcoin.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-blockchain-technology.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-cryptocurrency.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-defi.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-dollar-cost-averaging.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-lightning-network.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/static/css/learn.css" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/static/css/learn.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/Learn/learning.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/Learn/learning.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -41,9 +66,9 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "dev",
+    "git-widget-placeholder": "abhishek",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "E:/UoWSemester3/IADS/Coin-Rush",
+    "last_opened_file_path": "E:/UoWSemester3/IADS/Coin-Rush/static/images/topic_images",
     "list.type.of.created.stylesheet": "CSS",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -56,12 +81,13 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\UoWSemester3\IADS\Coin-Rush\static\images\topic_images" />
       <recent name="E:\UoWSemester3\IADS\Coin-Rush" />
       <recent name="E:\UoWSemester3\IADS\Coin-Rush\coinRush\migrations" />
       <recent name="$PROJECT_DIR$/coinRush/templates" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.managers">
+  <component name="RunManager" selected="Django Server.Coin-Rush">
     <configuration name="managers" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Coin-Rush" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -112,9 +138,8 @@
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
-        <env name="DJANGO_SETTINGS_MODULE" value="CryptoCurrencyWeb.settings" />
       </envs>
-      <option name="SDK_HOME" value="$PROJECT_DIR$/venv/bin/python" />
+      <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -149,7 +174,10 @@
       <workItem from="1699459909767" duration="9004000" />
       <workItem from="1699643370598" duration="468000" />
       <workItem from="1699643876391" duration="765000" />
-      <workItem from="1699655977408" duration="1415000" />
+      <workItem from="1699655977408" duration="2152000" />
+      <workItem from="1699900792886" duration="340000" />
+      <workItem from="1699921104474" duration="3749000" />
+      <workItem from="1699925120584" duration="14370000" />
     </task>
     <servers />
   </component>
