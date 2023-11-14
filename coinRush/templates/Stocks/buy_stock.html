@@ -22,11 +22,9 @@
 {% endblock %}
 {% block content %}
 
-    <div class="row px-lg-5">
-        <div class="col-md-6">
-            <form method="post">
-
-
+    <form method="post">
+        <div class="row px-lg-5">
+            <div class="col-md-6">
                 {% csrf_token %}
                 {{ form.quantity.errors }}
                 <div class="container">
@@ -49,26 +47,34 @@
                         <input type="text" class="form-control" id="total_price" readonly>
                     </div>
                 </div>
-            </form>
-        </div>
-
-        <div class="col-md-6">
-            <label class="mb-2" for="card-element">Card Information:</label>
-            <div id="card-element">
-                <!-- A Stripe Element will be inserted here. -->
             </div>
-            <!-- Used to display form errors. -->
-            <div id="card-errors" role="alert"></div>
-            {{ form.stripeToken }}
-            <button class="btn btn-primary mt-3" type="submit">Buy</button>
+            <div class="col-md-6">
+                <label class="mb-2" for="card-element">Card Information:</label>
+                <div id="card-element">
+                    <!-- A Stripe Element will be inserted here. -->
+                </div>
+                <!-- Used to display form errors. -->
+                <div id="card-errors" role="alert"></div>
+                {{ form.stripeToken }}
+                <button class="btn btn-primary mt-3" type="submit">Buy</button>
+            </div>
         </div>
-    </div>
+    </form>
+
+
     <script>
         var stripe = Stripe('{{PUBLIC_KEY }}');
         var elements = stripe.elements();
 
-        var card = elements.create('card');
-
+        var card = elements.create('card', {
+            style: {
+                base: {
+                    fontSize: '16px',
+                    color: '#32325d',
+                    fontFamily: 'Arial, sans-serif',
+                },
+            }
+        });
         // Add an instance of the card Element into the `card-element` div.
         card.mount('#card-element');
         // Handle real-time validation errors from the card Element.
@@ -84,7 +90,7 @@
         var form = document.querySelector('form');
         form.addEventListener('submit', function (event) {
             event.preventDefault();
-            stripe.createPaymentMethod(card).then(function (result) {
+            stripe.createToken(card).then(function (result) {
                 if (result.error) {
                     // Inform the user if there was an error.
                     var errorElement = document.getElementById('card-errors');

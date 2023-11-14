@@ -12,7 +12,6 @@ from django.contrib import messages
 from django.core.exceptions import *
 import requests
 
-
 from .forms import (
     RegistrationForm,
     PostForm,
@@ -44,8 +43,8 @@ from .models import (
     Bid,
 )
 
-
 stripe.api_key = settings.STRIPE_PRIVATE_KEY
+
 
 # Create your views here.
 
@@ -224,16 +223,19 @@ def show_stocks(request):
     stocks = Stock.objects.all()
     return render(request, "Stocks/showStocks.html", {"stocks": stocks})
 
-
+@login_required(login_url="/login/")
 def buy_stock(request, stock_symbol):
     error_message = ''
     stocks = Stock.objects.get(symbol=stock_symbol)
-
+    print("hey")
     if request.method == 'POST':
+        print("jhgfv")
         form = BuyStockForm(request.POST)
+        print("sdf", form.is_valid())
 
         if form.is_valid():
             quantity = form.cleaned_data['quantity']
+            print("dlkfjgh ", quantity)
             stock = stocks
             total_price = stock.current_price * quantity  # Calculate total price
 
@@ -257,7 +259,8 @@ def buy_stock(request, stock_symbol):
                     user=request.user, stock=stock)
                 holding.quantity += quantity
                 holding.save()
-                print(holding)
+                print("mmmm", holding)
+
                 return redirect('transaction-history')
             except stripe.error.CardError as e:
                 error_message = e.error.message
@@ -269,7 +272,7 @@ def buy_stock(request, stock_symbol):
                   {'stock': stocks, 'error_message': error_message, 'PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY,
                    'form': form})
 
-
+@login_required(login_url="/login/")
 def user_holdings(request):
     holdings = UserHolding.objects.filter(user=request.user)
     sell_form = SellStockForm()
@@ -352,7 +355,8 @@ def cryptocurrency_data(request):
         response = requests.get(url, params=parameters, headers=headers)
         data = response.json()
         return render(request, 'test_template.html', {'data': data})
-    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout, requests.exceptions.TooManyRedirects) as e:
+    except (
+    requests.exceptions.ConnectionError, requests.exceptions.Timeout, requests.exceptions.TooManyRedirects) as e:
         return render(request, 'test_template.html', {'error_message': str(e)})
 
 
@@ -375,5 +379,6 @@ def convert_data(request):
         response = requests.get(url, params=parameters, headers=headers)
         data = response.json()
         return render(request, 'test_template.html', {'data': data})
-    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout, requests.exceptions.TooManyRedirects) as e:
+    except (
+    requests.exceptions.ConnectionError, requests.exceptions.Timeout, requests.exceptions.TooManyRedirects) as e:
         return render(request, 'test_template.html', {'error_message': str(e)})
