@@ -3,7 +3,7 @@ from django.contrib.auth.forms import AuthenticationForm
 
 # from django.contrib.auth.forms import UserCreationForm
 
-from .models import User, Post, Comment, Transaction, NewsComments, Feedback
+from .models import User, Post, Comment, Transaction, NewsComments, Feedback, Stock
 
 
 class UserCreationForm(forms.ModelForm):
@@ -151,3 +151,9 @@ class FeedbackRatingForm(forms.ModelForm):
     class Meta:
         model = Feedback
         fields = ["subject", "feedback", "rating"]
+
+
+class StockFilterForm(forms.ModelForm):
+    class Meta:
+        model = Stock
+        fields=["current_price"]

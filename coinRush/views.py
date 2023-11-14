@@ -10,6 +10,7 @@ import stripe
 from django.urls import reverse
 from django.contrib import messages
 from django.core.exceptions import *
+from .filters import StockFilters
 import requests
 
 from .forms import (
@@ -18,7 +19,8 @@ from .forms import (
     CommentForm,
     NewsCommentForm,
     FeedbackRatingForm,
-    BuyStockForm, SellStockForm
+    BuyStockForm, SellStockForm,
+    StockFilterForm
 )
 
 from .forms import (
@@ -50,8 +52,16 @@ stripe.api_key = settings.STRIPE_PRIVATE_KEY
 
 
 def home(request):
+    #stock_filter = StockFilters(request.GET,queryset=Stock.objects.all())
+
+    price = request.GET.get('current_price')
     stocks = Stock.objects.all()
-    return render(request, "index.html", {"stocks": stocks})
+
+    if price:
+        stocks= Stock.objects.filter(current_price__lte=price)
+    context = {"stocks": stocks,
+               "form":StockFilterForm}
+    return render(request, "index.html",context )
 
 
 def about(request):
