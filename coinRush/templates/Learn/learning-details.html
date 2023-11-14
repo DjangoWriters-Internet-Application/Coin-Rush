@@ -4,9 +4,8 @@
 <!--    <link rel="stylesheet" href="{% static 'css/news.css' %}">-->
     <link rel="stylesheet" href="{% static 'css/learn.css' %} ">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-VFMp+qn9ntcWlOqmPIRZfGgUdZt9zOZ6bg7WlEVIHKYlX6q6sLsu5v7bKsl1z7ezJ5OWuo1+9V+VWg0+hdmDmw==" crossorigin="anonymous" />
-
-
 {% endblock extraHead %}
+{% block title %}{{subject.title}}{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -39,9 +38,9 @@
             <textarea name="feedback" rows="4" class="form-control"></textarea>
             <br>
             {% if user.is_authenticated %}
-            <input type="submit" value="Submit Feeback" class="btn btn-primary">
+            <input type="submit" value="Submit Feedback" class="btn btn-primary">
             {% else %}
-            <p>You must be logged in to provide a feedback.<span><a href="{% url 'redirect_to_login' %}">Login now</a></span></p>
+            <p>You must be logged in to provide a feedback. <span><a style="text-decoration: none" href="{% url 'redirect_to_login' %}">Login now</a></span></p>
             {% endif %}
         </div>
         {% include 'Learn/alerts.html' %}

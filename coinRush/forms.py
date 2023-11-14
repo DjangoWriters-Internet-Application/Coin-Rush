@@ -3,7 +3,7 @@ from django.contrib.auth.forms import AuthenticationForm
 
 # from django.contrib.auth.forms import UserCreationForm
 
-from .models import User, Post, Comment, Transaction, NewsComments
+from .models import User, Post, Comment, Transaction, NewsComments, Feedback
 
 
 class UserCreationForm(forms.ModelForm):
