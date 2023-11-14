@@ -1,8 +1,42 @@
 from django import forms
+from django.contrib.auth.forms import AuthenticationForm
 
-from django.contrib.auth.forms import UserCreationForm
+# from django.contrib.auth.forms import UserCreationForm
 
 from .models import User, Post, Comment, Transaction, NewsComments, Feedback
+
+
+class UserCreationForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = [
+            "email",
+            "password",
+        ]
+
+
+class CustomAuthenticationForm(AuthenticationForm):
+    class Meta:
+        model = User
+
+    username = forms.CharField(
+        label="USERNAME",
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+        label_suffix="",
+    )
+    password = forms.CharField(
+        label="PASSWORD",
+        widget=forms.PasswordInput(attrs={"class": "form-control"}),
+        label_suffix="",
+    )
+
+    error_messages = {
+        "invalid_login": (
+            "Please enter a correct username and password. Note that both "
+            "fields may be case-sensitive."
+        ),
+        "inactive": ("This account is inactive."),
+    }
 
 
 class RegistrationForm(UserCreationForm):
@@ -10,9 +44,35 @@ class RegistrationForm(UserCreationForm):
         model = User
         fields = ["name", "email", "profile_pic", "is_superuser"]
 
+    name = forms.CharField(
+        label="NAME",
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+        label_suffix="",
+    )
+
+    password = forms.CharField(
+        label="PASSWORD",
+        widget=forms.PasswordInput(attrs={"class": "form-control"}),
+        label_suffix="",
+    )
+
+    email = forms.EmailField(
+        label="EMAIL",
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+        label_suffix="",
+    )
+
+    is_superuser = forms.BooleanField(
+        label="IS_SUPERUSER",
+        widget=forms.CheckboxInput(attrs={"class": "form-check-input"}),
+        label_suffix="",
+    )
+
     def __init__(self, *args, **kwargs):
         super(UserCreationForm, self).__init__(*args, **kwargs)
         self.fields["profile_pic"].required = False
+        self.fields["is_superuser"].required = False
+        self.fields["is_superuser"].initial = False
 
 
 class PostForm(forms.ModelForm):
@@ -90,4 +150,4 @@ class NewsCommentForm(forms.ModelForm):
 class FeedbackRatingForm(forms.ModelForm):
     class Meta:
         model = Feedback
-        fields = ['subject', 'feedback', 'rating']
+        fields = ["subject", "feedback", "rating"]

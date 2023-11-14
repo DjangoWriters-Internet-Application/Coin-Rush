@@ -72,7 +72,7 @@
       <recent name="E:\Internetapplication\Coin-Rush\media" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.managers">
+  <component name="RunManager" selected="Django Server.Coin-Rush">
     <configuration name="managers" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Coin-Rush" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -123,9 +123,8 @@
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
-        <env name="DJANGO_SETTINGS_MODULE" value="CryptoCurrencyWeb.settings" />
       </envs>
-      <option name="SDK_HOME" value="$PROJECT_DIR$/venv/bin/python" />
+      <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -160,7 +159,9 @@
       <workItem from="1699459909767" duration="9004000" />
       <workItem from="1699643370598" duration="468000" />
       <workItem from="1699643876391" duration="765000" />
-      <workItem from="1699655977408" duration="1415000" />
+      <workItem from="1699655977408" duration="2152000" />
+      <workItem from="1699900792886" duration="340000" />
+      <workItem from="1699921104474" duration="3749000" />
     </task>
     <servers />
   </component>
