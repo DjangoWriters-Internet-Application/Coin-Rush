@@ -10,6 +10,8 @@ import stripe
 from django.urls import reverse
 from django.contrib import messages
 from django.core.exceptions import *
+import requests
+
 
 from .forms import (
     RegistrationForm,
@@ -302,3 +304,48 @@ def nftmarketplace(request):
 def nft_detail(request, nft_id):
     nft = get_object_or_404(NFT, pk=nft_id)
     return render(request, "nft/NFT.html", {"nft": nft})
+
+
+def cryptocurrency_data(request):
+    # url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/map'
+    # url = 'https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/map'
+    # url = 'https://sandbox-api.coinmarketcap.com/v1/fiat/map'
+    parameters = {
+        'limit':10
+    }
+    headers = {
+        'Accepts': 'application/json',
+        # 'X-CMC_PRO_API_KEY': '6f66fcc3-73b3-48ea-a584-32af97de8e12',
+        'X-CMC_PRO_API_KEY': 'b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c',
+    }
+
+    try:
+        response = requests.get(url, params=parameters, headers=headers)
+        data = response.json()
+        return render(request, 'test_template.html', {'data': data})
+    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout, requests.exceptions.TooManyRedirects) as e:
+        return render(request, 'test_template.html', {'error_message': str(e)})
+
+
+
+def convert_data(request):
+    # url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/map'
+    # url = 'https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/map'
+    # url = 'https://pro-api.coinmarketcap.com/v2/tools/price-conversion'
+    parameters = {
+        'id':1,
+        'convert_id':2784,
+        'amount':1
+    }
+    headers = {
+        'Accepts': 'application/json',
+        # 'X-CMC_PRO_API_KEY': '6f66fcc3-73b3-48ea-a584-32af97de8e12',
+        'X-CMC_PRO_API_KEY': 'b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c',
+    }
+
+    try:
+        response = requests.get(url, params=parameters, headers=headers)
+        data = response.json()
+        return render(request, 'test_template.html', {'data': data})
+    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout, requests.exceptions.TooManyRedirects) as e:
+        return render(request, 'test_template.html', {'error_message': str(e)})
