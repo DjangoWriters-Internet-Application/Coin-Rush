@@ -19,6 +19,7 @@ from .forms import (
     CommentForm,
     NewsCommentForm,
     FeedbackRatingForm,
+    BuyStockForm, SellStockForm
 )
 
 from .forms import (
@@ -108,15 +109,8 @@ def transaction_history(request):
     user = request.user  # Assuming users are authenticated
     transactions = Transaction.objects.filter(user=user).order_by("-timestamp")
     return render(
-        request, "transaction/transaction_history.html", {"transactions": transactions}
-    )
-
-
-def user_holdings(request):
-    user = request.user  # Assuming users are authenticated
-    holdings = UserHolding.objects.filter(user=user)
-    return render(
-        request, "userholding/user_holdings.html", {"holdings": holdings, "user": user}
+        request, "transaction/transaction_history.html", {
+            "transactions": transactions}
     )
 
 
@@ -139,10 +133,12 @@ def submit_feedback(request, sub_id):
     url = request.META.get("HTTP_REFERER")
     if request.method == "POST":
         try:
-            feedbacks = Feedback.objects.get(user__id=request.user.id, topic__id=sub_id)
+            feedbacks = Feedback.objects.get(
+                user__id=request.user.id, topic__id=sub_id)
             form = FeedbackRatingForm(request.POST, instance=feedbacks)
             form.save()
-            messages.success(request, "Thank you! Your feedback has been updated.")
+            messages.success(
+                request, "Thank you! Your feedback has been updated.")
             return redirect(url)
         except Feedback.DoesNotExist:
             form = FeedbackRatingForm(request.POST)
@@ -230,59 +226,92 @@ def show_stocks(request):
 
 
 def buy_stock(request, stock_symbol):
-    error_message = ""
-    if request.method == "POST":
-        # stock_symbol = request.POST.get('stock_symbol')
-        print(f"Received stock symbol: {stock_symbol}")
-        quantity = int(request.POST.get("quantity", 0))
-        if quantity <= 0:
-            raise ValueError("Quantity should be a positive integer.")
-
-        stock = Stock.objects.get(symbol=stock_symbol)
-        total_price = stock.current_price * quantity  # Calculate total price
-
-        # Handle Stripe payment
-        token = request.POST["stripeToken"]
-        try:
-            charge = stripe.Charge.create(
-                amount=int(total_price * 100),  # Amount in cents
-                currency="cad",
-                source=token,
-                description=f"Stock Purchase: {stock_symbol}",
-            )
-
-            # Record the transaction
-            transaction = Transaction(
-                user=request.user,
-                stock=stock,
-                transaction_type="Buy",
-                quantity=quantity,
-                price=total_price,
-            )
-            transaction.save()
-
-            # Update user holdings
-            holding, created = UserHolding.objects.get_or_create(
-                user=request.user, stock=stock
-            )
-            holding.quantity += quantity
-            holding.save()
-            print(holding)
-            return redirect("transaction-history")
-        except stripe.error.CardError as e:
-            error_message = e.error.message
-            print(f"Stripe CardError: {error_message}")
-
+    error_message = ''
     stocks = Stock.objects.get(symbol=stock_symbol)
-    return render(
-        request,
-        "Stocks/buy_stock.html",
-        {
-            "stock": stocks,
-            "error_message": error_message,
-            "PUBLIC_KEY": settings.STRIPE_PUBLIC_KEY,
-        },
-    )
+
+    if request.method == 'POST':
+        form = BuyStockForm(request.POST)
+
+        if form.is_valid():
+            quantity = form.cleaned_data['quantity']
+            stock = stocks
+            total_price = stock.current_price * quantity  # Calculate total price
+
+            # Handle Stripe payment
+            token = form.cleaned_data['stripeToken']
+            try:
+                charge = stripe.Charge.create(
+                    amount=int(total_price * 100),  # Amount in cents
+                    currency='cad',
+                    source=token,
+                    description=f"Stock Purchase: {stock_symbol}",
+                )
+
+                # Record the transaction
+                transaction = Transaction(
+                    user=request.user, stock=stock, transaction_type='Buy', quantity=quantity, price=total_price)
+                transaction.save()
+
+                # Update user holdings
+                holding, created = UserHolding.objects.get_or_create(
+                    user=request.user, stock=stock)
+                holding.quantity += quantity
+                holding.save()
+                print(holding)
+                return redirect('transaction-history')
+            except stripe.error.CardError as e:
+                error_message = e.error.message
+                print(f"Stripe CardError: {error_message}")
+    else:
+        form = BuyStockForm()
+
+    return render(request, 'Stocks/buy_stock.html',
+                  {'stock': stocks, 'error_message': error_message, 'PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY,
+                   'form': form})
+
+
+def user_holdings(request):
+    holdings = UserHolding.objects.filter(user=request.user)
+    sell_form = SellStockForm()
+
+    if request.method == 'POST':
+        sell_form = SellStockForm(request.POST)
+
+        if sell_form.is_valid():
+            stock_symbol = sell_form.cleaned_data['stock_symbol']
+            quantity_to_sell = sell_form.cleaned_data['quantity']
+            # Retrieve the stock based on the stock_symbol
+            stock = Stock.objects.get(symbol=stock_symbol)
+            holding = holdings.filter(stock=stock).first()
+            # Check if the user has enough quantity to sell
+            if holding and quantity_to_sell > 0 and quantity_to_sell <= holding.quantity:
+                # Calculate total sell price
+                sell_price = stock.current_price * quantity_to_sell
+
+                # Create a sell transaction
+                sell_transaction = Transaction(
+                    user=request.user,
+                    stock=stock,
+                    transaction_type='Sell',
+                    quantity=quantity_to_sell,
+                    price=sell_price
+                )
+                sell_transaction.save()
+
+                # Update user holdings
+                holding.quantity -= quantity_to_sell
+                holding.save()
+                if holding.quantity == 0:
+                    holding.delete()
+
+                return redirect('user-holdings')
+            else:
+                # Add a custom error message to the form
+                error_message = 'Invalid quantity to sell. Please select a valid quantity.'
+                sell_form.add_error('quantity', error_message)
+
+    return render(request, 'userholding/user_holdings.html',
+                  {'user': request.user, 'holdings': holdings, 'sell_form': sell_form})
 
 
 def newsDetails(request, news_id):
@@ -311,7 +340,7 @@ def cryptocurrency_data(request):
     # url = 'https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/map'
     # url = 'https://sandbox-api.coinmarketcap.com/v1/fiat/map'
     parameters = {
-        'limit':10
+        'limit': 10
     }
     headers = {
         'Accepts': 'application/json',
@@ -327,15 +356,14 @@ def cryptocurrency_data(request):
         return render(request, 'test_template.html', {'error_message': str(e)})
 
 
-
 def convert_data(request):
     # url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/map'
     # url = 'https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/map'
     # url = 'https://pro-api.coinmarketcap.com/v2/tools/price-conversion'
     parameters = {
-        'id':1,
-        'convert_id':2784,
-        'amount':1
+        'id': 1,
+        'convert_id': 2784,
+        'amount': 1
     }
     headers = {
         'Accepts': 'application/json',

@@ -2,7 +2,7 @@
 
 {% block title %}User Holding{% endblock %}
 {% block content %}
-<h1>{{user.name|capfirst}}'s Holding</h1>
+<h1>{{ user.name|capfirst }}'s Holding</h1>
 
 {% if holdings %}
 <table class="table table-striped">
@@ -12,20 +12,62 @@
             <th>Company</th>
             <th>Current Price</th>
             <th>Quantity</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
-        {% for holding in holdings%}
+        {% for holding in holdings %}
         <tr>
-            <th>{{holding.stock}}</th>
-            <th>{{holding.stock.company_name}}</th>
-            <th>{{holding.stock.current_price}}</th>
-            <th>{{holding.quantity}}</th>
+            <td>{{ holding.stock }}</td>
+            <td>{{ holding.stock.company_name }}</td>
+            <td>{{ holding.stock.current_price }}</td>
+            <td>{{ holding.quantity }}</td>
+            <td>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sellModel{{ holding.stock }}">
+  <i class="bi bi-cash"></i> Sell
+</button>
+
+            </td>
         </tr>
+
+        <!-- Sell Modal -->
+        <div class="modal fade" id="sellModel{{ holding.stock }}" tabindex="-1"  aria-labelledby="sellModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document" >
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="sellModalLabel">Sell {{ holding.stock }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" action="{% url 'user-holdings' %}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                           {{ sell_form.quantity.label_tag }}
+            {{ sell_form.quantity }}
+            {% if sell_form.errors.quantity %}
+                            <span class="text-danger">{{ sell_form.errors.quantity }}</span>
+                            <script>
+                                // Keep the modal open if there are errors
+                                $(document).ready(function () {
+                                    $('#sellModel{{ holding.stock }}').modal('show');
+                                });
+                            </script>
+                        {% endif %}
+                    </div>
+                             <input type="hidden" name="stock_symbol" value="{{ holding.stock }}">
+                            <button type="submit" class="btn btn-primary">Sell</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
         {% endfor %}
     </tbody>
 </table>
 {% else %}
 <p>No current holdings</p>
-{%endif%}
+{% endif %}
+
 {% endblock %}

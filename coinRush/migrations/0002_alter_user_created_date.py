@@ -14,6 +14,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='user',
             name='created_date',
-            field=models.DateTimeField(default=datetime.datetime(2023, 11, 14, 1, 26, 39, 21943, tzinfo=datetime.timezone.utc)),
+            field=models.DateTimeField(default=datetime.datetime(
+                2023, 11, 14, 1, 26, 39, 21943, tzinfo=datetime.timezone.utc)),
         ),
     ]
