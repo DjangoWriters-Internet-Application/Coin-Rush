@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
-from django.core.paginator import Paginator,PageNotAnInteger,EmptyPage
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.auth import login
 from django.conf import settings
 from django.contrib.auth.views import LoginView
@@ -19,7 +19,8 @@ from .forms import (
     CommentForm,
     NewsCommentForm,
     FeedbackRatingForm,
-    BuyStockForm, SellStockForm
+    BuyStockForm,
+    SellStockForm,
 )
 
 from .forms import (
@@ -66,11 +67,6 @@ def services(request):
 class CustomLoginView(LoginView):
     form_class = CustomAuthenticationForm
     template_name = "registration/login.html"
-
-
-def logout(request):
-    logout(user)
-    return redirect("/")
 
 
 def register(request):
@@ -232,9 +228,10 @@ def show_stocks(request):
     stocks = Stock.objects.all()
     return render(request, "Stocks/showStocks.html", {"stocks": stocks})
 
+
 @login_required(login_url="/login/")
 def buy_stock(request, stock_symbol):
-    error_message = ''
+    error_message = ""
     stocks = Stock.objects.get(symbol=stock_symbol)
     if request.method == 'POST':
         form = BuyStockForm(request.POST)
@@ -245,36 +242,50 @@ def buy_stock(request, stock_symbol):
             total_price = stock.current_price * quantity  # Calculate total price
 
             # Handle Stripe payment
-            token = form.cleaned_data['stripeToken']
+            token = form.cleaned_data["stripeToken"]
             try:
                 charge = stripe.Charge.create(
                     amount=int(total_price * 100),  # Amount in cents
-                    currency='cad',
+                    currency="cad",
                     source=token,
                     description=f"Stock Purchase: {stock_symbol}",
                 )
 
                 # Record the transaction
                 transaction = Transaction(
-                    user=request.user, stock=stock, transaction_type='Buy', quantity=quantity, price=total_price)
+                    user=request.user,
+                    stock=stock,
+                    transaction_type="Buy",
+                    quantity=quantity,
+                    price=total_price,
+                )
                 transaction.save()
 
                 # Update user holdings
                 holding, created = UserHolding.objects.get_or_create(
-                    user=request.user, stock=stock)
+                    user=request.user, stock=stock
+                )
                 holding.quantity += quantity
                 holding.save()
 
-                return redirect('transaction-history')
+                return redirect("transaction-history")
             except stripe.error.CardError as e:
                 error_message = e.error.message
                 print(f"Stripe CardError: {error_message}")
     else:
         form = BuyStockForm()
 
-    return render(request, 'Stocks/buy_stock.html',
-                  {'stock': stocks, 'error_message': error_message, 'PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY,
-                   'form': form})
+    return render(
+        request,
+        "Stocks/buy_stock.html",
+        {
+            "stock": stocks,
+            "error_message": error_message,
+            "PUBLIC_KEY": settings.STRIPE_PUBLIC_KEY,
+            "form": form,
+        },
+    )
+
 
 @login_required(login_url="/login/")
 def user_holdings(request):
@@ -304,9 +315,9 @@ def user_holdings(request):
                 sell_transaction = Transaction(
                     user=request.user,
                     stock=stock,
-                    transaction_type='Sell',
+                    transaction_type="Sell",
                     quantity=quantity_to_sell,
-                    price=sell_price
+                    price=sell_price,
                 )
                 sell_transaction.save()
                 holding.quantity -= quantity_to_sell
@@ -316,7 +327,7 @@ def user_holdings(request):
                 if holding.quantity == 0:
                     holding.delete()
 
-                return redirect('user-holdings')
+                return redirect("user-holdings")
             else:
                 error_message = 'Invalid quantity to sell. Please select a valid quantity.'
                 sell_form.add_error('quantity', error_message)
@@ -350,43 +361,43 @@ def cryptocurrency_data(request):
     # url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/map'
     # url = 'https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/map'
     # url = 'https://sandbox-api.coinmarketcap.com/v1/fiat/map'
-    parameters = {
-        'limit': 10
-    }
+    parameters = {"limit": 10}
     headers = {
-        'Accepts': 'application/json',
+        "Accepts": "application/json",
         # 'X-CMC_PRO_API_KEY': '6f66fcc3-73b3-48ea-a584-32af97de8e12',
-        'X-CMC_PRO_API_KEY': 'b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c',
+        "X-CMC_PRO_API_KEY": "b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c",
     }
 
     try:
         response = requests.get(url, params=parameters, headers=headers)
         data = response.json()
-        return render(request, 'test_template.html', {'data': data})
+        return render(request, "test_template.html", {"data": data})
     except (
-    requests.exceptions.ConnectionError, requests.exceptions.Timeout, requests.exceptions.TooManyRedirects) as e:
-        return render(request, 'test_template.html', {'error_message': str(e)})
+        requests.exceptions.ConnectionError,
+        requests.exceptions.Timeout,
+        requests.exceptions.TooManyRedirects,
+    ) as e:
+        return render(request, "test_template.html", {"error_message": str(e)})
 
 
 def convert_data(request):
     # url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/map'
     # url = 'https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/map'
     # url = 'https://pro-api.coinmarketcap.com/v2/tools/price-conversion'
-    parameters = {
-        'id': 1,
-        'convert_id': 2784,
-        'amount': 1
-    }
+    parameters = {"id": 1, "convert_id": 2784, "amount": 1}
     headers = {
-        'Accepts': 'application/json',
+        "Accepts": "application/json",
         # 'X-CMC_PRO_API_KEY': '6f66fcc3-73b3-48ea-a584-32af97de8e12',
-        'X-CMC_PRO_API_KEY': 'b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c',
+        "X-CMC_PRO_API_KEY": "b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c",
     }
 
     try:
         response = requests.get(url, params=parameters, headers=headers)
         data = response.json()
-        return render(request, 'test_template.html', {'data': data})
+        return render(request, "test_template.html", {"data": data})
     except (
-    requests.exceptions.ConnectionError, requests.exceptions.Timeout, requests.exceptions.TooManyRedirects) as e:
-        return render(request, 'test_template.html', {'error_message': str(e)})
+        requests.exceptions.ConnectionError,
+        requests.exceptions.Timeout,
+        requests.exceptions.TooManyRedirects,
+    ) as e:
+        return render(request, "test_template.html", {"error_message": str(e)})
