@@ -13,7 +13,8 @@
                     <h3 class="display-6 mb-3 animated slideInDown">{{ stock.symbol }}</h3>
                 </div>
                 <div class="col-lg-6 animated fadeIn">
-                    <img class="img-fluid animated pulse infinite" style="animation-duration: 3s;" src="{% static 'images/hero-2.png' %}"  alt="">
+                    <img class="img-fluid animated pulse infinite" style="animation-duration: 3s;"
+                         src="{% static 'images/hero-2.png' %}" alt="">
                 </div>
             </div>
         </div>
@@ -21,89 +22,58 @@
 {% endblock %}
 {% block content %}
 
-  <div class="row px-lg-5">
+    <div class="row px-lg-5">
         <div class="col-md-6">
-             <form method="post">
-{#        {% csrf_token %}#}
-{#        {{ form.quantity.errors }}#}
-{#        <table>#}
-{#            <tr>#}
-{#                <th>Stock Symbol</th>#}
-{#                <th>Company Name</th>#}
-{#                <th>Current Price</th>#}
-{#                <th>Quantity to Buy</th>#}
-{#            </tr>#}
-{##}
-{#            <tr>#}
-{#                <td>{{ stock.symbol }}</td>#}
-{#                <td>{{ stock.company_name }}</td>#}
-{#                <td>${{ stock.current_price }}</td>#}
-{#                <td>#}
-{#                    {{ form.quantity }}#}
-{#                    <input type="hidden" name="stock_symbol" value="{{ stock.symbol }}">#}
-{#                </td>#}
-{#            </tr>#}
-                 {% csrf_token %}
-    {{ form.quantity.errors }}
-    <div class="container">
-{#        <div class="row">#}
-{#            <div class="col-md-6">#}
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Stock Details</h5>
-                        <p class="card-text"><strong>Stock Symbol:</strong> {{ stock.symbol }}</p>
-                        <p class="card-text"><strong>Company Name:</strong> {{ stock.company_name }}</p>
-                        <p class="card-text"><strong>Current Price:</strong> ${{ stock.current_price }}</p>
+            <form method="post">
+
+
+                {% csrf_token %}
+                {{ form.quantity.errors }}
+                <div class="container">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Stock Details</h5>
+                            <p class="card-text"><strong>Stock Symbol:</strong> {{ stock.symbol }}</p>
+                            <p class="card-text"><strong>Company Name:</strong> {{ stock.company_name }}</p>
+                            <p class="card-text"><strong>Current Price:</strong> ${{ stock.current_price }}</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="id_quantity">Quantity to Buy:</label>
+                        {{ form.quantity }}
+                        <input type="hidden" name="stock_symbol" value="{{ stock.symbol }}">
+
+                    </div>
+                    <div class="form-group mb-5">
+                        <label for="total_price">Total Price:</label>
+                        <input type="text" class="form-control" id="total_price" readonly>
                     </div>
                 </div>
-{#            </div>#}
-{#            <div class="col-md-6">#}
-                <div class="form-group">
-                    <label for="id_quantity">Quantity to Buy:</label>
-                    {{ form.quantity }}
-                    <input type="hidden" name="stock_symbol" value="{{ stock.symbol }}">
-{#
+            </form>
         </div>
-         <div class="form-group">
-                    <label for="total_price">Total Price:</label>
-                    <input type="text" class="form-control" id="total_price" readonly>
-                </div>
-    </div>
-        </table>
 
-    </form>
-
-        </div>
         <div class="col-md-6">
-            <label class="mb-2" for="payment-element">Card Information:</label>
-        <div id="payment-element">
-            <!-- A Stripe Element will be inserted here. -->
-        </div>
-        <!-- Used to display form errors. -->
-        <div id="payment-errors" role="alert"></div>
-        {{ form.stripeToken }}
-        <button class="btn btn-primary mt-3" type="submit">Buy</button>
+            <label class="mb-2" for="card-element">Card Information:</label>
+            <div id="card-element">
+                <!-- A Stripe Element will be inserted here. -->
+            </div>
+            <!-- Used to display form errors. -->
+            <div id="card-errors" role="alert"></div>
+            {{ form.stripeToken }}
+            <button class="btn btn-primary mt-3" type="submit">Buy</button>
         </div>
     </div>
     <script>
         var stripe = Stripe('{{PUBLIC_KEY }}');
         var elements = stripe.elements();
 
-        var card = elements.create('payment' );
-        {#,{#}
-        {#    style: {#}
-        {#        base: {#}
-        {#            fontSize: '16px',#}
-        {#            color: '#32325d',#}
-        {#            fontFamily: 'Arial, sans-serif',#}
-        {#        },#}
-        {#    }#}
-        {#}#}
+        var card = elements.create('card');
+
         // Add an instance of the card Element into the `card-element` div.
-        card.mount('#payment-element');
+        card.mount('#card-element');
         // Handle real-time validation errors from the card Element.
-        card.addEventListener('change', function(event) {
-            var displayError = document.getElementById('payment-errors');
+        card.addEventListener('change', function (event) {
+            var displayError = document.getElementById('card-errors');
             if (event.error) {
                 displayError.textContent = event.error.message;
             } else {
@@ -112,12 +82,12 @@
         });
         // Create a token when the form is submitted.
         var form = document.querySelector('form');
-        form.addEventListener('submit', function(event) {
+        form.addEventListener('submit', function (event) {
             event.preventDefault();
-            stripe.createPaymentMethod(card).then(function(result) {
+            stripe.createPaymentMethod(card).then(function (result) {
                 if (result.error) {
                     // Inform the user if there was an error.
-                    var errorElement = document.getElementById('payment-errors');
+                    var errorElement = document.getElementById('card-errors');
                     errorElement.textContent = result.error.message;
                 } else {
                     // Send the token to your server.
@@ -128,7 +98,7 @@
             });
         });
         // Update total price dynamically based on quantity
-        document.getElementById('id_quantity').addEventListener('input', function() {
+        document.getElementById('id_quantity').addEventListener('input', function () {
             var quantity = parseInt(this.value);
             var currentPrice = parseFloat('{{ stock.current_price }}');
             var totalPrice = isNaN(quantity) ? 0 : quantity * currentPrice;
