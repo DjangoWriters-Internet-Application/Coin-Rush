@@ -4,17 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2c1604f2-4a48-491f-b1c4-4c0af06d1c4c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/coinRush/templates/test_template.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dump.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/coinRush/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/coinRush/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/coinRush/migrations/0002_alter_user_created_date.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/coinRush/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/coinRush/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/views.py" afterDir="false" />
-    </list>
+    <list default="true" id="2c1604f2-4a48-491f-b1c4-4c0af06d1c4c" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -51,7 +41,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "Merging main",
+    "git-widget-placeholder": "abhishek",
     "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "E:/UoWSemester3/IADS/Coin-Rush",
     "list.type.of.created.stylesheet": "CSS",
@@ -161,6 +151,7 @@
       <workItem from="1699655977408" duration="2152000" />
       <workItem from="1699900792886" duration="340000" />
       <workItem from="1699921104474" duration="3749000" />
+      <workItem from="1699925120584" duration="286000" />
     </task>
     <servers />
   </component>
