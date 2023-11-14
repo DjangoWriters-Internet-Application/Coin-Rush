@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.shortcuts import redirect
+from django.conf import settings
+from django.conf.urls.static import static
 from . import views
 
 urlpatterns = [
@@ -23,3 +25,4 @@ urlpatterns = [
     path("show_stocks/", views.show_stocks, name="show_stocks"),
     path('buy-stock/<str:stock_symbol>/', views.buy_stock, name='buy_stock'),
 ]
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

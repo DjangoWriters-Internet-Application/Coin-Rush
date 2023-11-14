@@ -1,11 +1,13 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.core.paginator import Paginator
+from django.utils import timezone
 from django.contrib.auth import login
 from django.conf import settings
+from django.contrib import messages
 import stripe
 
-from .forms import RegistrationForm, PostForm, CommentForm, NewsCommentForm
+from .forms import RegistrationForm, PostForm, CommentForm, NewsCommentForm, NewsCreateForm
 from .models import (
     Transaction,
     UserHolding,
@@ -21,12 +23,13 @@ from .models import (
 # from django.contrib.auth.decorators import login_required
 stripe.api_key = settings.STRIPE_PRIVATE_KEY
 
+
 # Create your views here.
 
 
 def home(request):
     stocks = Stock.objects.all()
-    return render(request, "index.html",{"stocks": stocks})
+    return render(request, "index.html", {"stocks": stocks})
 
 
 def about(request):
@@ -71,14 +74,39 @@ def register(request):
 
 
 def news(request):
-    context = {"title": "Latest Crypto News", "news": News.objects.all()}
+    displayForm = False
+    if request.method == 'POST':
+        if 'like_news' in request.POST:
+            news_id = request.POST['like_news']
+            news_instance = get_object_or_404(News, pk=news_id)
+            request.user.liked_news.add(news_instance)
+            news_instance.likes.add(request.user)
+        elif 'unlike_news' in request.POST:
+            news_id = request.POST['unlike_news']
+            news_instance = get_object_or_404(News, pk=news_id)
+            request.user.liked_news.remove(news_instance)
+            news_instance.likes.remove(request.user)
+        elif 'title' in request.POST:
+            print(request.POST)
+            newsCreated = NewsCreateForm(request.POST, request.FILES)
+            if newsCreated.is_valid():
+                news_instance = newsCreated.save(commit=False)
+                news_instance.cover_image.upload_to = 'news_covers/'  # Set the upload_to directory
+                news_instance.publish_datetime = timezone.now()
+                print(news_instance)
+                news_instance.save()
+                messages.success(request, 'News created successfully!')
+                return redirect('news')
+
+    newsForm = NewsCreateForm();
+    context = {"title": "Latest Crypto News", "news": News.objects.all(), 'newsForm': newsForm, 'displayForm':displayForm}
     return render(request, "News/index.html", context)
 
 
 def transaction_history(request):
     user = request.user  # Assuming users are authenticated
     transactions = Transaction.objects.filter(user=user).order_by("-timestamp")
-    return render(request, "transaction/transaction_history.html", { "transactions": transactions})
+    return render(request, "transaction/transaction_history.html", {"transactions": transactions})
 
 
 def user_holdings(request):
@@ -116,14 +144,13 @@ def discussion_single(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     comments = post.comment_set.all().order_by("-created_at")
 
-
     # Add pagination for comments (e.g., 5 comments per page)
     paginator = Paginator(comments, 1)
     page = request.GET.get("page")
     comments_page = paginator.get_page(page)
 
-    if(request.method=="GET" and page==None):
-        post.views+=1
+    if (request.method == "GET" and page == None):
+        post.views += 1
         post.save()
 
     if request.method == "POST":
@@ -150,7 +177,7 @@ def show_stocks(request):
     return render(request, "Stocks/showStocks.html", {"stocks": stocks})
 
 
-def buy_stock(request,stock_symbol):
+def buy_stock(request, stock_symbol):
     error_message = ''
     if request.method == 'POST':
         # stock_symbol = request.POST.get('stock_symbol')
@@ -189,12 +216,22 @@ def buy_stock(request,stock_symbol):
             print(f"Stripe CardError: {error_message}")
 
     stocks = Stock.objects.get(symbol=stock_symbol)
-    return render(request, 'Stocks/buy_stock.html', {'stock': stocks, 'error_message': error_message, 'PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY})
+    return render(request, 'Stocks/buy_stock.html',
+                  {'stock': stocks, 'error_message': error_message, 'PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY})
+
 
 def newsDetails(request, news_id):
-    if (request.method == 'POST'):
-        comment = NewsCommentForm(request.POST)
+    if 'like_news' in request.POST:
+        news_id = request.POST['like_news']
+        news_instance = get_object_or_404(News, pk=news_id)
+        request.user.liked_news.add(news_instance)
+        news_instance.likes.add(request.user)
+    elif 'unlike_news' in request.POST:
+        news_id = request.POST['unlike_news']
+        news_instance = get_object_or_404(News, pk=news_id)
+        request.user.liked_news.remove(news_instance)
+        news_instance.likes.remove(request.user)
 
     newsDetails = get_object_or_404(News, pk=news_id)
     form = NewsCommentForm()
-    return render(request, 'NewsDetails/index.html', {'news': newsDetails, 'form': form})
+    return render(request, 'NewsDetails/index.html', {'news': newsDetails})

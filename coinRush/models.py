@@ -21,6 +21,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     created_date = models.DateTimeField(default=timezone.now())
     last_login = models.DateTimeField(blank=True, null=True)
 
+    liked_news = models.ManyToManyField('News', blank=True, null=True)
+
     objects = AuthUserManager()
 
     USERNAME_FIELD = "email"
@@ -101,9 +103,10 @@ class UserHolding(models.Model):
 class News(models.Model):
     title = models.CharField(max_length=255)
     sub_title = models.CharField(max_length=255)
-    # image = models.ImageField(upload_to='news_images/')
+    cover_image = models.ImageField(upload_to='news_covers/', null=True, blank=True, default='news_covers/placeholder.png')
     description = models.TextField(max_length=1000)
-    publish_datetime = models.DateTimeField()
+    likes = models.ManyToManyField(User,  blank=True, null=True)
+    publish_datetime = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title
