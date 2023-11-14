@@ -2,19 +2,26 @@
 {% load static %}
 {% block extraHead %}
 <!--    <link rel="stylesheet" href="{% static 'css/news.css' %}">-->
-    <link rel="stylesheet" href="{% static 'css/learn.css' %} ">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/learn.css' %} ">
 {% endblock extraHead %}
 {% block title %}Learn Center{% endblock %}
 {% block content %}
+<h1>Learn about blockchain, crypto and NFTs</h1><br/>
+<h4>Browse by topic</h4>
+<div class="centered-buttons">
+    {% for category in categories %}
+    <button class="button1" type="button" onclick="scrollToCategory('{{ category.name }}')">{{ category.name }}</button>
+    {% endfor %}
+</div>
 <div class="container">
-    <div class="row">
+    <div class="row" >
         {% for category in categories %}
-        <h3>{{ category.name }}</h3>
+        <h3 id="{{category.name}}">{{ category.name }}</h3>
         <hr>
         {% for course in category.learn_set.all %}
         <a class="card" href="/learn/{{ course.slug }}/">
             <div class="header">
-                <img class="img-fluid me-2" src="{% static 'images/bg.jpg' %}" alt="">
+                <img class="img-fluid me-2" src="{{course.image.url}}" alt="{{course.title}}">
                 <h4>{{ course.title }}</h4>
             </div>
         </a>
@@ -22,4 +29,15 @@
         {% endfor %}
     </div>
 </div>
+
+<script>
+    function scrollToCategory(categoryName) {
+        var element = document.getElementById(categoryName);
+        if (element) {
+            var offset = element.offsetTop - 55;
+            window.scrollTo({ top: offset, behavior: 'smooth' });
+        }
+    }
+</script>
+
 {% endblock content %}

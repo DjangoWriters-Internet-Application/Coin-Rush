@@ -128,10 +128,11 @@ def categories_course(request):
 def subject_info(request, slug):
     subject = get_object_or_404(Learn, slug=slug)
     description = subject.description
+    image = request.FILES.get('image')
     return render(
         request,
         "Learn/learning-details.html",
-        {"subject": subject, "description": description},
+        {"subject": subject, "description": description, "image": image},
     )
 
 
