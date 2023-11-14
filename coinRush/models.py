@@ -20,6 +20,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     created_date = models.DateTimeField(default=timezone.now())
     last_login = models.DateTimeField(blank=True, null=True)
+    wallet = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
 
     objects = AuthUserManager()
 
