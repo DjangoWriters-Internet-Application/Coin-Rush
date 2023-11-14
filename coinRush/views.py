@@ -1,12 +1,13 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.auth import login
 from django.conf import settings
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
 import stripe
+from decimal import Decimal
 from django.urls import reverse
 from django.contrib import messages
 from django.core.exceptions import *
@@ -76,11 +77,8 @@ def register(request):
             cleaned_data = form.cleaned_data
             hashed_password = make_password(cleaned_data["password"])
             cleaned_data["password"] = hashed_password
-
             form.cleaned_data = cleaned_data
-
             user = form.save()
-
             login(request, user)
 
             # Redirect to the home page after registration
@@ -101,10 +99,23 @@ def news(request):
 
 @login_required(login_url="/login/")
 def transaction_history(request):
-    user = request.user  # Assuming users are authenticated
+    user = request.user
     transactions = Transaction.objects.filter(user=user).order_by("-timestamp")
+
+    items_per_page = 10
+    paginator = Paginator(transactions, items_per_page)
+    page = request.GET.get('page')
+
+    try:
+        transactions = paginator.page(page)
+    except PageNotAnInteger:
+        transactions = paginator.page(1)
+    except EmptyPage:
+        transactions = paginator.page(paginator.num_pages)
+
     return render(
-        request, "transaction/transaction_history.html", {"transactions": transactions}
+        request, "transaction/transaction_history.html", {
+            "transactions": transactions}
     )
 
 
@@ -127,10 +138,12 @@ def submit_feedback(request, sub_id):
     url = request.META.get("HTTP_REFERER")
     if request.method == "POST":
         try:
-            feedbacks = Feedback.objects.get(user__id=request.user.id, topic__id=sub_id)
+            feedbacks = Feedback.objects.get(
+                user__id=request.user.id, topic__id=sub_id)
             form = FeedbackRatingForm(request.POST, instance=feedbacks)
             form.save()
-            messages.success(request, "Thank you! Your feedback has been updated.")
+            messages.success(
+                request, "Thank you! Your feedback has been updated.")
             return redirect(url)
         except Feedback.DoesNotExist:
             form = FeedbackRatingForm(request.POST)
@@ -176,7 +189,6 @@ def discussion(request):
             return redirect("discussion")
     else:
         form = PostForm()
-
     return render(request, "posts/discussion_all.html", {"posts": posts, "form": form})
 
 
@@ -221,15 +233,11 @@ def show_stocks(request):
 def buy_stock(request, stock_symbol):
     error_message = ""
     stocks = Stock.objects.get(symbol=stock_symbol)
-    print("hey")
-    if request.method == "POST":
-        print("jhgfv")
+    if request.method == 'POST':
         form = BuyStockForm(request.POST)
-        print("sdf", form.is_valid())
 
         if form.is_valid():
-            quantity = form.cleaned_data["quantity"]
-            print("dlkfjgh ", quantity)
+            quantity = form.cleaned_data['quantity']
             stock = stocks
             total_price = stock.current_price * quantity  # Calculate total price
 
@@ -259,7 +267,6 @@ def buy_stock(request, stock_symbol):
                 )
                 holding.quantity += quantity
                 holding.save()
-                print("mmmm", holding)
 
                 return redirect("transaction-history")
             except stripe.error.CardError as e:
@@ -284,26 +291,27 @@ def buy_stock(request, stock_symbol):
 def user_holdings(request):
     holdings = UserHolding.objects.filter(user=request.user)
     sell_form = SellStockForm()
+    items_per_page = 10
+    paginator = Paginator(holdings, items_per_page)
+    page = request.GET.get('page')
 
-    if request.method == "POST":
+    try:
+        holdings_page = paginator.page(page)
+    except PageNotAnInteger:
+        holdings_page = paginator.page(1)
+    except EmptyPage:
+        holdings_page = paginator.page(paginator.num_pages)
+    if request.method == 'POST':
         sell_form = SellStockForm(request.POST)
 
         if sell_form.is_valid():
-            stock_symbol = sell_form.cleaned_data["stock_symbol"]
-            quantity_to_sell = sell_form.cleaned_data["quantity"]
-            # Retrieve the stock based on the stock_symbol
+            stock_symbol = sell_form.cleaned_data['stock_symbol']
+            quantity_to_sell = sell_form.cleaned_data['quantity']
             stock = Stock.objects.get(symbol=stock_symbol)
             holding = holdings.filter(stock=stock).first()
-            # Check if the user has enough quantity to sell
-            if (
-                holding
-                and quantity_to_sell > 0
-                and quantity_to_sell <= holding.quantity
-            ):
-                # Calculate total sell price
+            if holding and quantity_to_sell > 0 and quantity_to_sell <= holding.quantity:
                 sell_price = stock.current_price * quantity_to_sell
 
-                # Create a sell transaction
                 sell_transaction = Transaction(
                     user=request.user,
                     stock=stock,
@@ -312,26 +320,20 @@ def user_holdings(request):
                     price=sell_price,
                 )
                 sell_transaction.save()
-
-                # Update user holdings
                 holding.quantity -= quantity_to_sell
                 holding.save()
+                request.user.wallet += Decimal(sell_price)
+                request.user.save()
                 if holding.quantity == 0:
                     holding.delete()
 
                 return redirect("user-holdings")
             else:
-                # Add a custom error message to the form
-                error_message = (
-                    "Invalid quantity to sell. Please select a valid quantity."
-                )
-                sell_form.add_error("quantity", error_message)
+                error_message = 'Invalid quantity to sell. Please select a valid quantity.'
+                sell_form.add_error('quantity', error_message)
 
-    return render(
-        request,
-        "userholding/user_holdings.html",
-        {"user": request.user, "holdings": holdings, "sell_form": sell_form},
-    )
+    return render(request, 'userholding/user_holdings.html',
+                  {'user': request.user, 'holdings': holdings_page, 'sell_form': sell_form})
 
 
 def newsDetails(request, news_id):
