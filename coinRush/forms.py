@@ -157,3 +157,12 @@ class StockFilterForm(forms.ModelForm):
     class Meta:
         model = Stock
         fields=["current_price"]
+
+class CurrencyConverterForm(forms.Form):
+    amount = forms.DecimalField(min_value=0.01, label='Amount', widget=forms.NumberInput(attrs={'class': 'form-control'}))
+    currency_from = forms.ChoiceField(label='From Currency', widget=forms.Select(attrs={'class': 'form-control'}))
+    currency_to = forms.ChoiceField(label='To Currency', widget=forms.Select(attrs={'class': 'form-control'}))
+
+    def set_currency_choices(self, choices):
+        self.fields['currency_from'].choices = choices
+        self.fields['currency_to'].choices = choices

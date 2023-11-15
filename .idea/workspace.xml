@@ -5,9 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c1604f2-4a48-491f-b1c4-4c0af06d1c4c" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/coinRush/static/images/holding.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/coinRush/static/images/holding2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/coinRush/static/images/payment-1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/coinRush/static/images/payment-2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/coinRush/static/images/payment-3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/coinRush/static/images/payment-4.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/static/css/buy_stock.css" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/static/css/buy_stock.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/static/css/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/static/css/styles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/Base/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/Base/navbar.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/coinRush/templates/Stocks/buy_stock.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/Stocks/buy_stock.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/transaction/transaction_history.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/transaction/transaction_history.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/userholding/user_holdings.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/userholding/user_holdings.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/coinRush/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
     </list>
@@ -163,7 +175,8 @@
       <workItem from="1699900792886" duration="340000" />
       <workItem from="1699921104474" duration="3749000" />
       <workItem from="1699927729491" duration="309000" />
-      <workItem from="1699928086226" duration="2564000" />
+      <workItem from="1699928086226" duration="2868000" />
+      <workItem from="1699981089665" duration="13309000" />
     </task>
     <servers />
   </component>
