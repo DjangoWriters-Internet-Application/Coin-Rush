@@ -1,44 +1,49 @@
 {% extends 'Base/base.html' %}
-{% block extraHead %}<script src="https://js.stripe.com/v3/"></script>{% endblock %}
+{% block extraHead %}
+    <script src="https://js.stripe.com/v3/"></script>
+{% endblock %}
 {% block content %}
     <h1>Buy Stock</h1>
-    <form method="post">
-        {% csrf_token %}
-        <table>
-            <tr>
-                <th>Stock Symbol</th>
-                <th>Company Name</th>
-                <th>Current Price</th>
-                <th>Quantity to Buy</th>
-            </tr>
-
-            <tr>
-                <td>{{ stock.symbol }}</td>
-                <td>{{ stock.company_name }}</td>
-                <td>${{ stock.current_price }}</td>
-                <td><input type="text" name="stock_symbol" value="{{ stock.symbol }}" hidden>
+    <table>
+        <tr>
+            <th>Stock Symbol</th>
+            <th>Company Name</th>
+            <th>Current Price</th>
+            <th>Quantity to Buy</th>
+        </tr>
+        <tr>
+            <td>{{ stock.symbol }}</td>
+            <td>{{ stock.company_name }}</td>
+            <td>${{ stock.current_price }}</td>
+            <td>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="text" name="stock_symbol" value="{{ stock.symbol }}" hidden>
                     <input type="number" name="quantity" min="1" required>
-                </td>
-            </tr>
-        </table>
-        <label for="card-element">Card Information:</label>
-        <div id="card-element">
-            <!-- A Stripe Element will be inserted here. -->
-        </div>
-        <!-- Used to display form errors. -->
-        <div id="card-errors" role="alert"></div>
-        <input type="hidden" name="stripeToken">
-        <button type="submit">Buy</button>
-    </form>
+                    <label for="card-element">Card Information:</label>
+                    <div id="card-element">
+                        <!-- A Stripe Element will be inserted here. -->
+                    </div>
+                    <!-- Used to display form errors. -->
+                    <div id="card-errors" role="alert"></div>
+                    <input type="hidden" name="stripeToken">
+                    <button type="submit">Buy</button>
+                </form>
+            </td>
+        </tr>
+    </table>
     <script>
-
-        var stripe = Stripe('{{PUBLIC_KEY }}');
+        var stripe = Stripe('{{ PUBLIC_KEY }}');
         var elements = stripe.elements();
+        
         // Rest of the Stripe integration script as shown in the previous example
+
         // Create an instance of the card Element.
         var card = elements.create('card');
+        
         // Add an instance of the card Element into the `card-element` div.
         card.mount('#card-element');
+        
         // Handle real-time validation errors from the card Element.
         card.addEventListener('change', function(event) {
             var displayError = document.getElementById('card-errors');
@@ -48,6 +53,7 @@
                 displayError.textContent = '';
             }
         });
+
         // Create a token when the form is submitted.
         var form = document.querySelector('form');
         form.addEventListener('submit', function(event) {
@@ -61,7 +67,7 @@
                     // Send the token to your server.
                     var stripeToken = document.querySelector('input[name="stripeToken"]');
                     stripeToken.value = result.token.id;
-                     console.log(result.token.id);
+                    console.log(result.token.id);
                     form.submit();
                 }
             });

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User,Post,Comment,Stock,StockPrice,Transaction,UserHolding, News, Learn, CourseCategory, Feedback, NFT, Bid
+from .models import User,Post,Comment,Stock,StockPrice,Transaction,UserHolding, News, Learn, CourseCategory, Feedback, NFT, Bid, nftTransaction, Purchase
 
 class MemberAdmin(admin.ModelAdmin):
     list_display = ("title", "description",)
@@ -18,4 +18,6 @@ admin.site.register(Feedback)
 admin.site.register(Post)
 admin.site.register(Comment)
 admin.site.register(NFT)
+admin.site.register(nftTransaction)
+admin.site.register(Purchase)
 admin.site.register(Bid)

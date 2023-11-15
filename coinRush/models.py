@@ -4,6 +4,9 @@ from django.utils import timezone
 from django.db import models
 from django.conf import settings
 from .managers import AuthUserManager
+from django.forms import ModelForm
+from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 
 # Create your models here.
@@ -18,7 +21,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
 
-    created_date = models.DateTimeField(default=timezone.now())
+    created_date = models.DateTimeField(default=timezone.now)
     last_login = models.DateTimeField(blank=True, null=True)
 
     objects = AuthUserManager()
@@ -70,40 +73,62 @@ class Stock(models.Model):
 
     def __str__(self):
         return self.symbol
+    
+class NFT(models.Model):
+    CURRENCY_CHOICES = [
+        ("USD", "US Dollar"),
+        ("BTC", "Bitcoin"),
+        ("ETH", "Ethereum"),
+    ]
+    
+    tittle = models.TextField(max_length=15, blank=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to="nft_images/")
+    description = models.TextField()
+    quantity = models.PositiveIntegerField(default=1)
+    is_for_sale = models.BooleanField(default=False)
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES, default="USD")
+    is_bidding_allowed = models.BooleanField(default=False)
 
+
+class Transaction(models.Model):
+    TYPE = [("BUY", "Buy"), ("SELL", "Sell")]
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    transaction_type = models.CharField(max_length=10, choices=TYPE, default="BUY")
+    quantity = models.PositiveIntegerField(default=0)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    # GenericForeignKey to support different types of assets
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    asset = GenericForeignKey('content_type', 'object_id')
+
+    def __str__(self):
+        return f"{self.user.email} - {self.transaction_type}{self.quantity} {self.asset} @ {self.price}"
+
+class UserHolding(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+    quantity = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.user.email} - {self.quantity} {self.content_object}"
+    
 
 # Define a model for StockPrice (to store historical price data)
 class StockPrice(models.Model):
     stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
     date = models.DateField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    user_holdings = GenericRelation(UserHolding)
 
     def __str__(self):
-        return f"{self.stock.symbol} - {self.date}"
-
-
-class Transaction(models.Model):
-    TYPE = [("BUY", "Buy"), ("SELL", "Sell")]
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
-    transaction_type = models.CharField(max_length=10, choices=TYPE, default="BUY")
-    quantity = models.PositiveIntegerField(default=0)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    timestamp = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.user.email} - {self.transaction_type}{self.quantity} {self.stock.symbol} @ {self.price}"
-
-
-class UserHolding(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=0)
-
-    def __str__(self):
-        return f"{self.user.email} - {self.quantity} {self.stock.symbol}"
-
-
+        return self.symbol
+    
 class News(models.Model):
     title = models.CharField(max_length=255)
     sub_title = models.CharField(max_length=255)
@@ -164,7 +189,8 @@ class NFT(models.Model):
         ("BTC", "Bitcoin"),
         ("ETH", "Ethereum"),
     ]
-
+    
+    tittle = models.TextField(max_length=15, blank=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     image = models.ImageField(upload_to="nft_images/")
     description = models.TextField()
@@ -173,7 +199,10 @@ class NFT(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES, default="USD")
     is_bidding_allowed = models.BooleanField(default=False)
+    user_holdings = GenericRelation(UserHolding)
 
+    def __str__(self):
+        return self.tittle
 
 
 
@@ -183,3 +212,25 @@ class Bid(models.Model):
     bid_amount = models.DecimalField(max_digits=10, decimal_places=2)
     timestamp = models.DateTimeField(auto_now_add=True)
 
+
+class Purchase(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    nft = models.ForeignKey(NFT, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=0)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    timestamp = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.user.email} - Purchase {self.quantity} {self.nft.tittle} @ {self.total_price}"
+
+class nftTransaction(models.Model):
+    TYPE = [("BUY", "Buy"), ("SELL", "Sell")]
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    nft = models.ForeignKey(NFT, on_delete=models.CASCADE)  # Change this line
+    transaction_type = models.CharField(max_length=10, choices=TYPE, default="BUY")
+    quantity = models.PositiveIntegerField(default=0)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.email} - {self.transaction_type}{self.quantity} {self.nft.title} @ {self.price}"

@@ -3,7 +3,7 @@ from django.contrib.auth.forms import AuthenticationForm
 
 # from django.contrib.auth.forms import UserCreationForm
 
-from .models import User, Post, Comment, Transaction, NewsComments
+from .models import User, Post, Comment, Transaction, NewsComments, Feedback, NFT, Purchase
 
 
 class UserCreationForm(forms.ModelForm):
@@ -154,3 +154,27 @@ class FeedbackRatingForm(forms.ModelForm):
     class Meta:
         model = Feedback
         fields = ["subject", "feedback", "rating"]
+
+class NFTForm(forms.ModelForm):
+    class Meta:
+        model = NFT
+        fields = [
+            'image',
+            'tittle',
+            'description',
+            'quantity',
+            'is_for_sale',
+            'price',
+            'currency',
+            'is_bidding_allowed',
+        ]
+
+
+class BuyNFTForm(forms.Form):
+    quantity = forms.IntegerField(min_value=1, widget=forms.NumberInput(attrs={"required": "required"}))
+    stripeToken = forms.CharField(widget=forms.HiddenInput())
+    
+class PurchaseForm(forms.ModelForm):
+    class Meta:
+        model = Purchase
+        fields = ["quantity"]

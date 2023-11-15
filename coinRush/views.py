@@ -10,6 +10,13 @@ import stripe
 from django.urls import reverse
 from django.contrib import messages
 from django.core.exceptions import *
+from .models import NFT
+from .forms import NFTForm
+
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import NFT, Transaction,nftTransaction 
+import stripe
+from django.conf import settings
 
 from .forms import (
     RegistrationForm,
@@ -29,6 +36,7 @@ from .forms import (
 from .models import (
     Transaction,
     UserHolding,
+    nftTransaction,
     User,
     Learn,
     CourseCategory,
@@ -227,60 +235,7 @@ def show_stocks(request):
     return render(request, "Stocks/showStocks.html", {"stocks": stocks})
 
 
-def buy_stock(request, stock_symbol):
-    error_message = ""
-    if request.method == "POST":
-        # stock_symbol = request.POST.get('stock_symbol')
-        print(f"Received stock symbol: {stock_symbol}")
-        quantity = int(request.POST.get("quantity", 0))
-        if quantity <= 0:
-            raise ValueError("Quantity should be a positive integer.")
 
-        stock = Stock.objects.get(symbol=stock_symbol)
-        total_price = stock.current_price * quantity  # Calculate total price
-
-        # Handle Stripe payment
-        token = request.POST["stripeToken"]
-        try:
-            charge = stripe.Charge.create(
-                amount=int(total_price * 100),  # Amount in cents
-                currency="cad",
-                source=token,
-                description=f"Stock Purchase: {stock_symbol}",
-            )
-
-            # Record the transaction
-            transaction = Transaction(
-                user=request.user,
-                stock=stock,
-                transaction_type="Buy",
-                quantity=quantity,
-                price=total_price,
-            )
-            transaction.save()
-
-            # Update user holdings
-            holding, created = UserHolding.objects.get_or_create(
-                user=request.user, stock=stock
-            )
-            holding.quantity += quantity
-            holding.save()
-            print(holding)
-            return redirect("transaction-history")
-        except stripe.error.CardError as e:
-            error_message = e.error.message
-            print(f"Stripe CardError: {error_message}")
-
-    stocks = Stock.objects.get(symbol=stock_symbol)
-    return render(
-        request,
-        "Stocks/buy_stock.html",
-        {
-            "stock": stocks,
-            "error_message": error_message,
-            "PUBLIC_KEY": settings.STRIPE_PUBLIC_KEY,
-        },
-    )
 
 
 def newsDetails(request, news_id):
@@ -302,3 +257,147 @@ def nftmarketplace(request):
 def nft_detail(request, nft_id):
     nft = get_object_or_404(NFT, pk=nft_id)
     return render(request, "nft/NFT.html", {"nft": nft})
+
+def create_nft(request):
+    if request.method == 'POST':
+        form = NFTForm(request.POST, request.FILES)
+        if form.is_valid():
+            nft_instance = form.save(commit=False)
+            
+            # Check if the user is authenticated (logged in)
+            if request.user.is_authenticated:
+                nft_instance.owner = request.user
+                nft_instance.save()
+                return redirect('nft_detail', nft_id=nft_instance.id)
+            else:
+                # Handle the case when the user is not logged in (redirect to login page, for example)
+                return redirect('login')  # Replace 'login' with the actual login URL
+
+    else:
+        form = NFTForm()
+
+    return render(request, 'nft/create_nft.html', {'form': form})
+
+# views.py
+
+from django.shortcuts import render, get_object_or_404
+from django.contrib import messages
+from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required  # Import login_required
+from .models import NFT, Transaction, UserHolding
+from .forms import BuyNFTForm
+import stripe
+from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
+
+
+stripe.api_key = settings.STRIPE_PRIVATE_KEY
+
+def purchase_asset(request,user, asset, quantity, total_price, asset_type):
+    try:
+        # Handle Stripe payment
+        token = request.POST["stripeToken"]
+        charge = stripe.Charge.create(
+            amount=int(total_price * 100),  # Amount in cents
+            currency="usd",  # Adjust the currency based on your requirements
+            source=token,
+            description=f"{asset_type} Purchase: {asset}",
+        )
+
+        # Record the transaction
+        transaction = Transaction(
+            user=user,
+            asset=asset,  # Use the generic asset field
+            transaction_type="Buy",
+            quantity=quantity,
+            price=total_price,
+        )
+        transaction.save()
+
+        # Update user holdings
+        holding, created = UserHolding.objects.get_or_create(
+            user=user, content_type=ContentType.objects.get_for_model(asset), object_id=asset.id
+        )
+        holding.quantity += quantity
+        holding.save()
+
+        return True, None
+    except stripe.error.CardError as e:
+        return False, e.error.message
+
+@login_required
+def buy_stock(request, stock_symbol):
+    error_message = ""
+    if request.method == "POST":
+        stock = Stock.objects.get(symbol=stock_symbol)
+        quantity = int(request.POST.get("quantity", 0))
+        if quantity <= 0:
+            error_message = "Quantity should be a positive integer."
+        else:
+            total_price = stock.current_price * quantity  # Calculate total price
+            success, error_message = purchase_asset(request,request.user, stock, quantity, total_price, "Stock")
+
+            if success:
+                return redirect("transaction-history")
+
+    stocks = Stock.objects.get(symbol=stock_symbol)
+    return render(
+        request,
+        "Stocks/buy_stock.html",
+        {
+            "stock": stocks,
+            "error_message": error_message,
+            "PUBLIC_KEY": settings.STRIPE_PUBLIC_KEY,
+        },
+    )
+
+@login_required
+def buy_nft(request, nft_id):
+    error_message = ""
+    nft = get_object_or_404(NFT, id=nft_id)
+
+    if request.method == "POST":
+        form = BuyNFTForm(request.POST)
+        if form.is_valid():
+            quantity = form.cleaned_data['quantity']
+
+            if quantity <= 0:
+                error_message = "Quantity should be a positive integer."
+            elif not nft.is_for_sale:
+                error_message = "This NFT is not available for purchase."
+            elif nft.quantity < quantity:
+                error_message = "Not enough quantity available for purchase."
+            else:
+                total_price = nft.price * quantity
+
+                # Call purchase_asset with the correct 'asset_type' argument
+                success, error_message = purchase_asset(
+                    request,
+                    request.user,
+                    nft,
+                    quantity,
+                    total_price,
+                    "NFT"  # Pass the 'asset_type'
+                )
+
+                if success:
+                    messages.success(request, "NFT purchase successful!")
+                    return redirect("NFTMarketPlace")
+                else:
+                    error_message = f"Error processing payment: {error_message}"
+        else:
+            error_message = "Invalid form submission."
+    else:
+        form = BuyNFTForm()
+
+    # Your existing render code
+    return render(
+        request,
+        "nft/buy_nft.html",
+        {
+            "nft": nft,
+            "form": form,
+            "error_message": error_message,
+            "PUBLIC_KEY": settings.STRIPE_PUBLIC_KEY,
+        },
+    )

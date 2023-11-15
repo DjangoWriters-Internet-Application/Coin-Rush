@@ -26,4 +26,7 @@ urlpatterns = [
     path("buy-stock/<str:stock_symbol>/", views.buy_stock, name="buy_stock"),
     path("nft/", views.nftmarketplace, name="NFTMarketPlace"),
     path("nft/<int:nft_id>/", views.nft_detail, name="nft_detail"),
+    path('create_nft/', views.create_nft, name='create_nft'),
+     path('transaction-history/', views.transaction_history, name='transaction-history'),
+     path('buy_nft/<int:nft_id>/', views.buy_nft, name='buy_nft'),
 ]

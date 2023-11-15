@@ -1,0 +1,66 @@
+{% extends "Base/base.html" %}
+{% block content %}
+  <div class="container">
+    <h2 class="mt-4 mb-4">Create NFT</h2>
+    <form method="post" action="{% url 'create_nft' %}" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="mb-3">
+        {{ form.tittle.label_tag }}
+        {{ form.tittle }}
+        {% if form.tittle.errors %}
+          <div class="invalid-feedback">{{ form.title.errors }}</div>
+        {% endif %}
+      </div>
+      <div class="mb-3">
+        {{ form.image.label_tag }}
+        {{ form.image }}
+        {% if form.image.errors %}
+          <div class="invalid-feedback">{{ form.image.errors }}</div>
+        {% endif %}
+      </div>
+      <div class="mb-3">
+        {{ form.description.label_tag }}
+        {{ form.description }}
+        {% if form.description.errors %}
+          <div class="invalid-feedback">{{ form.description.errors }}</div>
+        {% endif %}
+      </div>
+      <div class="mb-3">
+        {{ form.quantity.label_tag }}
+        {{ form.quantity }}
+        {% if form.quantity.errors %}
+          <div class="invalid-feedback">{{ form.quantity.errors }}</div>
+        {% endif %}
+      </div>
+      <div class="mb-3">
+        {{ form.is_for_sale.label_tag }}
+        {{ form.is_for_sale }}
+        {% if form.is_for_sale.errors %}
+          <div class="invalid-feedback">{{ form.is_for_sale.errors }}</div>
+        {% endif %}
+      </div>
+      <div class="mb-3">
+        {{ form.price.label_tag }}
+        {{ form.price }}
+        {% if form.price.errors %}
+          <div class="invalid-feedback">{{ form.price.errors }}</div>
+        {% endif %}
+      </div>
+      <div class="mb-3">
+        {{ form.currency.label_tag }}
+        {{ form.currency }}
+        {% if form.currency.errors %}
+          <div class="invalid-feedback">{{ form.currency.errors }}</div>
+        {% endif %}
+      </div>
+      <div class="mb-3">
+        {{ form.is_bidding_allowed.label_tag }}
+        {{ form.is_bidding_allowed }}
+        {% if form.is_bidding_allowed.errors %}
+          <div class="invalid-feedback">{{ form.is_bidding_allowed.errors }}</div>
+        {% endif %}
+      </div>
+      <button type="submit" class="btn btn-primary">Create NFT</button>
+    </form>
+  </div>
+{% endblock %}
