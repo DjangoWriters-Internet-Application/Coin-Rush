@@ -476,6 +476,7 @@ def convert(source,to,amount):
 
     # url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/map'
     # url = 'https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/map'
+    url = 'https://pro-api.coinmarketcap.com/v2/tools/price-conversion'
 
     url = 'https://sandbox-api.coinmarketcap.com/v2/tools/price-conversion'
     parameters = {
@@ -492,17 +493,19 @@ def convert(source,to,amount):
 
     try:
         response = requests.get(url, params=parameters, headers=headers)
+        print(response)
+        data=response.json()
         print(data)
-        return data['data'][to]['quote'][to]['price']
-
-    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout, requests.exceptions.TooManyRedirects) as e:
-        return render(request, 'test_template.html', {'error_message': str(e)})
+        return data['data'][source]['quote'][to]['price']
+        # return data['data']['quote'][to]['price']
+    except:
+        return "Some error occured"
 
 def convert_data(request):
     result = None
 
     # Example choices (you can replace this with actual currency choices)
-    currency_choices = [(2781, 'BTC'), (2784, 'EUR'), (3, 'GBP')]
+    currency_choices = [(1, 'BTC'), (2784, 'EUR'), (3, 'GBP')]
 
     if request.method == 'POST':
         form = CurrencyConverterForm(request.POST)
@@ -518,3 +521,30 @@ def convert_data(request):
 
     return render(request, 'test_template.html', {'form': form, 'result': result})
 
+
+def temp(request):
+
+    # url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/map'
+    url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/map'
+    # url = 'https://pro-api.coinmarketcap.com/v2/tools/price-conversion'
+
+    # url = 'https://sandbox-api.coinmarketcap.com/v2/tools/price-conversion'
+    parameters = {
+        'limit':100
+    }
+
+    headers = {
+        "Accepts": "application/json",
+        'X-CMC_PRO_API_KEY': '6f66fcc3-73b3-48ea-a584-32af97de8e12',
+        # "X-CMC_PRO_API_KEY": "b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c",
+    }
+
+    try:
+        response = requests.get(url, params=parameters, headers=headers)
+        print(response)
+        data=response.json()
+        print(data)
+        return render(request,'test_template.html',{'data':data})
+        # return data['data']['quote'][to]['price']
+    except:
+        return render(request, 'test_template.html', {'data': "error"})
