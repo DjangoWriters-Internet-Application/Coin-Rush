@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "coinRush",
+    "django_filters",
 ]
 
 AUTH_USER_MODEL = "coinRush.User"

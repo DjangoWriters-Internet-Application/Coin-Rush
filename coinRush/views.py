@@ -11,6 +11,7 @@ from decimal import Decimal
 from django.urls import reverse
 from django.contrib import messages
 from django.core.exceptions import *
+from .filters import StockFilters
 import requests
 
 from .forms import (
@@ -21,6 +22,7 @@ from .forms import (
     FeedbackRatingForm,
     BuyStockForm,
     SellStockForm,
+    StockFilterForm
     CurrencyConverterForm
 )
 
@@ -53,8 +55,10 @@ stripe.api_key = settings.STRIPE_PRIVATE_KEY
 
 
 def home(request):
-    stocks = Stock.objects.all()
-    return render(request, "index.html", {"stocks": stocks})
+    stock_filter = StockFilters(request.GET,queryset=Stock.objects.all())
+    context = {"stocks": stock_filter.qs,
+               "form":stock_filter.form}
+    return render(request, "index.html",context )
 
 
 def about(request):

@@ -3,7 +3,7 @@ from django.contrib.auth.forms import AuthenticationForm
 
 # from django.contrib.auth.forms import UserCreationForm
 
-from .models import User, Post, Comment, Transaction, NewsComments, Feedback
+from .models import User, Post, Comment, Transaction, NewsComments, Feedback, Stock
 
 
 class UserCreationForm(forms.ModelForm):
@@ -152,6 +152,11 @@ class FeedbackRatingForm(forms.ModelForm):
         model = Feedback
         fields = ["subject", "feedback", "rating"]
 
+
+class StockFilterForm(forms.ModelForm):
+    class Meta:
+        model = Stock
+        fields=["current_price"]
 
 class CurrencyConverterForm(forms.Form):
     amount = forms.DecimalField(min_value=0.01, label='Amount', widget=forms.NumberInput(attrs={'class': 'form-control'}))
