@@ -52,15 +52,9 @@ stripe.api_key = settings.STRIPE_PRIVATE_KEY
 
 
 def home(request):
-    #stock_filter = StockFilters(request.GET,queryset=Stock.objects.all())
-
-    price = request.GET.get('current_price')
-    stocks = Stock.objects.all()
-
-    if price:
-        stocks= Stock.objects.filter(current_price__lte=price)
-    context = {"stocks": stocks,
-               "form":StockFilterForm}
+    stock_filter = StockFilters(request.GET,queryset=Stock.objects.all())
+    context = {"stocks": stock_filter.qs,
+               "form":stock_filter.form}
     return render(request, "index.html",context )
 
 
