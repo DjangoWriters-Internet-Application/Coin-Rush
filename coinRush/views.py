@@ -22,7 +22,7 @@ from .forms import (
     FeedbackRatingForm,
     BuyStockForm,
     SellStockForm,
-    StockFilterForm
+    StockFilterForm,
     CurrencyConverterForm
 )
 
