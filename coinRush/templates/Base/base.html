@@ -19,7 +19,8 @@
     <!-- custom CSS -->
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
-
+    <link rel="stylesheet" href="{% static 'lib/animate/animate.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"/>
     {% block extraHead %}
     {% endblock extraHead %}
 
@@ -29,7 +30,7 @@
 <body>
 
     {% include 'Base/navbar.html' %}
-
+{% block banner %}{% endblock %}
     <div class="container-fluid">
 <!--        {{user.get_short_name}}-->
         {% block content %}

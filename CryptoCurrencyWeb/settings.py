@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "coinRush",
+    "django_filters",
 ]
 
 AUTH_USER_MODEL = "coinRush.User"
@@ -114,7 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'America/New_York'
+TIME_ZONE = "America/New_York"
 
 USE_I18N = True
 
@@ -131,11 +132,10 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_REDIRECT_URL = "home"
-LOGOUT_REDIRECT_URL = ""
+LOGOUT_REDIRECT_URL = "/"
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = '/media/'
 
-STRIPE_PUBLIC_KEY='pk_test_51O9gS7DtFQSyYol1px3Pewj3G45EbQhfGBybaEsewiOknEqQvrBRm8KCdHZ3yQE7OOQkLtdr55csBgeSqEGmy97r00JoyUCLyL'
-STRIPE_PRIVATE_KEY='sk_test_51O9gS7DtFQSyYol1MNFY03BM599KthpCmSAlpWE2PbgXRmV6DLaKGf2C07MGMC2eKYK4DzV5p6mFWlnwkbC5sPau00otKnFZDI'
-
+STRIPE_PUBLIC_KEY = "pk_test_51O9gS7DtFQSyYol1px3Pewj3G45EbQhfGBybaEsewiOknEqQvrBRm8KCdHZ3yQE7OOQkLtdr55csBgeSqEGmy97r00JoyUCLyL"
+STRIPE_PRIVATE_KEY = "sk_test_51O9gS7DtFQSyYol1MNFY03BM599KthpCmSAlpWE2PbgXRmV6DLaKGf2C07MGMC2eKYK4DzV5p6mFWlnwkbC5sPau00otKnFZDI"

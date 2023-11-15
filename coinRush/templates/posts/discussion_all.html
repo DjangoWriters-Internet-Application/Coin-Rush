@@ -6,33 +6,74 @@
 
 {% block content %}
 
+<style>
+    #profile-pic{
+        width:50px;
+        height:50px;
+    }
+    #discussion-sort .nav-link{
+
+            font-size: 12px;
+            padding: 4px 6px;
+
+        }
+       #discussion-sort .inactive{
+       color:black;
+         background-color:rgba(13, 111, 237,0.2)
+         }
+    #discussion-sort .nav-item{
+        padding:2px;
+    }
+
+</style>
+
   <div class="container-fluid">
     <h1 class="mt-5">Discussion Forum</h1>
+
     <div class="row mt-4">
         <div class="col-lg-8">
+               <ul id="discussion-sort" class="nav nav-pills d-flex justify-content-end mb-2">
+    <li class="nav-item">
+        <span class="mx-2"><i class="fa fa-sort"></i></span>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if request.GET.order_by == 'max-views' or request.GET.order_by == None  or request.GET.order_by == '' %} active {% else %} inactive {% endif %}" aria-current="page" href="?order_by=max-views">Max Views</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link{% if request.GET.order_by == 'min-views' %} active {% else %} inactive {% endif %}" href="?order_by=min-views">Min Views</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link{% if request.GET.order_by == 'oldest' %} active {% else %} inactive {% endif %}" href="?order_by=oldest">Oldest</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link{% if request.GET.order_by == 'latest' %} active {% else %} inactive {% endif %}" href="?order_by=latest">Latest</a>
+    </li>
+</ul>
+
             {% for post in posts %}
-                <div class="card mb-3">
+                <div class="card shadow mb-3">
                     <div class="card-body row">
+
+                        <div class="d-md-block d-none col-md-3 d-flex-column ">
+
+                            <p class="card-text d-flex align-content-center"><img class="img img-fluid rounded-circle" id="profile-pic" src={% if  post.created_by.profile_pic.url %} {{post.created_by.profile_pic.url}}{% else %}{% endif %}>
+                                <span class="fw-bold mx-2 align-self-center">{{ post.created_by.name | title }}</span></p>
+                            <p class="card-text"><small class="text-muted">{{ post.created_at|date:"F j, Y" }}</small></p>
+                             <p class="card-text d-flex justify-content-between "><span><i class="fa fa-eye"></i> {{ post.views }} views</span> <a href="{% url 'discussion_single' post.id %}?fl=true" class="btn btn-primary">View</a></p>
+
+
+
+                        </div>
                         <div class="col-md-9">
                             <h5 class="card-title">{{ post.title }}</h5>
                             <p class="card-text">
                                 {{ post.content|truncatewords:50 }}
                             </p>
                         </div>
-                        <div class="d-md-block d-none col-md-3 d-flex-column ">
-
-                            <p class="card-text"><img src={{post.created_by.profile_pic}}>
-                                <span class="text-bold">{{ post.created_by.name | title }}</span></p>
-                            <p class="card-text"><small class="text-muted">{{ post.created_at|date:"F j, Y" }}</small></p>
-                             <p class="card-text d-flex justify-content-between "><span><i class="fa fa-eye"></i> {{ post.views }} views</span> <a href="{% url 'discussion_single' post.id %}" class="btn btn-primary">View</a></p>
-
-
-
-                        </div>
                         <div class="d-md-none mt-2 mb-2 ">
 
-                            <p class="card-text"><small class="text-bold">Posted by {{ post.created_by.name | title }} on </small><small class="text-muted">{{ post.created_at|date:"F j, Y" }}</small></p>
-                            <p class="card-text d-flex justify-content-between"><span><i class="fa fa-eye"></i> {{ post.views }} views</span> <a href="{% url 'discussion_single' post.id %}" class="btn btn-primary">View</a></p>
+                            <p class="card-text">Posted by <small class="text-muted"> {{ post.created_by.name | title }} </small> on <small class="text-muted">{{ post.created_at|date:"F j, Y" }}</small></p>
+                            <p class="card-text d-flex justify-content-between"><span><i class="fa fa-eye"></i> {{ post.views }} views</span> <a href="{% url 'discussion_single' post.id %}?fl=true" class="btn btn-primary">View</a></p>
 
 
 
@@ -41,8 +82,8 @@
                 </div>
 
             {% endfor %}
-            <div class="pagination justify-content-center">
-                <ul class="pagination">
+            <div class="pagination  justify-content-center">
+                <ul class="pagination gap-2">
                     {% if posts.has_previous %}
                         <li class="page-item">
                             <a class="page-link btn btn-light" href="?page=1" aria-label="First">
@@ -75,7 +116,7 @@
 
         </div>
         <div class="col-lg-4">
-            <div class="card">
+            <div class="card shadow">
                 <div class="card-body">
                     <h5 class="card-title">Create a New Topic</h5>
                     {% if user.is_authenticated %}

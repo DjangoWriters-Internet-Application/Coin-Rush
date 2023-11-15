@@ -1,46 +1,99 @@
 {% extends 'Base/base.html' %}
-{% block extraHead %}<script src="https://js.stripe.com/v3/"></script>{% endblock %}
-{% block content %}
-    <h1>Buy Stock</h1>
-    <form method="post">
-        {% csrf_token %}
-        <table>
-            <tr>
-                <th>Stock Symbol</th>
-                <th>Company Name</th>
-                <th>Current Price</th>
-                <th>Quantity to Buy</th>
-            </tr>
-
-            <tr>
-                <td>{{ stock.symbol }}</td>
-                <td>{{ stock.company_name }}</td>
-                <td>${{ stock.current_price }}</td>
-                <td><input type="text" name="stock_symbol" value="{{ stock.symbol }}" hidden>
-                    <input type="number" name="quantity" min="1" required>
-                </td>
-            </tr>
-        </table>
-        <label for="card-element">Card Information:</label>
-        <div id="card-element">
-            <!-- A Stripe Element will be inserted here. -->
+{% load static %}
+{% block extraHead %}
+    <script src="https://js.stripe.com/v3/"></script>
+    <link href="{% static 'css/buy_stock.css' %}" rel="stylesheet"/>
+{% endblock %}
+{% block banner %}
+    <div class="container-fluid hero-header bg-light py-2 mb-5">
+        <div class="container py-5">
+            <div class="row g-5 align-items-center">
+                <div class="col-lg-9">
+                    <h1 class="display-4 mb-3 animated slideInDown">Buy Stock</h1>
+                    <h3 class="display-6 mb-3 animated slideInDown">{{ stock.symbol }}</h3>
+                </div>
+                <div class="col-lg-3 animated fadeIn">
+                    <img class="img-fluid animated pulse infinite banner-img"
+                         src="{{ stock.image.url }}" alt="">
+                </div>
+            </div>
         </div>
-        <!-- Used to display form errors. -->
-        <div id="card-errors" role="alert"></div>
-        <input type="hidden" name="stripeToken">
-        <button type="submit">Buy</button>
-    </form>
-    <script>
+    </div>
+{% endblock %}
+{% block content %}
 
+    <form method="post">
+        <div class="row px-lg-5">
+            <div class="col-md-6">
+                {% csrf_token %}
+                {{ form.quantity.errors }}
+                <div class="container">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h3 class="card-title text-primary fw-bold ">Stock Details</h3>
+                            <p class="card-text"><strong>Stock Symbol:</strong> {{ stock.symbol }}</p>
+                            <p class="card-text"><strong>Company Name:</strong> {{ stock.company_name }}</p>
+                            <p class="card-text"><strong>Current Price:</strong> ${{ stock.current_price }}</p>
+                        </div>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="id_quantity" class="fw-bold text-dark fs-5">Quantity to Buy:</label>
+                        {{ form.quantity }}
+                        <input type="hidden" name="stock_symbol" value="{{ stock.symbol }}">
+
+                    </div>
+                    <div class="form-group mb-5">
+                        <label for="total_price" class="fw-bold text-dark fs-5">Total Price:</label>
+                        <input type="text" class="form-control" id="total_price" readonly>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label class="mb-2 text-primary fw-bold" style="font-size: 28px" for="card-element">Card
+                    Information:</label>
+                <div class="row mb-3">
+                    <div class="col-sm-1">
+                        <img style="width: 50px" alt="payment-1" src="{% static 'images/payment-1.png' %}">
+                    </div>
+                    <div class="col-sm-1">
+                        <img style="width: 50px" alt="payment-2" src="{% static 'images/payment-2.png' %}">
+                    </div>
+                    <div class="col-sm-1">
+                        <img style="width: 50px" alt="payment-3" src="{% static 'images/payment-3.png' %}">
+                    </div>
+                    <div class="col-sm-1">
+                        <img style="width: 50px" alt="payment-4" src="{% static 'images/payment-4.png' %}">
+                    </div>
+                </div>
+                <div id="card-element" class="d-flex flex-column">
+                    <!-- A Stripe Element will be inserted here. -->
+                </div>
+                <!-- Used to display form errors. -->
+                <div id="card-errors" role="alert"></div>
+                {{ form.stripeToken }}
+                <button class="btn btn-primary mt-3" type="submit"><i class="bi bi-cart"></i> Buy</button>
+            </div>
+        </div>
+    </form>
+
+
+    <script>
         var stripe = Stripe('{{PUBLIC_KEY }}');
         var elements = stripe.elements();
-        // Rest of the Stripe integration script as shown in the previous example
-        // Create an instance of the card Element.
-        var card = elements.create('card');
+
+        var card = elements.create('card', {
+            style: {
+                base: {
+                    fontSize: '16px',
+                    color: '#32325d',
+                    fontFamily: 'Arial, sans-serif',
+                },
+            }
+        });
         // Add an instance of the card Element into the `card-element` div.
         card.mount('#card-element');
         // Handle real-time validation errors from the card Element.
-        card.addEventListener('change', function(event) {
+        card.addEventListener('change', function (event) {
             var displayError = document.getElementById('card-errors');
             if (event.error) {
                 displayError.textContent = event.error.message;
@@ -50,9 +103,9 @@
         });
         // Create a token when the form is submitted.
         var form = document.querySelector('form');
-        form.addEventListener('submit', function(event) {
+        form.addEventListener('submit', function (event) {
             event.preventDefault();
-            stripe.createToken(card).then(function(result) {
+            stripe.createToken(card).then(function (result) {
                 if (result.error) {
                     // Inform the user if there was an error.
                     var errorElement = document.getElementById('card-errors');
@@ -61,10 +114,16 @@
                     // Send the token to your server.
                     var stripeToken = document.querySelector('input[name="stripeToken"]');
                     stripeToken.value = result.token.id;
-                     console.log(result.token.id);
                     form.submit();
                 }
             });
+        });
+        // Update total price dynamically based on quantity
+        document.getElementById('id_quantity').addEventListener('input', function () {
+            var quantity = parseInt(this.value);
+            var currentPrice = parseFloat('{{ stock.current_price }}');
+            var totalPrice = isNaN(quantity) ? 0 : quantity * currentPrice;
+            document.getElementById('total_price').value = '$' + totalPrice.toFixed(2);
         });
     </script>
 {% endblock %}

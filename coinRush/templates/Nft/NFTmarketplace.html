@@ -1,0 +1,54 @@
+{% extends "Base/base.html" %}
+{% load static %}
+{% block extraHead %}
+    <link rel="stylesheet" href="{% static 'css/news.css' %}">
+{% endblock extraHead %}
+
+{% block content %}
+
+<!-- main_page.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFT Marketplace</title>
+    <!-- Add your CSS and styling links here -->
+    <link rel="stylesheet" href="{% static 'css/main_page.css' %}">
+</head>
+<body>
+    <header>
+        <h1>NFT Marketplace</h1>
+    </header>
+    <div class="container">
+        <section class="nft-cards">
+            <h2>Available NFTs for Sale</h2>            
+            <div class="row">
+                {% for nft in nfts %}
+                    {% if nft.is_for_sale %}
+                        <div class="col-md-4 nft-card">
+                            <a href="{% url 'nft_detail' nft.id %}">
+                                <div class="card">
+                                    <img src="{{ nft.image.url }}" >
+                                    <div class="card-body">
+                                        <h3 class="card-title">{{ nft.description }}</h3>
+                                        <p class="card-text">Owner: {{ nft.owner.username }}</p>
+                                        <p class="card-text">Price: {{ nft.price }} {{ nft.currency }}</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+    <section class="pagination">
+        <!-- Add pagination links for navigating through NFTs -->
+    </section>
+</body>
+</html>
+
+
+{% endblock content %}

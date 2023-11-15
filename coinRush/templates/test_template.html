@@ -1,0 +1,43 @@
+{% extends "Base/base.html" %}
+{% load static %}
+{% block extraHead %}
+    <link rel="stylesheet" href="{% static 'css/news.css' %}">
+{% endblock extraHead %}
+
+{% block content %}
+
+    <pre>{{ data | safe }}</pre>
+
+    <div class="container my-5">
+        <div class="card mx-auto" style="max-width: 400px;">
+            <div class="card-body">
+                <h1 class="card-title mb-2">Currency Converter</h1>
+
+                <form method="post" class="needs-validation" >
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="{{ form.amount.id_for_label }}">Amount</label>
+                        {{ form.amount }}
+                    </div>
+                    <div class="form-group mt-2">
+                        <label for="{{ form.currency_from.id_for_label }}">From Currency</label>
+                        {{ form.currency_from }}
+                    </div>
+                    <div class="form-group mt-2">
+                        <label for="{{ form.currency_to.id_for_label }}">To Currency</label>
+                        {{ form.currency_to }}
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block mt-2">Convert</button>
+                </form>
+
+                {% if result %}
+                    <div class="mt-4">
+                        <h4>Result:</h4>
+                        <p>{{ result }}</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

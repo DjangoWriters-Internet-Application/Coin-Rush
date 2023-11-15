@@ -1,8 +1,11 @@
-* {
+
+*{
+
     box-sizing: border-box;
     padding: 0;
     margin: 0;
 }
+
 
 .details-container {
     display: flex;
@@ -10,6 +13,7 @@
     align-items: center;
     flex-direction: column;
 }
+
 
 .news-card-link,
 .news-card-link:hover {
@@ -19,7 +23,7 @@
 
 
 .news-card {
-    padding: 18px;
+    padding: 10px;
     box-shadow: 0 0 8px -1px;
     border-radius: 5px;
     overflow: hidden;
