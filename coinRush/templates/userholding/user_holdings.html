@@ -1,31 +1,116 @@
 {% extends "Base/base.html" %}
 
 {% block title %}User Holding{% endblock %}
+{% load static %}
+{% block banner %}
+    <div class="container-fluid hero-header bg-light py-2 mb-5">
+        <div class="container ">
+            <div class="row g-5 align-items-center">
+                <div class="col-lg-9">
+                    <h1 class="display-4 mb-3 animated slideInDown">{{ user.name|capfirst }}'s Holding</h1>
+                </div>
+                <div class="col-lg-3 animated fadeIn">
+                    <img class="img-fluid animated pulse infinite banner-img"
+                         src="{% static 'images/holding2.png' %}" alt="" style="width: 300px">
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
 {% block content %}
-<h1>{{user.name|capfirst}}'s Holding</h1>
+    <div class="container">
 
-{% if holdings %}
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Stock</th>
-            <th>Company</th>
-            <th>Current Price</th>
-            <th>Quantity</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for holding in holdings%}
-        <tr>
-            <th>{{holding.stock}}</th>
-            <th>{{holding.stock.company_name}}</th>
-            <th>{{holding.stock.current_price}}</th>
-            <th>{{holding.quantity}}</th>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% else %}
-<p>No current holdings</p>
-{%endif%}
+        {% if holdings %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Stock</th>
+                        <th>Company</th>
+                        <th>Current Price</th>
+                        <th>Quantity</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for holding in holdings %}
+                        <tr>
+                            <td><img src="{{ holding.stock.image.url }}" alt="{{ holding.stock.symbol }}" width="30"
+                                     height="30"> {{ holding.stock }}</td>
+                            <td>{{ holding.stock.company_name }}</td>
+                            <td>{{ holding.stock.current_price }}</td>
+                            <td>{{ holding.quantity }}</td>
+                            <td>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#sellModel{{ holding.stock }}">
+                                    <i class="bi bi-cash"></i> Sell
+                                </button>
+
+                            </td>
+                        </tr>
+
+                        <!-- Sell Modal -->
+                        <div class="modal fade " id="sellModel{{ holding.stock }}" tabindex="-1"
+                             aria-labelledby="sellModalLabel"
+                             aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="sellModalLabel">Sell {{ holding.stock }}</h5>
+                                        <button type="button" class="btn btn-outline-primary close" data-dismiss="modal"
+                                                aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form method="post" action="{% url 'user-holdings' %}">
+                                            {% csrf_token %}
+                                            <div class="form-group">
+                                                {{ sell_form.quantity.label_tag }}
+                                                {{ sell_form.quantity }}
+                                                {% if sell_form.errors.quantity %}
+                                                    <span class="text-danger">{{ sell_form.errors.quantity }}</span>
+                                                    <script>
+                                                        // Keep the modal open if there are errors
+                                                        $(document).ready(function () {
+                                                            $('#sellModel{{ holding.stock }}').modal('show');
+                                                        });
+                                                    </script>
+                                                {% endif %}
+                                            </div>
+                                            <input type="hidden" name="stock_symbol" value="{{ holding.stock }}">
+                                            <button type="submit" class="btn btn-primary mt-3"><i
+                                                    class="bi bi-cash"></i> Sell
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination justify-content-center mb-5">
+        <span class="step-links">
+            {% if holdings.has_previous %}
+                <a href="?page=1" class="btn btn-primary mx-2">&laquo; first</a>
+                <a href="?page={{ holdings.previous_page_number }}" class="btn btn-primary mx-2">previous</a>
+            {% endif %}
+
+            <span class="current fw-bold">
+                Page {{ holdings.number }} of {{ holdings.paginator.num_pages }}.
+            </span>
+
+            {% if holdings.has_next %}
+                <a href="?page={{ holdings.next_page_number }}" class="btn btn-primary mx-2">next</a>
+                <a href="?page={{ holdings.paginator.num_pages }}" class="btn btn-primary mx-2">last &raquo;</a>
+            {% endif %}
+        </span>
+            </div>
+        {% else %}
+            <p class="fw-bold text-primary mb-5" style="font-size: 40px">No current holdings</p>
+        {% endif %}
+
+    </div>
 {% endblock %}
