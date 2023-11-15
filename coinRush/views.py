@@ -21,6 +21,7 @@ from .forms import (
     FeedbackRatingForm,
     BuyStockForm,
     SellStockForm,
+    CurrencyConverterForm
 )
 
 from .forms import (
@@ -380,11 +381,18 @@ def cryptocurrency_data(request):
         return render(request, "test_template.html", {"error_message": str(e)})
 
 
-def convert_data(request):
+def convert(source,to,amount):
+
     # url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/map'
     # url = 'https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/map'
-    # url = 'https://pro-api.coinmarketcap.com/v2/tools/price-conversion'
-    parameters = {"id": 1, "convert_id": 2784, "amount": 1}
+
+    url = 'https://sandbox-api.coinmarketcap.com/v2/tools/price-conversion'
+    parameters = {
+        'id':source,
+        'convert_id':to,
+        'amount':amount
+    }
+
     headers = {
         "Accepts": "application/json",
         # 'X-CMC_PRO_API_KEY': '6f66fcc3-73b3-48ea-a584-32af97de8e12',
@@ -393,11 +401,28 @@ def convert_data(request):
 
     try:
         response = requests.get(url, params=parameters, headers=headers)
-        data = response.json()
-        return render(request, "test_template.html", {"data": data})
-    except (
-        requests.exceptions.ConnectionError,
-        requests.exceptions.Timeout,
-        requests.exceptions.TooManyRedirects,
-    ) as e:
-        return render(request, "test_template.html", {"error_message": str(e)})
+        print(data)
+        return data['data'][to]['quote'][to]['price']
+
+    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout, requests.exceptions.TooManyRedirects) as e:
+        return render(request, 'test_template.html', {'error_message': str(e)})
+
+def convert_data(request):
+    result = None
+
+    # Example choices (you can replace this with actual currency choices)
+    currency_choices = [(2781, 'BTC'), (2784, 'EUR'), (3, 'GBP')]
+
+    if request.method == 'POST':
+        form = CurrencyConverterForm(request.POST)
+        form.set_currency_choices(currency_choices)
+        if form.is_valid():
+            result=convert(form.cleaned_data['currency_from'],form.cleaned_data['currency_to'],form.cleaned_data['amount'])
+        return render(request, 'test_template.html', {'form': form, 'result': result})
+
+
+    else:
+        form = CurrencyConverterForm()
+        form.set_currency_choices(currency_choices)
+
+    return render(request, 'test_template.html', {'form': form, 'result': result})
