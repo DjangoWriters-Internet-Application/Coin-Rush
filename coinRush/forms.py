@@ -3,7 +3,7 @@ from django.contrib.auth.forms import AuthenticationForm
 
 # from django.contrib.auth.forms import UserCreationForm
 
-from .models import User, Post, Comment, Transaction, NewsComments, Feedback, NFT, Purchase
+from .models import User, Post, Comment, Transaction, NewsComments, Feedback, NFT
 
 
 class UserCreationForm(forms.ModelForm):
@@ -119,19 +119,16 @@ class CommentForm(forms.ModelForm):
         }
 
 
-class BuyStockForm(forms.ModelForm):
-    class Meta:
-        model = Transaction
-        fields = ["quantity"]
-
-    widgets = {
-        "quantity": forms.NumberInput(attrs={"required": "required", "min": "1"}),
-    }
-
-
-class PaymentForm(forms.Form):
-    # Include the fields necessary for Stripe payment
+class BuyStockForm(forms.Form):
+    quantity = forms.IntegerField(min_value=1, required=True, widget=forms.NumberInput(
+        attrs={'class': 'form-control'}))
     stripeToken = forms.CharField(widget=forms.HiddenInput())
+
+
+class SellStockForm(forms.Form):
+    quantity = forms.IntegerField(min_value=1, required=True, widget=forms.NumberInput(
+        attrs={'class': 'form-control'}))
+    stock_symbol = forms.CharField(widget=forms.HiddenInput())
 
 
 class NewsCommentForm(forms.ModelForm):
@@ -174,7 +171,13 @@ class BuyNFTForm(forms.Form):
     quantity = forms.IntegerField(min_value=1, widget=forms.NumberInput(attrs={"required": "required"}))
     stripeToken = forms.CharField(widget=forms.HiddenInput())
     
-class PurchaseForm(forms.ModelForm):
-    class Meta:
-        model = Purchase
-        fields = ["quantity"]
+
+
+class CurrencyConverterForm(forms.Form):
+    amount = forms.DecimalField(min_value=0.01, label='Amount', widget=forms.NumberInput(attrs={'class': 'form-control'}))
+    currency_from = forms.ChoiceField(label='From Currency', widget=forms.Select(attrs={'class': 'form-control'}))
+    currency_to = forms.ChoiceField(label='To Currency', widget=forms.Select(attrs={'class': 'form-control'}))
+
+    def set_currency_choices(self, choices):
+        self.fields['currency_from'].choices = choices
+        self.fields['currency_to'].choices = choices
