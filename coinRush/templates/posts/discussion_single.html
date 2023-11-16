@@ -7,10 +7,13 @@
 {% block content %}
 <div class="container">
     <h1 class="mt-5">{{ post.title }}</h1>
+    <p class="card-text"><small class="text-muted">Posted by {{ post.created_by }} on {{ post.created_at|date:"F j, Y" }}</small></p>
+
     <div class="card mt-4">
         <div class="card-body">
             <p class="card-text">{{ post.content }}</p>
             <p class="card-text"><small class="text-muted">Posted by {{ post.created_by }} on {{ post.created_at|date:"F j, Y" }}</small></p>
+
             <p class="card-text"><i class="fa fa-eye"></i> {{ post.views }} views</p>
         </div>
     </div>
@@ -22,7 +25,7 @@
         <div class="form-group">
             {{ form.content }}
         </div>
-        <button type="submit" class="btn btn-primary">Submit Comment</button>
+        <button type="submit" class="btn btn-primary mt-2">Submit Comment</button>
     </form>
     {% else %}
         <p>Please login to add comment..</p>

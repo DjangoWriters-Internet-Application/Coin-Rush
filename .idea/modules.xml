@@ -2,7 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+<<<<<<< HEAD
       <module fileurl="file://$PROJECT_DIR$/.idea/Coin-Rush.iml" filepath="$PROJECT_DIR$/.idea/Coin-Rush.iml" />
+=======
+      <module fileurl="file://$PROJECT_DIR$/.idea/coinrush.iml" filepath="$PROJECT_DIR$/.idea/coinrush.iml" />
+>>>>>>> 7f36a0d979307be49921bdf325e4b19ee89ac006
     </modules>
   </component>
 </project>

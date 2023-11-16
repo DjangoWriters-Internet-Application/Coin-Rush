@@ -3,7 +3,7 @@
   margin-bottom: 40px;
 }
 .card {
-  max-width: 320px;
+  max-width: 23.2rem;
   border-width: 1px;
   border: none;
   border-color: rgba(219, 234, 254, 1);
@@ -12,7 +12,7 @@
   padding: 1rem;
   margin-left: auto;
   margin-right: auto;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   text-decoration: none;
 }
 .header {
@@ -23,17 +23,32 @@
 }
 
 .header img{
-  border-radius: 10px;
+  border-radius: 18px;
 }
 
-h4{
+h1{
+  font-size: 60px;
+  font-family: Calibri;
+  text-align: center;
+  margin-top: 50px;
+  margin-left: 24rem;
+  margin-right: 24rem;
+  margin-bottom: 2.5rem;
+  font-weight: bold;
+}
+
+.header h4{
   font-weight: 400;
-  color: #3754ff;
+  color: black;
   margin-top: 2rem;
   white-space: normal;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
+}
+
+.header h4:hover{
+  color: royalblue;
 }
 
 .rate > input{
@@ -76,4 +91,44 @@ input:checked ~ label, label:hover ~ label{
 input:checked + label:hover, input:checked ~ label:hover,input:checked ~ label:hover ~ label,
 label:hover ~ input:checked ~ label{
   color: #cc9000;
+}
+
+h4{
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.centered-buttons {
+  display: flex;
+  justify-content: center;
+  margin-left: 13rem;
+  margin-right: 13rem;
+  margin-bottom: 5rem;
+}
+
+.button1 {
+  position: relative;
+  display: inline-block;
+  margin: auto;
+  padding: 10px 25px;
+  text-align: center;
+  font-size: 18px;
+  letter-spacing: 1px;
+  text-decoration: none;
+  color: black;
+  background: transparent;
+  cursor: pointer;
+  transition: ease-out 0.5s;
+  border: 2px solid royalblue;
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 0 #0d6efd;
+}
+
+button:hover {
+  color: white;
+  box-shadow: inset 0 -100px 0 0 #0d6efd;
+}
+
+button:active {
+  transform: scale(0.9);
 }
