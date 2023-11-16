@@ -7,6 +7,30 @@
     {{form.as_p}}
     <input type="submit" value="Submit" class="btn btn-primary" />
 </form>
+
+
+    <div class="row mt-4">
+        <div class="col-lg-8">
+               <ul id="stock-sort" class="nav nav-pills d-flex justify-content-end mb-2">
+    <li class="nav-item">
+        <span class="mx-2"><i class="fa fa-sort"></i></span>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if request.GET.order_by == 'max-price' or request.GET.order_by == None  or request.GET.order_by == '' %} active {% else %} inactive {% endif %}" aria-current="page" href="?order_by=max-price">Max Price</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link{% if request.GET.order_by == 'min-price' %} active {% else %} inactive {% endif %}" href="?order_by=min-price">Min Price</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link{% if request.GET.order_by == 'max-market-cap' %} active {% else %} inactive {% endif %}" href="?order_by=max-market-cap">Max Market Cap</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link{% if request.GET.order_by == 'min-market-cap' %} active {% else %} inactive {% endif %}" href="?order_by=min-market-cap">Min Market Cap</a>
+    </li>
+</ul>
+                    </div>
+                </div>
+
     <h1>Stocks</h1>
     {% if stocks %}
         <table class="table table-striped">
