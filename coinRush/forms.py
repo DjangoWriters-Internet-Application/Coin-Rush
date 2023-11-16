@@ -1,9 +1,11 @@
 from django import forms
+from .models import User, Post, Comment,Transaction,NewsComments, News
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
 
 # from django.contrib.auth.forms import UserCreationForm
 
-from .models import User, Post, Comment, Transaction, NewsComments, Feedback
+from .models import User, Post, Comment, Transaction, NewsComments, Feedback, Stock
 
 
 class UserCreationForm(forms.ModelForm):
@@ -147,11 +149,33 @@ class NewsCommentForm(forms.ModelForm):
         }
 
 
+class NewsCreateForm(forms.ModelForm):
+    class Meta:
+        model = News
+        fields = ['title', 'cover_image','sub_title', 'description']
+        widgets = {
+            'cover_image': forms.FileInput(attrs={'class': "news-file-upload-input form-input-field"}),
+            'title': forms.TextInput(attrs={'class': "news-title-input form-input-field", 'placeholder': "Enter Title"}),
+            'sub_title': forms.TextInput(attrs={'class': "news-sub-title-input form-input-field", 'placeholder': "Enter Sub-Title"}),
+            'description': forms.Textarea(attrs={'class': "news-description-input form-input-field", 'placeholder': "Enter News Description"}),
+        }
+        exclude = ['publish_datetime']
+
+    title = forms.CharField(label="News Title", required=True, max_length=225)
+    sub_title = forms.CharField(label="News Sub Title", required=False, max_length=225)
+    description = forms.CharField(label="News Description", required=True, max_length=1000, widget=forms.Textarea)
+    cover_image = forms.ImageField(label="Cover Image", required=False)
+
 class FeedbackRatingForm(forms.ModelForm):
     class Meta:
         model = Feedback
         fields = ["subject", "feedback", "rating"]
 
+
+class StockFilterForm(forms.ModelForm):
+    class Meta:
+        model = Stock
+        fields=["current_price"]
 
 class CurrencyConverterForm(forms.Form):
     amount = forms.DecimalField(min_value=0.01, label='Amount', widget=forms.NumberInput(attrs={'class': 'form-control'}))
