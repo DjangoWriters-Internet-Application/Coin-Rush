@@ -8,7 +8,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.stdout.write(self.style.SUCCESS('Restoring data...'))
 
-        # Your restore logic goes here
+        # restore logic goes here
         with open('learn_backup.json', 'r') as file:
             backup_data = json.load(file)
 
