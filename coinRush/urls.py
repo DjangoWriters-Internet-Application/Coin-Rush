@@ -26,7 +26,7 @@ urlpatterns = [
     path("buy-stock/<str:stock_symbol>/", views.buy_stock, name="buy_stock"),
     path("nft/", views.nftmarketplace, name="NFTMarketPlace"),
     path("nft/<int:nft_id>/", views.nft_detail, name="nft_detail"),
-    path('test/', views.temp, name='cryptocurrency_data'),
+    path('test/', views.convert_data, name='cryptocurrency_data'),
 
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

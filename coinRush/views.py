@@ -13,6 +13,7 @@ from django.urls import reverse
 from django.contrib import messages
 from django.core.exceptions import *
 from .filters import StockFilters
+from .constants import top_30_currencies,crypto_data
 import requests
 
 from .forms import (
@@ -473,10 +474,15 @@ def cryptocurrency_data(request):
 
 
 def convert(source,to,amount):
+    # Corrected dictionary creation with ID as key and name as value
+    collective_dict = {str(identifier): name for identifier, name in top_30_currencies}
+    collective_dict.update({str(identifier): name for identifier, name in crypto_data})
+
+    # collective_dict += {name: identifier for identifier, name in crypto_data}
 
     # url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/map'
     # url = 'https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/map'
-    url = 'https://pro-api.coinmarketcap.com/v2/tools/price-conversion'
+    # url = 'https://pro-api.coinmarketcap.com/v2/tools/price-conversion'
 
     url = 'https://sandbox-api.coinmarketcap.com/v2/tools/price-conversion'
     parameters = {
@@ -493,11 +499,9 @@ def convert(source,to,amount):
 
     try:
         response = requests.get(url, params=parameters, headers=headers)
-        print(response)
         data=response.json()
-        print(data)
-        return data['data'][source]['quote'][to]['price']
-        # return data['data']['quote'][to]['price']
+        return str(amount) + " "+ collective_dict[str(source)]+" = " + str(round(data['data'][source]['quote'][to]['price'],4))+" "+collective_dict[str(to)]
+        # return str(amount) + " "+ collective_dict[str(source)]+" = " + str(round(data['data']['quote'][to]['price'],4))+" "+collective_dict[str(to)]
     except:
         return "Some error occured"
 
@@ -505,7 +509,7 @@ def convert_data(request):
     result = None
 
     # Example choices (you can replace this with actual currency choices)
-    currency_choices = [(1, 'BTC'), (2784, 'EUR'), (3, 'GBP')]
+    currency_choices = top_30_currencies+crypto_data
 
     if request.method == 'POST':
         form = CurrencyConverterForm(request.POST)
@@ -541,7 +545,7 @@ def temp(request):
 
     try:
         response = requests.get(url, params=parameters, headers=headers)
-        print(response)
+
         data=response.json()
         print(data)
         return render(request,'test_template.html',{'data':data})
