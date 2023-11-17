@@ -5,13 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c1604f2-4a48-491f-b1c4-4c0af06d1c4c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/no-image-available.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/js/learn.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/images/topic_images/no-image-available.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/coinRush/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/coinRush/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/coinRush/static/css/learn.css" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/static/css/learn.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/coinRush/templates/Learn/learning.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/Learn/learning.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/coinRush/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/views.py" afterDir="false" />
     </list>
@@ -179,7 +174,7 @@
       <workItem from="1700111630097" duration="5064000" />
       <workItem from="1700159731308" duration="68000" />
       <workItem from="1700159914676" duration="17995000" />
-      <workItem from="1700182089101" duration="8396000" />
+      <workItem from="1700182089101" duration="13890000" />
     </task>
     <servers />
   </component>

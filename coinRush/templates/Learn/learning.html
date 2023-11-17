@@ -1,29 +1,33 @@
 {% extends 'Base/base.html' %}
 {% load static %}
 {% block extraHead %}
-<!--    <link rel="stylesheet" href="{% static 'css/news.css' %}">-->
-<link rel="stylesheet" type="text/css" href="{% static 'css/learn.css' %} ">
-
+    <link rel="stylesheet" type="text/css" href="{% static 'css/learn.css' %}">
 {% endblock extraHead %}
 {% block title %}Learn Center{% endblock %}
 {% block content %}
-{% if messages %}
-{% for message in messages %}
-<div class="alert {% if 'success' in message.tags %}alert-success{% elif 'error' in message.tags %}alert-danger{% endif %}">
-    {{ message }}
-</div>
-{% endfor %}
-{% endif %}
-
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if 'success' in message.tags %}alert-success{% elif 'error' in message.tags %}alert-danger{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    {% if user.is_superuser %}
     <div class="container mt-3">
-        <!-- Centered container for the "Create New Topic" button -->
+        <!-- Centered container for the "Create New Topic" and "Create Learn" buttons -->
         <div class="d-flex justify-content-center">
+            <!-- Create New Topic button -->
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#topicModal">
-                Create New Topic
+                Create Topic
+            </button>
+            <div style="width: 10px;"></div>
+            <!-- Create Learn button -->
+            <button type="button" class="btn btn-primary ml-2" data-toggle="modal" data-target="#learnModal">
+                Create Subject
             </button>
         </div>
 
-        <!-- Modal -->
+        <!-- Modal for Create New Topic -->
         <div class="modal position-fixed" id="topicModal" tabindex="-1" role="dialog" aria-labelledby="topicModalLabel"
              aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -38,45 +42,68 @@
                         <!-- Form for creating a new topic -->
                         <form method="post" action="">
                             {% csrf_token %}
-                            {{ form.as_p }}
-                            <button type="submit" class="btn btn-primary">Create</button>
+                            <table>{{ form.as_table }}</table><hr>
+                            <button type="submit"  class="btn btn-primary">Create</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for Create Learn -->
+        <div class="modal position-fixed" id="learnModal" tabindex="-1" role="dialog" aria-labelledby="learnModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="learnModalLabel">Create New Subject</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Form for creating a new Learn entry -->
+                        <form method="post" action="">
+                            {% csrf_token %}
+                            <table>{{ form2.as_table }}</table><hr>
+                            <button type="submit" class="btn btn-primary">Submit</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    {% endif %}
+    <h1>Learn about blockchain, crypto and NFTs</h1><br/>
+    <h4>Browse by topic</h4>
 
-        <h1>Learn about blockchain, crypto and NFTs</h1><br/>
-        <h4>Browse by topic</h4>
+    <!-- Scrollable container for buttons -->
+    <div class="centered-buttons-scroll">
+        {% for category in categories %}
+            <button class="button1" type="button" onclick="scrollToCategory('{{ category.name }}')">{{ category.name }}</button>
+        {% endfor %}
+    </div>
 
-        <!-- Scrollable container for buttons -->
-        <div class="centered-buttons-scroll">
+    <div class="container">
+        <div class="row">
             {% for category in categories %}
-                <button class="button1" type="button" onclick="scrollToCategory('{{ category.name }}')">{{ category.name }}</button>
+                <h3 id="{{category.name}}">{{ category.name }}</h3>
+                <hr>
+                {% for course in category.learn_set.all %}
+                    <a class="card" href="/learn/{{ course.slug }}/">
+                        <div class="header">
+                            {% if course.image %}
+                            <img class="img-fluid me-2" src="{{ course.image.url }}" alt="{{ course.title }}">
+                            {% else %}
+                            <img class="img-fluid me-2" src="{% static 'topic_images/no-image-available.png' %}" alt="{{ course.title }}">
+                            {% endif %}
+                            <h4>{{ course.title }}</h4>
+                        </div>
+                    </a>
+                {% endfor %}
             {% endfor %}
         </div>
-
-        <div class="container">
-            <div class="row">
-                {% for category in categories %}
-                    <h3 id="{{category.name}}">{{ category.name }}</h3>
-                    <hr>
-                    {% for course in category.learn_set.all %}
-                        <a class="card" href="/learn/{{ course.slug }}/">
-                            <div class="header">
-                                {% if course.image %}
-                                <img class="img-fluid me-2" src="{{ course.image.url }}" alt="{{ course.title }}">
-                                {% else %}
-                                <img class="img-fluid me-2" src="{% static 'topic_images/no-image-available.png' %}" alt="{{ course.title }}">
-                                {% endif %}
-                                <h4>{{ course.title }}</h4>
-                            </div>
-                        </a>
-                    {% endfor %}
-                {% endfor %}
-            </div>
-        </div>
+    </div>
 
 {% endblock content %}
 
