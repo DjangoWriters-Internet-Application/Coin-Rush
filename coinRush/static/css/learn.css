@@ -98,14 +98,23 @@ h4{
   margin-bottom: 2.5rem;
 }
 
-.centered-buttons {
+/*.centered-buttons {*/
+/*  display: flex;*/
+/*  justify-content: center;*/
+/*  margin-left: 13rem;*/
+/*  margin-right: 13rem;*/
+/*  margin-bottom: 5rem;*/
+/*}*/
+
+.centered-buttons-scroll {
   display: flex;
-  justify-content: center;
-  margin-left: 13rem;
-  margin-right: 13rem;
-  margin-bottom: 5rem;
+  overflow-x: auto;
+  white-space: nowrap;
 }
 
+.centered-buttons-scroll::-webkit-scrollbar {
+    display: none;
+}
 .button1 {
   position: relative;
   display: inline-block;

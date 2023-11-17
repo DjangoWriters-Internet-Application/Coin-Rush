@@ -5,7 +5,7 @@ from django.contrib.auth.forms import AuthenticationForm
 
 # from django.contrib.auth.forms import UserCreationForm
 
-from .models import User, Post, Comment, Transaction, NewsComments, Feedback, Stock
+from .models import User, Post, Comment, Transaction, NewsComments, Feedback, Stock, CourseCategory
 
 
 class UserCreationForm(forms.ModelForm):
@@ -185,3 +185,8 @@ class CurrencyConverterForm(forms.Form):
     def set_currency_choices(self, choices):
         self.fields['currency_from'].choices = choices
         self.fields['currency_to'].choices = choices
+
+class TopicCreateForm(forms.ModelForm):
+    class Meta:
+        model = CourseCategory
+        fields = ['name']

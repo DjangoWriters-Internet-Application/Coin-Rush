@@ -5,125 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c1604f2-4a48-491f-b1c4-4c0af06d1c4c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/a-brief-introduction-to-technical-analysis.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/a-brief-introduction-to-technical-analysis_JTtoUND.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/a-brief-introduction-to-technical-analysis_Jaid9na.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/crypto-coins-and-tokens.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/crypto-coins-and-tokens_hVgjsYG.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/crypto-coins-and-tokens_rWpfMmq.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/how-does-defi-work.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/how-does-defi-work_GJ6Qwzf.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/how-does-defi-work_gkH2tw8.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/how-to-buy-an-nft.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/how-to-buy-an-nft_Wqqbvol.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/how-to-buy-an-nft_YmB0w7x.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/how-to-keep-your-crypto-safe.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/how-to-keep-your-crypto-safe_49jrynh.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/how-to-keep-your-crypto-safe_9VFDR0L.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/proof-of-work-vs-proof-of-stake.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/proof-of-work-vs-proof-of-stake_0nAc6XY.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/proof-of-work-vs-proof-of-stake_m7hrMrF.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-are-crypto-future-contracts.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-are-crypto-future-contracts_DyVETnm.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-are-crypto-future-contracts_xiG8RTT.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-a-blockchain-consensus-mechanism.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-a-blockchain-consensus-mechanism_3chtdi7.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-a-blockchain-consensus-mechanism_GREa3lf.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-a-liquidity-pool-and-how-to-use-one.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-a-liquidity-pool-and-how-to-use-one_PDW9dgr.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-a-liquidity-pool-and-how-to-use-one_WFFoH6f.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-an-nft-rarity-ranking.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-an-nft-rarity-ranking_BSTYnkU.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-an-nft-rarity-ranking_WsdmhAs.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-an-nft.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-an-nft_DAavZID.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-an-nft_uh6JPbF.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-bitcoin-white-paper.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-bitcoin-white-paper_8as0Uu3.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-bitcoin-white-paper_i8389dR.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-bitcoin.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-bitcoin_NLsHpmM.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-bitcoin_bHNdosd.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-bitcoin_mSvk2xA.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-bitcoin_r9jLoCN.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-bitcoin_z1DeN5T.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-blockchain-technology.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-blockchain-technology_G7erBd3.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-blockchain-technology_hojGCsT.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-cryptocurrency.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-cryptocurrency_4tJQowP.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-cryptocurrency_MMriPTN.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-defi.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-defi_IDuyAWJ.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-defi_oMkMfrb.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-dollar-cost-averaging.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-dollar-cost-averaging_Yl5rArx.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-dollar-cost-averaging_mo5bfy0.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-lightning-network.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-lightning-network_TYDfF8y.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/what-is-lightning-network_fnzj5L5.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/coinRush/static/images/topic_images/no-image-available.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/coinRush/static/js/learn.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/topic_images/no-image-available.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/coinRush/management/commands/backup_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/management/commands/backup_data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/coinRush/management/commands/restore_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/management/commands/restore_data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/coinRush/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/learn_backup.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/a-brief-introduction-to-technical-analysis.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/a-brief-introduction-to-technical-analysis.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/a-brief-introduction-to-technical-analysis_JTtoUND.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/a-brief-introduction-to-technical-analysis_JTtoUND.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/a-brief-introduction-to-technical-analysis_Jaid9na.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/a-brief-introduction-to-technical-analysis_Jaid9na.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/crypto-coins-and-tokens.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/crypto-coins-and-tokens.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/crypto-coins-and-tokens_hVgjsYG.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/crypto-coins-and-tokens_hVgjsYG.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/crypto-coins-and-tokens_rWpfMmq.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/crypto-coins-and-tokens_rWpfMmq.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/how-does-defi-work.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/how-does-defi-work.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/how-does-defi-work_GJ6Qwzf.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/how-does-defi-work_GJ6Qwzf.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/how-does-defi-work_gkH2tw8.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/how-does-defi-work_gkH2tw8.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/how-to-buy-an-nft.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/how-to-buy-an-nft.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/how-to-buy-an-nft_Wqqbvol.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/how-to-buy-an-nft_Wqqbvol.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/how-to-buy-an-nft_YmB0w7x.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/how-to-buy-an-nft_YmB0w7x.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/how-to-keep-your-crypto-safe.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/how-to-keep-your-crypto-safe.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/how-to-keep-your-crypto-safe_49jrynh.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/how-to-keep-your-crypto-safe_49jrynh.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/how-to-keep-your-crypto-safe_9VFDR0L.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/how-to-keep-your-crypto-safe_9VFDR0L.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/proof-of-work-vs-proof-of-stake.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/proof-of-work-vs-proof-of-stake.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/proof-of-work-vs-proof-of-stake_0nAc6XY.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/proof-of-work-vs-proof-of-stake_0nAc6XY.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/proof-of-work-vs-proof-of-stake_m7hrMrF.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/proof-of-work-vs-proof-of-stake_m7hrMrF.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-are-crypto-future-contracts.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-are-crypto-future-contracts.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-are-crypto-future-contracts_DyVETnm.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-are-crypto-future-contracts_DyVETnm.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-are-crypto-future-contracts_xiG8RTT.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-are-crypto-future-contracts_xiG8RTT.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-a-blockchain-consensus-mechanism.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-a-blockchain-consensus-mechanism.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-a-blockchain-consensus-mechanism_3chtdi7.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-a-blockchain-consensus-mechanism_3chtdi7.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-a-blockchain-consensus-mechanism_GREa3lf.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-a-blockchain-consensus-mechanism_GREa3lf.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-a-liquidity-pool-and-how-to-use-one.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-a-liquidity-pool-and-how-to-use-one.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-a-liquidity-pool-and-how-to-use-one_PDW9dgr.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-a-liquidity-pool-and-how-to-use-one_PDW9dgr.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-a-liquidity-pool-and-how-to-use-one_WFFoH6f.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-a-liquidity-pool-and-how-to-use-one_WFFoH6f.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-an-nft-rarity-ranking.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-an-nft-rarity-ranking.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-an-nft-rarity-ranking_BSTYnkU.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-an-nft-rarity-ranking_BSTYnkU.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-an-nft-rarity-ranking_WsdmhAs.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-an-nft-rarity-ranking_WsdmhAs.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-an-nft.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-an-nft.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-an-nft_DAavZID.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-an-nft_DAavZID.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-an-nft_uh6JPbF.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-an-nft_uh6JPbF.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-bitcoin-white-paper.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-bitcoin-white-paper.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-bitcoin-white-paper_8as0Uu3.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-bitcoin-white-paper_8as0Uu3.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-bitcoin-white-paper_i8389dR.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-bitcoin-white-paper_i8389dR.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-bitcoin.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-bitcoin.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-bitcoin_NLsHpmM.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-bitcoin_NLsHpmM.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-bitcoin_bHNdosd.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-bitcoin_bHNdosd.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-bitcoin_mSvk2xA.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-bitcoin_mSvk2xA.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-bitcoin_r9jLoCN.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-bitcoin_r9jLoCN.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-bitcoin_z1DeN5T.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-bitcoin_z1DeN5T.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-blockchain-technology.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-blockchain-technology.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-blockchain-technology_G7erBd3.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-blockchain-technology_G7erBd3.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-blockchain-technology_hojGCsT.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-blockchain-technology_hojGCsT.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-cryptocurrency.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-cryptocurrency.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-cryptocurrency_4tJQowP.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-cryptocurrency_4tJQowP.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-cryptocurrency_MMriPTN.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-cryptocurrency_MMriPTN.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-defi.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-defi.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-defi_IDuyAWJ.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-defi_IDuyAWJ.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-defi_oMkMfrb.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-defi_oMkMfrb.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-dollar-cost-averaging.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-dollar-cost-averaging.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-dollar-cost-averaging_Yl5rArx.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-dollar-cost-averaging_Yl5rArx.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-dollar-cost-averaging_mo5bfy0.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-dollar-cost-averaging_mo5bfy0.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-lightning-network.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-lightning-network.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-lightning-network_TYDfF8y.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-lightning-network_TYDfF8y.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/images/topic_images/what-is-lightning-network_fnzj5L5.png" beforeDir="false" afterPath="$PROJECT_DIR$/static/images/topic_images/what-is-lightning-network_fnzj5L5.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/static/css/learn.css" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/static/css/learn.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/Learn/learning.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/Learn/learning.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -139,6 +29,7 @@
         <option value="HTML File" />
         <option value="CSS File" />
         <option value="Python Script" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -164,7 +55,7 @@
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "abhishek",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "E:/UoWSemester3/IADS/Coin-Rush",
+    "last_opened_file_path": "E:/UoWSemester3/IADS/Coin-Rush/static/images/topic_images",
     "list.type.of.created.stylesheet": "CSS",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -177,11 +68,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\UoWSemester3\IADS\Coin-Rush\static\images\topic_images" />
+      <recent name="E:\UoWSemester3\IADS\Coin-Rush\coinRush\static\images\topic_images" />
       <recent name="E:\UoWSemester3\IADS\Coin-Rush" />
       <recent name="E:\UoWSemester3\IADS\Coin-Rush\coinRush\static\images" />
-      <recent name="E:\UoWSemester3\IADS\Coin-Rush\static\images\topic_images" />
       <recent name="E:\UoWSemester3\IADS\Coin-Rush\coinRush\migrations" />
-      <recent name="$PROJECT_DIR$/coinRush/templates" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="E:\UoWSemester3\IADS\Coin-Rush\coinRush\static\images" />
@@ -287,7 +178,8 @@
       <workItem from="1700087114284" duration="924000" />
       <workItem from="1700111630097" duration="5064000" />
       <workItem from="1700159731308" duration="68000" />
-      <workItem from="1700159914676" duration="4535000" />
+      <workItem from="1700159914676" duration="17995000" />
+      <workItem from="1700182089101" duration="8396000" />
     </task>
     <servers />
   </component>

@@ -141,7 +141,7 @@ class Learn(models.Model):
     description = models.TextField(blank=True)
     category = models.ForeignKey(CourseCategory, on_delete=models.CASCADE, default=1)
     slug = models.SlugField(default="", null=False)
-    image = models.ImageField(upload_to='topic_images/', null=True, blank=True)
+    image = models.ImageField(upload_to='topic_images/', null=True, blank=True, default='topic_images/no-image-available.png')
 
     def __str__(self):
         return self.title

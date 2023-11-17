@@ -26,7 +26,8 @@ from .forms import (
     SellStockForm,
     StockFilterForm,
     CurrencyConverterForm,
-NewsCreateForm
+    NewsCreateForm,
+    TopicCreateForm
 )
 
 from .forms import (
@@ -155,7 +156,22 @@ def transaction_history(request):
 
 def categories_course(request):
     categories = CourseCategory.objects.all()
-    return render(request, "Learn/learning.html", {"categories": categories})
+    url = request.META.get("HTTP_REFERER")
+    if request.method == 'POST':
+        form = TopicCreateForm(request.POST)
+        if form.is_valid():
+            new_topic = form.cleaned_data['name']
+            existing_topic = CourseCategory.objects.filter(name=new_topic).first()
+            if existing_topic:
+                messages.error(request, f'Topic "{new_topic}" already exists.')
+            else:
+                form.save()
+                messages.success(request, f'Topic "{new_topic}" created successfully.')
+            return redirect(url)
+    else:
+        form = TopicCreateForm()
+
+    return render(request, "Learn/learning.html", {"categories": categories, 'form': form})
 
 
 def subject_info(request, slug):
@@ -553,3 +569,4 @@ def temp(request):
         # return data['data']['quote'][to]['price']
     except:
         return render(request, 'test_template.html', {'data': "error"})
+
