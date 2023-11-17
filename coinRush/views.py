@@ -27,7 +27,8 @@ from .forms import (
     StockFilterForm,
     CurrencyConverterForm,
     NewsCreateForm,
-    TopicCreateForm
+    TopicCreateForm,
+    SubjectCreateForm
 )
 
 from .forms import (
@@ -168,10 +169,18 @@ def categories_course(request):
                 form.save()
                 messages.success(request, f'Topic "{new_topic}" created successfully.')
             return redirect(url)
+
+        form2 = SubjectCreateForm(request.POST, request.FILES)
+        if form2.is_valid():
+            learn_instance = form2.save(commit=False)
+            learn_instance.image.upload_to = 'topic_images/'
+            learn_instance.save()
+            messages.success(request, 'Subject added successfully!')
+            return redirect(url)
     else:
         form = TopicCreateForm()
-
-    return render(request, "Learn/learning.html", {"categories": categories, 'form': form})
+        form2 = SubjectCreateForm()
+    return render(request, "Learn/learning.html", {"categories": categories, 'form': form, 'form2': form2})
 
 
 def subject_info(request, slug):

@@ -5,7 +5,7 @@ from django.contrib.auth.forms import AuthenticationForm
 
 # from django.contrib.auth.forms import UserCreationForm
 
-from .models import User, Post, Comment, Transaction, NewsComments, Feedback, Stock, CourseCategory
+from .models import User, Post, Comment, Transaction, NewsComments, Feedback, Stock, CourseCategory, Learn
 
 
 class UserCreationForm(forms.ModelForm):
@@ -190,3 +190,20 @@ class TopicCreateForm(forms.ModelForm):
     class Meta:
         model = CourseCategory
         fields = ['name']
+
+class SubjectCreateForm(forms.ModelForm):
+    class Meta:
+        model = Learn
+        fields = ['title', 'description', 'category', 'image']
+        exclude = ['slug']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['category'].queryset = CourseCategory.objects.all()
+
+    widgets = {
+        'title': forms.TextInput(attrs={'class': 'form-control'}),
+        'description': forms.Textarea(attrs={'class': 'form-control'}),
+        'category': forms.Select(attrs={'class': 'form-control'}),
+        'image': forms.FileInput(attrs={'class': 'form-control'}),
+    }
