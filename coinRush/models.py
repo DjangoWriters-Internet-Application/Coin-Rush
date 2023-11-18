@@ -82,15 +82,18 @@ class NFT(models.Model):
         ("ETH", "Ethereum"),
     ]
     
-    tittle = models.TextField(max_length=15, blank=True)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    symbol = models.CharField(max_length=15, blank=True)
+    company_name = models.CharField(max_length=255)
     image = models.ImageField(upload_to="nft_images/")
     description = models.TextField()
     quantity = models.PositiveIntegerField(default=1)
     is_for_sale = models.BooleanField(default=False)
-    price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    current_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES, default="USD")
     is_bidding_allowed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.symbol
 
 
 class Transaction(models.Model):
@@ -113,7 +116,7 @@ class UserHolding(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey('content_type', 'object_id')
+    asset = GenericForeignKey('content_type', 'object_id')
     quantity = models.PositiveIntegerField(default=0)
 
     def __str__(self):
@@ -184,26 +187,6 @@ class Feedback(models.Model):
     def __str__(self):
         return self.subject
 
-class NFT(models.Model):
-    CURRENCY_CHOICES = [
-        ("USD", "US Dollar"),
-        ("BTC", "Bitcoin"),
-        ("ETH", "Ethereum"),
-    ]
-    
-    tittle = models.TextField(max_length=15, blank=True)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to="nft_images/")
-    description = models.TextField()
-    quantity = models.PositiveIntegerField(default=1)
-    is_for_sale = models.BooleanField(default=False)
-    price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES, default="USD")
-    is_bidding_allowed = models.BooleanField(default=False)
-    user_holdings = GenericRelation(UserHolding)
-
-    def __str__(self):
-        return self.tittle
 
 
 
@@ -222,16 +205,18 @@ class Purchase(models.Model):
     timestamp = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return f"{self.user.email} - Purchase {self.quantity} {self.nft.tittle} @ {self.total_price}"
+        return f"{self.user.email} - Purchase {self.quantity} {self.nft.symbol} @ {self.total_price}"
 
-class nftTransaction(models.Model):
-    TYPE = [("BUY", "Buy"), ("SELL", "Sell")]
+
+class UserNFT(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    nft = models.ForeignKey(NFT, on_delete=models.CASCADE)  # Change this line
-    transaction_type = models.CharField(max_length=10, choices=TYPE, default="BUY")
-    quantity = models.PositiveIntegerField(default=0)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    timestamp = models.DateTimeField(auto_now_add=True)
+    nft = models.ForeignKey(NFT, on_delete=models.CASCADE)
+    quantity = models.IntegerField()
+
+
+class GlossaryTerm(models.Model):
+    term = models.CharField(max_length=100, unique=True)
+    definition = models.TextField()
 
     def __str__(self):
-        return f"{self.user.email} - {self.transaction_type}{self.quantity} {self.nft.title} @ {self.price}"
+        return self.term

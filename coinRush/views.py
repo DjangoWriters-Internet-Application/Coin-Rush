@@ -12,10 +12,9 @@ from django.urls import reverse
 from django.contrib import messages
 from django.core.exceptions import *
 from .models import NFT
-from .forms import NFTForm
 
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import NFT, Transaction,nftTransaction 
+from .models import NFT, Transaction 
 import stripe
 from django.conf import settings
 import requests
@@ -28,7 +27,9 @@ from .forms import (
     FeedbackRatingForm,
     BuyStockForm,
     SellStockForm,
-    CurrencyConverterForm
+    CurrencyConverterForm,
+    NFTForm,
+    GlossaryTermForm,
 )
 
 from .forms import (
@@ -37,11 +38,11 @@ from .forms import (
     PostForm,
     CommentForm,
     NewsCommentForm,
+    SellStockForm, SellNFTForm,
 )
 from .models import (
     Transaction,
     UserHolding,
-    nftTransaction,
     User,
     Learn,
     CourseCategory,
@@ -52,6 +53,7 @@ from .models import (
     Stock,
     NFT,
     Bid,
+    GlossaryTerm,
 )
 
 stripe.api_key = settings.STRIPE_PRIVATE_KEY
@@ -299,7 +301,8 @@ def buy_stock(request, stock_symbol):
 @login_required(login_url="/login/")
 def user_holdings(request):
     holdings = UserHolding.objects.filter(user=request.user)
-    sell_form = SellStockForm()
+    sell_stock_form = SellStockForm()
+    sell_nft_form = SellNFTForm()
     items_per_page = 10
     paginator = Paginator(holdings, items_per_page)
     page = request.GET.get('page')
@@ -310,40 +313,71 @@ def user_holdings(request):
         holdings_page = paginator.page(1)
     except EmptyPage:
         holdings_page = paginator.page(paginator.num_pages)
+
     if request.method == 'POST':
-        sell_form = SellStockForm(request.POST)
+        if 'sell_stock' in request.POST:
+            sell_stock_form = SellStockForm(request.POST)
+            if sell_stock_form.is_valid():
+                stock_symbol = sell_stock_form.cleaned_data['stock_symbol']
+                quantity_to_sell = sell_stock_form.cleaned_data['quantity']
+                stock = Stock.objects.get(symbol=stock_symbol)
+                holding = holdings.filter(stock=stock).first()
+                if holding and quantity_to_sell > 0 and quantity_to_sell <= holding.quantity:
+                    sell_price = stock.current_price * quantity_to_sell
 
-        if sell_form.is_valid():
-            stock_symbol = sell_form.cleaned_data['stock_symbol']
-            quantity_to_sell = sell_form.cleaned_data['quantity']
-            stock = Stock.objects.get(symbol=stock_symbol)
-            holding = holdings.filter(stock=stock).first()
-            if holding and quantity_to_sell > 0 and quantity_to_sell <= holding.quantity:
-                sell_price = stock.current_price * quantity_to_sell
+                    sell_transaction = Transaction(
+                        user=request.user,
+                        stock=stock,
+                        transaction_type="Sell",
+                        quantity=quantity_to_sell,
+                        price=sell_price,
+                    )
+                    sell_transaction.save()
+                    holding.quantity -= quantity_to_sell
+                    holding.save()
+                    request.user.wallet += Decimal(sell_price)
+                    request.user.save()
+                    if holding.quantity == 0:
+                        holding.delete()
 
-                sell_transaction = Transaction(
-                    user=request.user,
-                    stock=stock,
-                    transaction_type="Sell",
-                    quantity=quantity_to_sell,
-                    price=sell_price,
-                )
-                sell_transaction.save()
-                holding.quantity -= quantity_to_sell
-                holding.save()
-                request.user.wallet += Decimal(sell_price)
-                request.user.save()
-                if holding.quantity == 0:
-                    holding.delete()
+                    return redirect("user-holdings")
+                else:
+                    error_message = 'Invalid quantity to sell. Please select a valid quantity.'
+                    sell_stock_form.add_error('quantity', error_message)
 
-                return redirect("user-holdings")
-            else:
-                error_message = 'Invalid quantity to sell. Please select a valid quantity.'
-                sell_form.add_error('quantity', error_message)
+        elif 'sell_nft' in request.POST:
+            sell_nft_form = SellNFTForm(request.POST)
+            if sell_nft_form.is_valid():
+                nft_symbol = sell_nft_form.cleaned_data['nft_symbol']
+                quantity_to_sell = sell_nft_form.cleaned_data['quantity']
+                nft = NFT.objects.get(symbol=nft_symbol)
+                holding = holdings.filter(nft=nft).first()
+                if holding and quantity_to_sell > 0 and quantity_to_sell <= holding.quantity:
+                    sell_price = nft.current_price * quantity_to_sell
+
+                    sell_transaction = Transaction(
+                        user=request.user,
+                        nft=nft,
+                        transaction_type="Sell",
+                        quantity=quantity_to_sell,
+                        price=sell_price,
+                    )
+                    sell_transaction.save()
+                    holding.quantity -= quantity_to_sell
+                    holding.save()
+                    request.user.wallet += Decimal(sell_price)
+                    request.user.save()
+                    if holding.quantity == 0:
+                        holding.delete()
+
+                    return redirect("user-holdings")
+
+                else:
+                    error_message = 'Invalid quantity to sell. Please select a valid quantity.'
+                    sell_nft_form.add_error('quantity', error_message)
 
     return render(request, 'userholding/user_holdings.html',
-                  {'user': request.user, 'holdings': holdings_page, 'sell_form': sell_form})
-
+                  {'user': request.user, 'holdings': holdings_page, 'sell_stock_form': sell_stock_form, 'sell_nft_form': sell_nft_form})
 
 def newsDetails(request, news_id):
     if request.method == "POST":
@@ -398,102 +432,53 @@ from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 
 
-stripe.api_key = settings.STRIPE_PRIVATE_KEY
-
-def purchase_asset(request,user, asset, quantity, total_price, asset_type):
-    try:
-        # Handle Stripe payment
-        token = request.POST["stripeToken"]
-        charge = stripe.Charge.create(
-            amount=int(total_price * 100),  # Amount in cents
-            currency="usd",  # Adjust the currency based on your requirements
-            source=token,
-            description=f"{asset_type} Purchase: {asset}",
-        )
-
-        # Record the transaction
-        transaction = Transaction(
-            user=user,
-            asset=asset,  # Use the generic asset field
-            transaction_type="Buy",
-            quantity=quantity,
-            price=total_price,
-        )
-        transaction.save()
-
-        # Update user holdings
-        holding, created = UserHolding.objects.get_or_create(
-            user=user, content_type=ContentType.objects.get_for_model(asset), object_id=asset.id
-        )
-        holding.quantity += quantity
-        holding.save()
-
-        return True, None
-    except stripe.error.CardError as e:
-        return False, e.error.message
-
-
 # Updated buy_nft view
 @login_required(login_url="/login/")
 def buy_nft(request, nft_id):
     error_message = ""
     nft = get_object_or_404(NFT, id=nft_id)
 
-    if request.method == "POST":
+    if request.method == 'POST':
         form = BuyNFTForm(request.POST)
+
         if form.is_valid():
             quantity = form.cleaned_data['quantity']
+            total_price = nft.current_price * quantity  # Calculate total price
 
-            if quantity <= 0:
-                error_message = "Quantity should be a positive integer."
-            elif not nft.is_for_sale:
-                error_message = "This NFT is not available for purchase."
-            elif nft.quantity < quantity:
-                error_message = "Not enough quantity available for purchase."
-            else:
-                total_price = nft.price * quantity
-
-                # Handle Stripe payment
-                token = form.cleaned_data["stripeToken"]
-                try:
-                    charge = stripe.Charge.create(
-                        amount=int(total_price * 100),  # Amount in cents
-                        currency="usd",  # Adjust the currency based on your requirements
-                        source=token,
-                        description=f"NFT Purchase: {nft.tittle}",
+            # Handle Stripe payment
+            token = form.cleaned_data["stripeToken"]
+            try:
+                charge = stripe.Charge.create(
+                    amount=int(total_price * 100),  # Amount in cents
+                    currency="usd",  # Adjust currency based on your needs
+                    source=token,
+                    description=f"NFT Purchase: {nft.symbol}",
                     )
+                # Record the transaction
+                transaction = Transaction(
+                    user=request.user,
+                    nft=nft,
+                    transaction_type="Buy",
+                    quantity=quantity,
+                    price=total_price,
+                )
+                transaction.save()
+                # Example: Update UserHolding
+                holding, created = UserHolding.objects.get_or_create(user=request.user, nft=nft)
+                holding.quantity += form.cleaned_data['quantity']
+                holding.save()
 
-                    # Record the transaction
-                    transaction = Transaction(
-                        user=request.user,
-                        asset=nft,  # Use the generic asset field
-                        transaction_type="Buy",
-                        quantity=quantity,
-                        price=total_price,
-                    )
-                    transaction.save()
-
-                    # Update user holdings
-                    holding, created = UserHolding.objects.get_or_create(
-                        user=request.user, content_type=ContentType.objects.get_for_model(nft), object_id=nft.id
-                    )
-                    holding.quantity += quantity
-                    holding.save()
-
-                    return redirect("transaction-history")
-                except stripe.error.CardError as e:
-                    error_message = e.error.message
-                    print(f"Stripe CardError: {error_message}")
-
-        else:
-            error_message = "Invalid form submission."
-
+                # Redirect to user holdings or a success page
+                return redirect("user-holdings") # Adjust the URL based on your configuration
+            except stripe.error.CardError as e:
+                error_message = e.error.message
+                print(f"Stripe CardError: {error_message}")
     else:
         form = BuyNFTForm()
 
     return render(
         request,
-        "nft/buy_nft.html",
+        "Nft/buy_nft.html",  # Adjust the template path based on your app structure
         {
             "nft": nft,
             "error_message": error_message,
@@ -570,3 +555,16 @@ def convert_data(request):
         form.set_currency_choices(currency_choices)
 
     return render(request, 'test_template.html', {'form': form, 'result': result})
+
+
+def glossary(request):
+    # Retrieve all glossary terms ordered alphabetically
+    terms = GlossaryTerm.objects.order_by('term')
+    
+    return render(request, 'Glossary/Terms.html', {'terms': terms})
+
+def term_detail(request, term_id):
+    # Retrieve the detailed information for a specific term
+    term = get_object_or_404(GlossaryTerm, id=term_id)
+    
+    return render(request, 'Glossary/Terms_details.html', {'term': term})

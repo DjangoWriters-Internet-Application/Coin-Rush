@@ -3,7 +3,7 @@ from django.contrib.auth.forms import AuthenticationForm
 
 # from django.contrib.auth.forms import UserCreationForm
 
-from .models import User, Post, Comment, Transaction, NewsComments, Feedback, NFT
+from .models import User, Post, Comment, Transaction, NewsComments, Feedback, NFT, GlossaryTerm
 
 
 class UserCreationForm(forms.ModelForm):
@@ -157,11 +157,11 @@ class NFTForm(forms.ModelForm):
         model = NFT
         fields = [
             'image',
-            'tittle',
+            'symbol',
             'description',
             'quantity',
             'is_for_sale',
-            'price',
+            'current_price',
             'currency',
             'is_bidding_allowed',
         ]
@@ -170,6 +170,11 @@ class NFTForm(forms.ModelForm):
 class BuyNFTForm(forms.Form):
     quantity = forms.IntegerField(min_value=1, widget=forms.NumberInput(attrs={"required": "required"}))
     stripeToken = forms.CharField(widget=forms.HiddenInput())
+
+class SellNFTForm(forms.Form):
+    quantity = forms.IntegerField(min_value=1, required=True, widget=forms.NumberInput(
+        attrs={'class': 'form-control'}))
+    nft_id = forms.IntegerField(widget=forms.HiddenInput())
     
 
 
@@ -181,3 +186,8 @@ class CurrencyConverterForm(forms.Form):
     def set_currency_choices(self, choices):
         self.fields['currency_from'].choices = choices
         self.fields['currency_to'].choices = choices
+
+class GlossaryTermForm(forms.ModelForm):
+    class Meta:
+        model = GlossaryTerm
+        fields = ['term', 'definition']

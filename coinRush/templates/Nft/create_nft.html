@@ -5,10 +5,10 @@
     <form method="post" action="{% url 'create_nft' %}" enctype="multipart/form-data">
       {% csrf_token %}
       <div class="mb-3">
-        {{ form.tittle.label_tag }}
-        {{ form.tittle }}
-        {% if form.tittle.errors %}
-          <div class="invalid-feedback">{{ form.title.errors }}</div>
+        {{ form.symbol.label_tag }}
+        {{ form.symbol }}
+        {% if form.symbol.errors %}
+          <div class="invalid-feedback">{{ form.symbol.errors }}</div>
         {% endif %}
       </div>
       <div class="mb-3">
@@ -40,10 +40,10 @@
         {% endif %}
       </div>
       <div class="mb-3">
-        {{ form.price.label_tag }}
-        {{ form.price }}
-        {% if form.price.errors %}
-          <div class="invalid-feedback">{{ form.price.errors }}</div>
+        {{ form.current_price.label_tag }}
+        {{ form.current_price }}
+        {% if form.current_price.errors %}
+          <div class="invalid-feedback">{{ form.current_price.errors }}</div>
         {% endif %}
       </div>
       <div class="mb-3">

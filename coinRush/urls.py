@@ -27,5 +27,6 @@ urlpatterns = [
     path('create_nft/', views.create_nft, name='create_nft'),
     path('buy_nft/<int:nft_id>/', views.buy_nft, name='buy_nft'),
     path('test/', views.convert_data, name='cryptocurrency_data'),
-
+    path('glossary/', views.glossary, name='glossary'),
+    path('glossary/<int:term_id>/', views.term_detail, name='term_detail'),
 ]
