@@ -74,13 +74,14 @@
         </div>
     </div>
     {% endif %}
+
     <h1>Learn about blockchain, crypto and NFTs</h1><br/>
     <h4>Browse by topic</h4>
 
     <!-- Scrollable container for buttons -->
     <div class="centered-buttons-scroll">
         {% for category in categories %}
-            <button class="button1" type="button" onclick="scrollToCategory('{{ category.name }}')">{{ category.name }}</button>
+            <button class="button1" type="button" onclick="scrollToCategory('{{ category.name }}')">{{ category.name }}</button>&nbsp;&nbsp;
         {% endfor %}
     </div>
 

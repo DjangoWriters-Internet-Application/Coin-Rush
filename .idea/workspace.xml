@@ -6,7 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="2c1604f2-4a48-491f-b1c4-4c0af06d1c4c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/coinRush/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/static/css/learn.css" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/static/css/learn.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/Learn/learning-details.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/Learn/learning-details.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/Learn/learning.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/Learn/learning.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -173,7 +175,7 @@
       <workItem from="1700159731308" duration="68000" />
       <workItem from="1700159914676" duration="17995000" />
       <workItem from="1700182089101" duration="14209000" />
-      <workItem from="1700275275466" duration="1824000" />
+      <workItem from="1700275275466" duration="6545000" />
     </task>
     <servers />
   </component>

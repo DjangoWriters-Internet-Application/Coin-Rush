@@ -108,6 +108,9 @@ h4{
 
 .centered-buttons-scroll {
   display: flex;
+  justify-content: center;
+  margin-bottom: 5rem;
+  margin-top: 5rem;
   overflow-x: auto;
   white-space: nowrap;
 }
