@@ -1,12 +1,53 @@
 {% extends "Base/base.html" %}
 {% block title %}Coin-Rush Stocks{% endblock %}
 {% block content %}
+{% load static %}
+{% block extraHead %}
+    <link rel="stylesheet" href="{% static 'css/stocks.css' %}">
+{% endblock extraHead %}
+
+<button onclick="openPopup()">Stock Filters</button>
+<div id="filterPopup" class="popup">
+        <span class="close" onclick="closePopup()">&times;</span>
+
+        <h2><i class="fas fa-filter"></i> Filter Options</h2>
+        <form method="get" action="{% url 'home' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Apply Filters</button>
+        </form>
+    </div>
+<div class="overlay" id="overlay" onclick="closePopup()"></div>
 
 
-<form method="get" action="{% url 'home' %}">
-    {{form.as_p}}
-    <input type="submit" value="Submit" class="btn btn-primary" />
-</form>
+<script>
+    function openPopup() {
+        document.getElementById('filterPopup').style.display = 'block';
+                document.getElementById('overlay').style.display = 'block';
+
+    }
+
+    function closePopup() {
+        document.getElementById('filterPopup').style.display = 'none';
+                document.getElementById('overlay').style.display = 'none';
+
+    }
+</script>
+
+<script>
+    function openPopup() {
+        document.getElementById('filterPopup').style.display = 'block';
+    }
+
+    function closePopup() {
+        document.getElementById('filterPopup').style.display = 'none';
+    }
+</script>
+
+
+
+
+
 
 
     <div class="row mt-4">
