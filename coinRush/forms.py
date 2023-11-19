@@ -2,6 +2,7 @@ from django import forms
 from .models import User, Post, Comment,Transaction,NewsComments, News
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
+from django.utils.text import slugify
 
 # from django.contrib.auth.forms import UserCreationForm
 
@@ -207,3 +208,10 @@ class SubjectCreateForm(forms.ModelForm):
         'category': forms.Select(attrs={'class': 'form-control'}),
         'image': forms.FileInput(attrs={'class': 'form-control'}),
     }
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance.slug = slugify(instance.title)
+        if commit:
+            instance.save()
+        else:
+            return instance
