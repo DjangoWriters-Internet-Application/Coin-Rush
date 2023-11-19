@@ -43,6 +43,7 @@ from .models import (
     UserHolding,
     User,
     Learn,
+StockPrice,
     CourseCategory,
     Feedback,
     News,
@@ -78,6 +79,13 @@ def home(request):
 
 def about(request):
     return render(request, "about.html")
+
+
+def test(request,stock_id):
+    s=Stock.objects.get(pk=stock_id)
+    p=StockPrice.objects.filter(stock=s)
+    return render(request, "test.html",{"p":p,"s":s})
+
 
 
 def services(request):

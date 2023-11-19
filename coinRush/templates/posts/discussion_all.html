@@ -3,7 +3,21 @@
 {% block extraHead %}
     <link rel="stylesheet" href="{% static 'css/news.css' %}">
 {% endblock extraHead %}
-
+{% block banner %}
+    <div class="container-fluid hero-header bg-light py-2 mb-5">
+        <div class="container py-5">
+            <div class="row g-5 align-items-center">
+                <div class="col-lg-9">
+                    <h1 class="display-4 mb-3 animated slideInDown">Discussion Forum</h1>
+                </div>
+                <div class="col-lg-3 animated fadeIn">
+                    <img class="img-fluid animated pulse infinite banner-img"
+                         src="{% static 'images/hero-dis1.png' %}" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock banner%}
 {% block content %}
 
 <style>
@@ -28,7 +42,6 @@
 </style>
 
   <div class="container-fluid">
-    <h1 class="mt-5">Discussion Forum</h1>
 
     <div class="row mt-4">
         <div class="col-lg-8">
@@ -56,7 +69,7 @@
 
                         <div class="d-md-block d-none col-md-3 d-flex-column ">
 
-                            <p class="card-text d-flex align-content-center"><img class="img img-fluid rounded-circle" id="profile-pic" src="{% if  post.created_by.profile_pic.url and post.created_by.profile_pic.url is not None%} {{post.created_by.profile_pic.url}} {% endif %}">
+                            <p class="card-text d-flex justify-content-center align-content-center"><img class="img img-fluid rounded-circle" id="profile-pic" src="{% if  post.created_by.profile_pic.url and post.created_by.profile_pic.url is not None%} {{post.created_by.profile_pic.url}} {% else %} {% static 'images/sample-avatar.png' %} {% endif %}">
                                 <span class="fw-bold mx-2 align-self-center">{{ post.created_by.name | title }}</span></p>
                             <p class="card-text"><small class="text-muted">{{ post.created_at|date:"F j, Y" }}</small></p>
                              <p class="card-text d-flex justify-content-between "><span><i class="fa fa-eye"></i> {{ post.views }} views</span> <a href="{% url 'discussion_single' post.id %}" class="btn btn-primary">View</a></p>
