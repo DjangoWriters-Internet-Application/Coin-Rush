@@ -9,9 +9,9 @@
     <pre>{{ data | safe }}</pre>
 
     <div class="container my-5">
-        <div class="card mx-auto" style="max-width: 400px;">
+        <div class="card w-75 mx-auto rounded shadow" >
             <div class="card-body">
-                <h1 class="card-title mb-2">Currency Converter</h1>
+                <h3 class="card-title my-2 text-center ">Currency Converter</h3>
 
                 <form method="post" class="needs-validation" >
                     {% csrf_token %}
@@ -19,15 +19,17 @@
                         <label for="{{ form.amount.id_for_label }}">Amount</label>
                         {{ form.amount }}
                     </div>
-                    <div class="form-group mt-2">
+                    <div class="row">
+                    <div class="col-sm-6 form-group mt-2">
                         <label for="{{ form.currency_from.id_for_label }}">From Currency</label>
                         {{ form.currency_from }}
                     </div>
-                    <div class="form-group mt-2">
+                    <div class="col-sm-6 form-group mt-2">
                         <label for="{{ form.currency_to.id_for_label }}">To Currency</label>
                         {{ form.currency_to }}
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block mt-2">Convert</button>
+                        </div>
+                    <center><button type="submit" class="btn btn-primary btn-block mt-2">Convert</button></center>
                 </form>
 
                 {% if result %}

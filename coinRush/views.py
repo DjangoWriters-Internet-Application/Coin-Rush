@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
+from django.utils import timezone
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.auth import login
 from django.conf import settings
@@ -12,6 +13,7 @@ from django.urls import reverse
 from django.contrib import messages
 from django.core.exceptions import *
 from .filters import StockFilters
+from .constants import top_30_currencies,crypto_data
 import requests
 
 from .forms import (
@@ -23,7 +25,10 @@ from .forms import (
     BuyStockForm,
     SellStockForm,
     StockFilterForm,
-    CurrencyConverterForm
+    CurrencyConverterForm,
+    NewsCreateForm,
+    TopicCreateForm,
+    SubjectCreateForm
 )
 
 from .forms import (
@@ -55,7 +60,6 @@ stripe.api_key = settings.STRIPE_PRIVATE_KEY
 
 
 def home(request):
-
     ord_by = request.GET.get("order_by")
     order_string = ""
     if ord_by == None or ord_by == "max-price" or ord_by == "":
@@ -71,7 +75,6 @@ def home(request):
     context = {"stocks": stock_filter.qs,
                "form":stock_filter.form}
     return render(request, "index.html",context )
-
 
 def about(request):
     return render(request, "about.html")
@@ -110,7 +113,32 @@ def register(request):
 
 
 def news(request):
-    context = {"title": "Latest Crypto News", "news": News.objects.all()}
+    displayForm = False
+    if request.method == 'POST':
+        if 'like_news' in request.POST:
+            news_id = request.POST['like_news']
+            news_instance = get_object_or_404(News, pk=news_id)
+            request.user.liked_news.add(news_instance)
+            news_instance.likes.add(request.user)
+        elif 'unlike_news' in request.POST:
+            news_id = request.POST['unlike_news']
+            news_instance = get_object_or_404(News, pk=news_id)
+            request.user.liked_news.remove(news_instance)
+            news_instance.likes.remove(request.user)
+        elif 'title' in request.POST:
+            print(request.POST)
+            newsCreated = NewsCreateForm(request.POST, request.FILES)
+            if newsCreated.is_valid():
+                news_instance = newsCreated.save(commit=False)
+                news_instance.cover_image.upload_to = 'news_covers/'  # Set the upload_to directory
+                news_instance.publish_datetime = timezone.now()
+                print(news_instance)
+                news_instance.save()
+                messages.success(request, 'News created successfully!')
+                return redirect('news')
+
+    newsForm = NewsCreateForm();
+    context = {"title": "Latest Crypto News", "news": News.objects.all(), 'newsForm': newsForm, 'displayForm':displayForm}
     return render(request, "News/index.html", context)
 
 
@@ -118,6 +146,7 @@ def news(request):
 def transaction_history(request):
     user = request.user
     transactions = Transaction.objects.filter(user=user).order_by("-timestamp")
+    return render(request, "transaction/transaction_history.html", {"transactions": transactions})
 
     items_per_page = 10
     paginator = Paginator(transactions, items_per_page)
@@ -138,16 +167,40 @@ def transaction_history(request):
 
 def categories_course(request):
     categories = CourseCategory.objects.all()
-    return render(request, "Learn/learning.html", {"categories": categories})
+    url = request.META.get("HTTP_REFERER")
+    if request.method == 'POST':
+        form = TopicCreateForm(request.POST)
+        if form.is_valid():
+            new_topic = form.cleaned_data['name']
+            existing_topic = CourseCategory.objects.filter(name=new_topic).first()
+            if existing_topic:
+                messages.error(request, f'Topic "{new_topic}" already exists.')
+            else:
+                form.save()
+                messages.success(request, f'Topic "{new_topic}" created successfully.')
+            return redirect(url)
+
+        form2 = SubjectCreateForm(request.POST, request.FILES)
+        if form2.is_valid():
+            learn_instance = form2.save(commit=False)
+            learn_instance.image.upload_to = 'topic_images/'
+            learn_instance.save()
+            messages.success(request, 'Subject added successfully!')
+            return redirect(url)
+    else:
+        form = TopicCreateForm()
+        form2 = SubjectCreateForm()
+    return render(request, "Learn/learning.html", {"categories": categories, 'form': form, 'form2': form2})
 
 
 def subject_info(request, slug):
     subject = get_object_or_404(Learn, slug=slug)
     description = subject.description
+    image = request.FILES.get('image')
     return render(
         request,
         "Learn/learning-details.html",
-        {"subject": subject, "description": description},
+        {"subject": subject, "description": description, "image": image},
     )
 
 
@@ -245,6 +298,65 @@ def show_stocks(request):
     stocks = Stock.objects.all()
     return render(request, "Stocks/showStocks.html", {"stocks": stocks})
 
+
+def buy_stock(request, stock_symbol):
+    error_message = ''
+    if request.method == 'POST':
+        # stock_symbol = request.POST.get('stock_symbol')
+        print(f"Received stock symbol: {stock_symbol}")
+        quantity = int(request.POST.get('quantity', 0))
+        if quantity <= 0:
+            raise ValueError("Quantity should be a positive integer.")
+
+        stock = Stock.objects.get(symbol=stock_symbol)
+        total_price = stock.current_price * quantity  # Calculate total price
+
+        # Handle Stripe payment
+        token = request.POST['stripeToken']
+        try:
+            charge = stripe.Charge.create(
+                amount=int(total_price * 100),  # Amount in cents
+                currency='cad',
+                source=token,
+                description=f"Stock Purchase: {stock_symbol}",
+            )
+
+            # Record the transaction
+            transaction = Transaction(
+                user=request.user, stock=stock, transaction_type='Buy', quantity=quantity, price=total_price)
+            transaction.save()
+
+            # Update user holdings
+            holding, created = UserHolding.objects.get_or_create(
+                user=request.user, stock=stock)
+            holding.quantity += quantity
+            holding.save()
+            print(holding)
+            return redirect('transaction-history')
+        except stripe.error.CardError as e:
+            error_message = e.error.message
+            print(f"Stripe CardError: {error_message}")
+
+    stocks = Stock.objects.get(symbol=stock_symbol)
+    return render(request, 'Stocks/buy_stock.html',
+                  {'stock': stocks, 'error_message': error_message, 'PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY})
+
+
+def newsDetails(request, news_id):
+    if 'like_news' in request.POST:
+        news_id = request.POST['like_news']
+        news_instance = get_object_or_404(News, pk=news_id)
+        request.user.liked_news.add(news_instance)
+        news_instance.likes.add(request.user)
+    elif 'unlike_news' in request.POST:
+        news_id = request.POST['unlike_news']
+        news_instance = get_object_or_404(News, pk=news_id)
+        request.user.liked_news.remove(news_instance)
+        news_instance.likes.remove(request.user)
+
+    newsDetails = get_object_or_404(News, pk=news_id)
+    form = NewsCommentForm()
+    return render(request, 'NewsDetails/index.html', {'news': newsDetails})
 
 @login_required(login_url="/login/")
 def buy_stock(request, stock_symbol):
@@ -398,9 +510,15 @@ def cryptocurrency_data(request):
 
 
 def convert(source,to,amount):
+    # Corrected dictionary creation with ID as key and name as value
+    collective_dict = {str(identifier): name for identifier, name in top_30_currencies}
+    collective_dict.update({str(identifier): name for identifier, name in crypto_data})
+
+    # collective_dict += {name: identifier for identifier, name in crypto_data}
 
     # url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/map'
     # url = 'https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/map'
+    # url = 'https://pro-api.coinmarketcap.com/v2/tools/price-conversion'
 
     url = 'https://sandbox-api.coinmarketcap.com/v2/tools/price-conversion'
     parameters = {
@@ -417,17 +535,17 @@ def convert(source,to,amount):
 
     try:
         response = requests.get(url, params=parameters, headers=headers)
-        print(data)
-        return data['data'][to]['quote'][to]['price']
-
-    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout, requests.exceptions.TooManyRedirects) as e:
-        return render(request, 'test_template.html', {'error_message': str(e)})
+        data=response.json()
+        return str(amount) + " "+ collective_dict[str(source)]+" = " + str(round(data['data'][source]['quote'][to]['price'],4))+" "+collective_dict[str(to)]
+        # return str(amount) + " "+ collective_dict[str(source)]+" = " + str(round(data['data']['quote'][to]['price'],4))+" "+collective_dict[str(to)]
+    except:
+        return "Some error occured"
 
 def convert_data(request):
     result = None
 
     # Example choices (you can replace this with actual currency choices)
-    currency_choices = [(2781, 'BTC'), (2784, 'EUR'), (3, 'GBP')]
+    currency_choices = top_30_currencies+crypto_data
 
     if request.method == 'POST':
         form = CurrencyConverterForm(request.POST)
@@ -442,3 +560,32 @@ def convert_data(request):
         form.set_currency_choices(currency_choices)
 
     return render(request, 'test_template.html', {'form': form, 'result': result})
+
+
+def temp(request):
+
+    # url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/map'
+    url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/map'
+    # url = 'https://pro-api.coinmarketcap.com/v2/tools/price-conversion'
+
+    # url = 'https://sandbox-api.coinmarketcap.com/v2/tools/price-conversion'
+    parameters = {
+        'limit':100
+    }
+
+    headers = {
+        "Accepts": "application/json",
+        'X-CMC_PRO_API_KEY': '6f66fcc3-73b3-48ea-a584-32af97de8e12',
+        # "X-CMC_PRO_API_KEY": "b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c",
+    }
+
+    try:
+        response = requests.get(url, params=parameters, headers=headers)
+
+        data=response.json()
+        print(data)
+        return render(request,'test_template.html',{'data':data})
+        # return data['data']['quote'][to]['price']
+    except:
+        return render(request, 'test_template.html', {'data': "error"})
+
