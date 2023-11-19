@@ -60,8 +60,18 @@ stripe.api_key = settings.STRIPE_PRIVATE_KEY
 
 
 def home(request):
+    ord_by = request.GET.get("order_by")
+    order_string = ""
+    if ord_by == None or ord_by == "max-price" or ord_by == "":
+        order_string = "-current_price"
+    elif ord_by == "min-price":
+        order_string = "current_price"
+    elif ord_by == "max-market-cap":
+        order_string = "-market_cap"
+    elif ord_by == "min-market-cap":
+        order_string = "market_cap"
 
-    stock_filter = StockFilters(request.GET,queryset=Stock.objects.all())
+    stock_filter = StockFilters(request.GET,queryset=Stock.objects.all().order_by(order_string))
     context = {"stocks": stock_filter.qs,
                "form":stock_filter.form}
     return render(request, "index.html",context )
