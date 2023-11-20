@@ -49,12 +49,6 @@ TRENDING STOCKS : BTC ETH ADA BNB TIA OXT SOL LINK
     }
 </script>
 
-
-
-
-
-
-
     <div class="row mt-4">
         <div class="col-lg-8">
                <ul id="stock-sort" class="nav nav-pills d-flex justify-content-end mb-2">
@@ -94,10 +88,10 @@ TRENDING STOCKS : BTC ETH ADA BNB TIA OXT SOL LINK
             {% for stock in stocks %}
                 <tr>
                     <td><img src="{{ stock.image.url }}" alt="{{ stock.symbol }}" width="30"
-                             height="30"> {{ stock.symbol }}</td>
+                             height="30"><a href="{% url 'stock_chart' stock_id=stock.pk %}" >{{ stock.symbol }}</td>
                     <td>{{ stock.company_name }}</td>
-                    <td>{{ stock.current_price }}</td>
-                    <td>{{ stock.market_cap }}</td>
+                    <td>${{ stock.current_price }}</td>
+                    <td>${{ stock.market_cap }}</td>
                     <td>{{ stock.last_updated }}</td>
                     <td><a href="{% url 'buy_stock' stock.symbol %}" class="btn btn-primary">
                         <i class="bi bi-cart"></i> Buy

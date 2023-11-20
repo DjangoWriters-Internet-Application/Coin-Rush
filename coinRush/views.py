@@ -43,6 +43,7 @@ from .models import (
     UserHolding,
     User,
     Learn,
+StockPrice,
     CourseCategory,
     Feedback,
     News,
@@ -78,6 +79,9 @@ def home(request):
 
 def about(request):
     return render(request, "about.html")
+
+
+
 
 
 def services(request):
@@ -271,9 +275,14 @@ def discussion_single(request, post_id):
     page = request.GET.get("page")
     comments_page = paginator.get_page(page)
 
-    if request.method == "GET" and page == None and request.GET.get("fl") != None:
+    # Construct a unique session key for the post
+    session_key = f'visited_post_{post_id}'
+
+    if not request.session.get(session_key, False):
+        # If the session key is not present, increment views and set the session
         post.views += 1
         post.save()
+        request.session[session_key] = True
 
     if request.method == "POST":
         form = CommentForm(request.POST)
@@ -294,9 +303,12 @@ def discussion_single(request, post_id):
     )
 
 
-def show_stocks(request):
-    stocks = Stock.objects.all()
-    return render(request, "Stocks/showStocks.html", {"stocks": stocks})
+def stock_chart(request,stock_id):
+    stock=Stock.objects.get(pk=stock_id)
+    priced_stock=StockPrice.objects.filter(stock=stock).order_by('date')
+    dates = [str(stock.date) for stock in priced_stock]
+    price = [str(stock.price) for stock in priced_stock]
+    return render(request, "stock_prices_chart.html",{"price":price,"dates":dates})
 
 
 def buy_stock(request, stock_symbol):
@@ -486,28 +498,6 @@ def nft_detail(request, nft_id):
     return render(request, "nft/NFT.html", {"nft": nft})
 
 
-def cryptocurrency_data(request):
-    # url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/map'
-    # url = 'https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/map'
-    # url = 'https://sandbox-api.coinmarketcap.com/v1/fiat/map'
-    parameters = {"limit": 10}
-    headers = {
-        "Accepts": "application/json",
-        # 'X-CMC_PRO_API_KEY': '6f66fcc3-73b3-48ea-a584-32af97de8e12',
-        "X-CMC_PRO_API_KEY": "b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c",
-    }
-
-    try:
-        response = requests.get(url, params=parameters, headers=headers)
-        data = response.json()
-        return render(request, "test_template.html", {"data": data})
-    except (
-        requests.exceptions.ConnectionError,
-        requests.exceptions.Timeout,
-        requests.exceptions.TooManyRedirects,
-    ) as e:
-        return render(request, "test_template.html", {"error_message": str(e)})
-
 
 def convert(source,to,amount):
     # Corrected dictionary creation with ID as key and name as value
@@ -552,40 +542,11 @@ def convert_data(request):
         form.set_currency_choices(currency_choices)
         if form.is_valid():
             result=convert(form.cleaned_data['currency_from'],form.cleaned_data['currency_to'],form.cleaned_data['amount'])
-        return render(request, 'test_template.html', {'form': form, 'result': result})
+        return render(request, 'converter_template.html', {'form': form, 'result': result})
 
 
     else:
         form = CurrencyConverterForm()
         form.set_currency_choices(currency_choices)
 
-    return render(request, 'test_template.html', {'form': form, 'result': result})
-
-
-def temp(request):
-
-    # url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/map'
-    url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/map'
-    # url = 'https://pro-api.coinmarketcap.com/v2/tools/price-conversion'
-
-    # url = 'https://sandbox-api.coinmarketcap.com/v2/tools/price-conversion'
-    parameters = {
-        'limit':100
-    }
-
-    headers = {
-        "Accepts": "application/json",
-        'X-CMC_PRO_API_KEY': '6f66fcc3-73b3-48ea-a584-32af97de8e12',
-        # "X-CMC_PRO_API_KEY": "b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c",
-    }
-
-    try:
-        response = requests.get(url, params=parameters, headers=headers)
-
-        data=response.json()
-        print(data)
-        return render(request,'test_template.html',{'data':data})
-        # return data['data']['quote'][to]['price']
-    except:
-        return render(request, 'test_template.html', {'data': "error"})
-
+    return render(request, 'converter_template.html', {'form': form, 'result': result})

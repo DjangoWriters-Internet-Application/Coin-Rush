@@ -22,11 +22,11 @@ urlpatterns = [
     path("submit_feedback/<int:sub_id>/", views.submit_feedback, name="submit_feedback"),
     path("discussion/", views.discussion, name="discussion"),
     path("discussion/<int:post_id>", views.discussion_single, name="discussion_single"),
-    path("show_stocks/", views.show_stocks, name="show_stocks"),
     path("buy-stock/<str:stock_symbol>/", views.buy_stock, name="buy_stock"),
     path("nft/", views.nftmarketplace, name="NFTMarketPlace"),
     path("nft/<int:nft_id>/", views.nft_detail, name="nft_detail"),
-    path('test/', views.convert_data, name='cryptocurrency_data'),
+    path('converter/', views.convert_data, name='cryptocurrency_data'),
+    path('stock/<int:stock_id>', views.stock_chart, name='stock_chart'),
 
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
