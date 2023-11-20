@@ -25,6 +25,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_login = models.DateTimeField(blank=True, null=True)
     wallet = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
 
+    liked_news = models.ManyToManyField('News', blank=True, null=True)
+
     objects = AuthUserManager()
 
     USERNAME_FIELD = "email"
@@ -74,7 +76,7 @@ class Stock(models.Model):
 
     def __str__(self):
         return self.symbol
-    
+ 
 class NFT(models.Model):
     CURRENCY_CHOICES = [
         ("USD", "US Dollar"),
@@ -95,34 +97,50 @@ class NFT(models.Model):
     def __str__(self):
         return self.symbol
 
+class NFTTransaction(models.Model):
+    TYPE_CHOICES = [
+        ("BUY", "Buy"),
+        ("SELL", "Sell"),
+    ]
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    nft = models.ForeignKey(NFT, on_delete=models.CASCADE)
+    transaction_type = models.CharField(max_length=10, choices=TYPE_CHOICES, default="BUY")
+    quantity = models.PositiveIntegerField(default=0)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.email} - {self.transaction_type} {self.quantity} {self.nft.symbol} @ {self.price}"
+    
+class NFTUserHolding(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    nft = models.ForeignKey(NFT, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.user.email} - {self.quantity} {self.nft.symbol}"
 
 class Transaction(models.Model):
     TYPE = [("BUY", "Buy"), ("SELL", "Sell")]
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
     transaction_type = models.CharField(max_length=10, choices=TYPE, default="BUY")
     quantity = models.PositiveIntegerField(default=0)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     timestamp = models.DateTimeField(auto_now_add=True)
 
-    # GenericForeignKey to support different types of assets
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    asset = GenericForeignKey('content_type', 'object_id')
-
     def __str__(self):
-        return f"{self.user.email} - {self.transaction_type}{self.quantity} {self.asset} @ {self.price}"
+        return f"{self.user.email} - {self.transaction_type}{self.quantity} {self.stock.symbol} @ {self.price}"
+
 
 class UserHolding(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    asset = GenericForeignKey('content_type', 'object_id')
+    stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=0)
-    transactions = GenericRelation(Transaction)  # Add this line
-
 
     def __str__(self):
-        return f"{self.user.email} - {self.quantity} {self.content_type}"
+        return f"{self.user.email} - {self.quantity} {self.stock.symbol}"
     
 
 # Define a model for StockPrice (to store historical price data)
@@ -138,9 +156,10 @@ class StockPrice(models.Model):
 class News(models.Model):
     title = models.CharField(max_length=255)
     sub_title = models.CharField(max_length=255)
-    # image = models.ImageField(upload_to='news_images/')
+    cover_image = models.ImageField(upload_to='news_covers/', null=True, blank=True, default='news_covers/placeholder.png')
     description = models.TextField(max_length=1000)
-    publish_datetime = models.DateTimeField()
+    likes = models.ManyToManyField(User,  blank=True, null=True)
+    publish_datetime = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title
@@ -168,6 +187,7 @@ class Learn(models.Model):
     description = models.TextField(blank=True)
     category = models.ForeignKey(CourseCategory, on_delete=models.CASCADE, default=1)
     slug = models.SlugField(default="", null=False)
+    image = models.ImageField(upload_to='topic_images/', null=True, blank=True, default='topic_images/no-image-available.png')
 
     def __str__(self):
         return self.title
@@ -197,23 +217,6 @@ class Bid(models.Model):
     bidder = models.ForeignKey(User, on_delete=models.CASCADE)
     bid_amount = models.DecimalField(max_digits=10, decimal_places=2)
     timestamp = models.DateTimeField(auto_now_add=True)
-
-
-class Purchase(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    nft = models.ForeignKey(NFT, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=0)
-    total_price = models.DecimalField(max_digits=10, decimal_places=2)
-    timestamp = models.DateTimeField(default=timezone.now)
-
-    def __str__(self):
-        return f"{self.user.email} - Purchase {self.quantity} {self.nft.symbol} @ {self.total_price}"
-
-
-class UserNFT(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    nft = models.ForeignKey(NFT, on_delete=models.CASCADE)
-    quantity = models.IntegerField()
 
 
 class GlossaryTerm(models.Model):

@@ -25,7 +25,7 @@
                 <table class="table table-striped">
                     <thead>
                     <tr>
-                        <th>Asset</th>
+                        <th>Stock</th>
                         <th>Company</th>
                         <th>Current Price</th>
                         <th>Quantity</th>
@@ -35,71 +35,58 @@
                     <tbody>
                     {% for holding in holdings %}
                         <tr>
-                            <td>
-                                {% if holding.content_type.model == 'stock' %}
-                                    <img src="{{ holding.asset.image.url }}" alt="{{ holding.asset.symbol }}" width="30"
-                                         height="30"> {{ holding.asset }}
-                                {% elif holding.content_type.model == 'nft' %}
-                                    <img src="{{ holding.asset.image.url }}" alt="{{ holding.asset.symbol }}" width="30"
-                                         height="30"> {{ holding.asset.symbol }}
-                                {% endif %}
-                            </td>
-                            <td>{{ holding.asset.company_name }}</td>
-                            <td>{{ holding.asset.current_price }}</td>
+                            <td><img src="{{ holding.stock.image.url }}" alt="{{ holding.stock.symbol }}" width="30"
+                                     height="30"> {{ holding.stock }}</td>
+                            <td>{{ holding.stock.company_name }}</td>
+                            <td>{{ holding.stock.current_price }}</td>
                             <td>{{ holding.quantity }}</td>
                             <td>
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                        data-bs-target="#sellModel{{ holding.asset }}">
+                                        data-bs-target="#sellModel{{ holding.stock }}">
                                     <i class="bi bi-cash"></i> Sell
                                 </button>
+
                             </td>
                         </tr>
 
-
-                       <!-- Sell Modal -->
-<div class="modal fade" id="sellModel{{ holding.asset }}" tabindex="-1" aria-labelledby="sellModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="sellModalLabel">Sell {{ holding.asset }}</h5>
-                <button type="button" class="btn btn-outline-primary close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                {% if holding.content_type.model == 'stock' %}
-                    <!-- Sell Stock Form -->
-                    <form method="post" action="{% url 'user-holdings' %}">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            {{ sell_stock_form.quantity.label_tag }}
-                            {{ sell_stock_form.quantity }}
-                            {% if sell_stock_form.errors.quantity %}
-                                <span class="text-danger">{{ sell_stock_form.errors.quantity }}</span>
-                            {% endif %}
+                        <!-- Sell Modal -->
+                        <div class="modal fade " id="sellModel{{ holding.stock }}" tabindex="-1"
+                             aria-labelledby="sellModalLabel"
+                             aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="sellModalLabel">Sell {{ holding.stock }}</h5>
+                                        <button type="button" class="btn btn-outline-primary close" data-dismiss="modal"
+                                                aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form method="post" action="{% url 'user-holdings' %}">
+                                            {% csrf_token %}
+                                            <div class="form-group">
+                                                {{ sell_form.quantity.label_tag }}
+                                                {{ sell_form.quantity }}
+                                                {% if sell_form.errors.quantity %}
+                                                    <span class="text-danger">{{ sell_form.errors.quantity }}</span>
+                                                    <script>
+                                                        // Keep the modal open if there are errors
+                                                        $(document).ready(function () {
+                                                            $('#sellModel{{ holding.stock }}').modal('show');
+                                                        });
+                                                    </script>
+                                                {% endif %}
+                                            </div>
+                                            <input type="hidden" name="stock_symbol" value="{{ holding.stock }}">
+                                            <button type="submit" class="btn btn-primary mt-3"><i
+                                                    class="bi bi-cash"></i> Sell
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <input type="hidden" name="stock_symbol" value="{{ holding.asset.symbol }}">
-                        <button type="submit" class="btn btn-primary mt-3">Sell</button>
-                    </form>
-                {% elif holding.content_type.model == 'nft' %}
-                    <!-- Sell NFT Form -->
-                    <form method="post" action="{% url 'user-holdings' %}">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            {{ sell_nft_form.quantity.label_tag }}
-                            {{ sell_nft_form.quantity }}
-                            {% if sell_nft_form.errors.quantity %}
-                                <span class="text-danger">{{ sell_nft_form.errors.quantity }}</span>
-                            {% endif %}
-                        </div>
-                        <input type="hidden" name="nft_id" value="{{ holding.asset.id }}">
-                        <button type="submit" class="btn btn-primary mt-3">Sell</button>
-                    </form>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-</div>
                     {% endfor %}
                     </tbody>
                 </table>

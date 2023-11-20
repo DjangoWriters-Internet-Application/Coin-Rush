@@ -27,7 +27,7 @@
                                         <h3 class="card-title">{{ nft.symbol }}</h3>
                                         <p class="card-text">Owner: {{ nft.company_name.get_short_name }}</p>
                                         <p class="card-text">Price: {{ nft.current_price }} {{ nft.currency }}</p>
-                                        <form method="post" action="{% url 'buy_nft' nft.id %}">
+                                        <form method="post" action="{% url 'buy_nft' nft.symbol%}">
                                             {% csrf_token %}
                                             <label for="quantity">Quantity:</label>
                                             <input type="number" name="quantity" value="1" min="1" required>

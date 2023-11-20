@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.shortcuts import redirect
+from django.conf import settings
+from django.conf.urls.static import static
 from . import views
 
 urlpatterns = [
@@ -20,13 +22,17 @@ urlpatterns = [
     path("submit_feedback/<int:sub_id>/", views.submit_feedback, name="submit_feedback"),
     path("discussion/", views.discussion, name="discussion"),
     path("discussion/<int:post_id>", views.discussion_single, name="discussion_single"),
-    path("show_stocks/", views.show_stocks, name="show_stocks"),
     path("buy-stock/<str:stock_symbol>/", views.buy_stock, name="buy_stock"),
     path("nft/", views.nftmarketplace, name="NFTMarketPlace"),
     path("nft/<int:nft_id>/", views.nft_detail, name="nft_detail"),
     path('create_nft/', views.create_nft, name='create_nft'),
-    path('buy_nft/<int:nft_id>/', views.buy_nft, name='buy_nft'),
+    path('buy_nft/<str:nft_symbol>/', views.buy_nft, name='buy_nft'),
+    path('nft-user-holdings/', views.nft_user_holdings, name='nft-user-holdings'),
+    path('nft-transaction-history/', views.nft_transaction_history, name='nft-transaction-history'),
     path('test/', views.convert_data, name='cryptocurrency_data'),
     path('glossary/', views.glossary, name='glossary'),
     path('glossary/<int:term_id>/', views.term_detail, name='term_detail'),
+    path('converter/', views.convert_data, name='cryptocurrency_data'),
+    path('stock/<int:stock_id>', views.stock_chart, name='stock_chart'),
 ]
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

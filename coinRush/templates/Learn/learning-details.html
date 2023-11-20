@@ -1,11 +1,11 @@
 {% extends 'Base/base.html' %}
 {% load static %}
 {% block extraHead %}
-<!--    <link rel="stylesheet" href="{% static 'css/news.css' %}">-->
-    <link rel="stylesheet" href="{% static 'css/learn.css' %} ">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-VFMp+qn9ntcWlOqmPIRZfGgUdZt9zOZ6bg7WlEVIHKYlX6q6sLsu5v7bKsl1z7ezJ5OWuo1+9V+VWg0+hdmDmw==" crossorigin="anonymous" />
+<link rel="stylesheet" href="{% static 'css/learn.css' %} ">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-VFMp+qn9ntcWlOqmPIRZfGgUdZt9zOZ6bg7WlEVIHKYlX6q6sLsu5v7bKsl1z7ezJ5OWuo1+9V+VWg0+hdmDmw==" crossorigin="anonymous" />
 {% endblock extraHead %}
-{% block title %}{{subject.title}}{% endblock %}
+
+{% block title %}{{subject.title}}{% endblock title%}
 
 {% block content %}
 <div class="container">

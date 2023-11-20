@@ -1,26 +1,39 @@
 {% extends "Base/base.html" %}
 {% load static %}
 {% block extraHead %}
-    <link rel="stylesheet" href="{% static 'css/news.css' %}">
+<link rel="stylesheet" href="{% static 'css/news.css' %}">
 {% endblock extraHead %}
 
 {% block content %}
-    <div class="container">
-        <div class="row g-2">
-            <div>
-                <h2 class="title">{{ news.title }}</h2>
-                <p class="sub-title">{{ news.sub_title }}</p>
-                <p class="description">{{ news.description }}</p>
-            </div>
+<div class="container details-container">
+    <!--    <div class="row g-2">-->
+    <div class="news-details-wrapper">
+        <h2 class="title-details">{{ news.title }}</h2>
+        <p class="sub-title-details">{{ news.sub_title }}</p>
+        <p class="description-details">{{ news.description }}</p>
+        <!--        </div>-->
+
+
+        <div class="news-card-footer">
+            <span><i class="bi bi-heart"></i> {{ news.likes.count }}</span>
+            {% if user.is_authenticated %}
+            {% if news.likes.count > 0 and news in user.liked_news.all %}
+            <form method="post" action="{% url 'news' %}">
+                {% csrf_token %}
+                <input type="hidden" name="unlike_news" value="{{ news.id }}">
+                <button class="like-btn" type="submit"><i class="bi bi-hand-thumbs-down"></i></button>
+            </form>
+            {% elif n.likes.count == 0 %}
+            <!-- Show like button when count is 0 -->
+            <form method="post" action="{% url 'news' %}">
+                {% csrf_token %}
+                <input type="hidden" name="like_news" value="{{ news.id }}">
+                <button class="like-btn" type="submit"><i class="bi bi-hand-thumbs-up"></i></button>
+            </form>
+            {% endif %}
+            {% endif %}
         </div>
     </div>
-
-    <hr>
-
-    <form method="post" action="{% url 'news_details' news_id=news.id %}">
-        {% csrf_token %}
-        {{ form }}
-        <button type="submit" >Comment </button>
-    </form>
+</div>
 
 {% endblock content %}
