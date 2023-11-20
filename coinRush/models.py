@@ -118,9 +118,11 @@ class UserHolding(models.Model):
     object_id = models.PositiveIntegerField()
     asset = GenericForeignKey('content_type', 'object_id')
     quantity = models.PositiveIntegerField(default=0)
+    transactions = GenericRelation(Transaction)  # Add this line
+
 
     def __str__(self):
-        return f"{self.user.email} - {self.quantity} {self.content_object}"
+        return f"{self.user.email} - {self.quantity} {self.content_type}"
     
 
 # Define a model for StockPrice (to store historical price data)

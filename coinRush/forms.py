@@ -168,8 +168,17 @@ class NFTForm(forms.ModelForm):
 
 
 class BuyNFTForm(forms.Form):
-    quantity = forms.IntegerField(min_value=1, widget=forms.NumberInput(attrs={"required": "required"}))
+    quantity = forms.IntegerField(
+    min_value=1,
+    required=True,
+    widget=forms.NumberInput(attrs={'class': 'form-control'}),
+    error_messages={
+        'required': 'Please enter a valid quantity.',
+        'min_value': 'Quantity must be at least 1.',
+    }
+)
     stripeToken = forms.CharField(widget=forms.HiddenInput())
+    
 
 class SellNFTForm(forms.Form):
     quantity = forms.IntegerField(min_value=1, required=True, widget=forms.NumberInput(

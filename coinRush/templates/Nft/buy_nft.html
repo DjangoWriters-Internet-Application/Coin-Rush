@@ -32,7 +32,6 @@
                         <div class="form-group mb-3">
                             <label for="id_quantity" class="fw-bold text-dark fs-5">Quantity to Buy:</label>
                             {{ form.quantity }}
-                            <input type="hidden" name="stripeToken" value="{{ nft.id }}">
                         </div>
                         <div class="form-group mb-5">
                             <label for="total_price" class="fw-bold text-dark fs-5">Total Price:</label>
@@ -69,9 +68,9 @@
         </form>
 
         <script>
-            var stripe = Stripe('{{PUBLIC_KEY}}');
+            var stripe = Stripe('{{ PUBLIC_KEY }}');
             var elements = stripe.elements();
-
+            
             var card = elements.create('card', {
                 style: {
                     base: {
@@ -79,12 +78,11 @@
                         color: '#32325d',
                         fontFamily: 'Arial, sans-serif',
                     },
-                }
+                },
             });
-            // Add an instance of the card Element into the `card-element` div.
+            
             card.mount('#card-element');
-
-            // Handle real-time validation errors from the card Element.
+            
             card.addEventListener('change', function (event) {
                 var displayError = document.getElementById('card-errors');
                 if (event.error) {
@@ -93,30 +91,28 @@
                     displayError.textContent = '';
                 }
             });
-
-            // Create a token when the form is submitted.
-            var form = document.querySelector('form');
+            
+            var form = document.getElementById('payment-form');
+            
             form.addEventListener('submit', function (event) {
                 event.preventDefault();
+            
                 stripe.createToken(card).then(function (result) {
                     if (result.error) {
-                        // Inform the user if there was an error.
                         var errorElement = document.getElementById('card-errors');
                         errorElement.textContent = result.error.message;
                     } else {
-                        // Send the token to your server.
-                        var stripeToken = document.querySelector('input[name="stripeToken"]');
-                        stripeToken.value = result.token.id;
+                        // Insert the token into the form so it gets submitted to the server
+                        var hiddenInput = document.createElement('input');
+                        hiddenInput.setAttribute('type', 'hidden');
+                        hiddenInput.setAttribute('name', 'stripeToken');
+                        hiddenInput.setAttribute('value', result.token.id);
+                        form.appendChild(hiddenInput);
+            
+                        // Submit the form
                         form.submit();
                     }
                 });
-            });
-            // Update total price dynamically based on quantity
-            document.getElementById('id_quantity').addEventListener('input', function () {
-                var quantity = parseInt(this.value);
-                var currentPrice = parseFloat('{{ nft.current_price }}');
-                var totalPrice = isNaN(quantity) ? 0 : quantity * currentPrice;
-                document.getElementById('total_price').value = '$' + totalPrice.toFixed(2);
             });
         </script>
    
