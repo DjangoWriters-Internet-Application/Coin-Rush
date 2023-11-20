@@ -73,18 +73,15 @@ def home(request):
         order_string = "market_cap"
 
     stock_filter = StockFilters(request.GET,queryset=Stock.objects.all().order_by(order_string))
+    top_10_stocks = Stock.objects.all().order_by('-current_price')[:10]
+
     context = {"stocks": stock_filter.qs,
-               "form":stock_filter.form}
+               "form":stock_filter.form,
+               "top_stocks":top_10_stocks}
     return render(request, "index.html",context )
 
 def about(request):
     return render(request, "about.html")
-
-
-def test(request,stock_id):
-    s=Stock.objects.get(pk=stock_id)
-    p=StockPrice.objects.filter(stock=s)
-    return render(request, "test.html",{"p":p,"s":s})
 
 
 
@@ -306,9 +303,12 @@ def discussion_single(request, post_id):
     )
 
 
-def show_stocks(request):
-    stocks = Stock.objects.all()
-    return render(request, "Stocks/showStocks.html", {"stocks": stocks})
+def stock_chart(request,stock_id):
+    stock=Stock.objects.get(pk=stock_id)
+    priced_stock=StockPrice.objects.filter(stock=stock).order_by('date')
+    dates = [str(stock.date) for stock in priced_stock]
+    price = [str(stock.price) for stock in priced_stock]
+    return render(request, "stock_prices_chart.html",{"price":price,"dates":dates})
 
 def newsDetails(request, news_id):
     if 'like_news' in request.POST:

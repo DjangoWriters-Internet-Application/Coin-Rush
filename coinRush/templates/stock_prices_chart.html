@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Price Chart</title>
+    <!-- Include Chart.js from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+
+</head>
+<body>
+    <div style="width: 80%; margin: auto;">
+        <canvas id="stockPriceChart"></canvas>
+    </div>
+
+    <script>
+        // Get data from Django context
+        var dates = {{ dates|safe }}
+        var prices = {{ price|safe }}
+
+        // Convert date strings to JavaScript Date objects
+        dates = dates.map(dateString => new Date(dateString));
+
+const sortedData = dates.map((date, index) => ({ date, price: prices[index] }))
+  .sort((a, b) => a.date - b.date);
+
+// Extract sorted dates and prices
+dates = sortedData.map(item => moment(item.date).format('DD-MM-YY'));
+prices = sortedData.map(item => item.price);
+        console.log(prices)
+
+        // Ensure that Chart.js is loaded before attempting to create the chart
+        if (window.Chart) {
+            // Create the chart
+            var ctx = document.getElementById('stockPriceChart').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: 'Stock Prices',
+                        data: prices,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1,
+                        fill: false,
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: [{
+                            type: 'time',
+                            time: {
+                                unit: 'day',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Date',
+                            }
+                        }],
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Stock Price',
+                            }
+                        }
+                    }
+                }
+            });
+        } else {
+            console.error("Chart.js is not loaded.");
+        }
+    </script>
+</body>
+</html>
