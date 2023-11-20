@@ -73,8 +73,11 @@ def home(request):
         order_string = "market_cap"
 
     stock_filter = StockFilters(request.GET,queryset=Stock.objects.all().order_by(order_string))
+    top_10_stocks = Stock.objects.all().order_by('-current_price')[:10]
+
     context = {"stocks": stock_filter.qs,
-               "form":stock_filter.form}
+               "form":stock_filter.form,
+               "top_stocks":top_10_stocks}
     return render(request, "index.html",context )
 
 def about(request):

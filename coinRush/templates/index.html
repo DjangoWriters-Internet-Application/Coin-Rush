@@ -7,8 +7,11 @@
 {% endblock extraHead %}
 
 
-<marquee behavior="scroll" direction="left">
-TRENDING STOCKS : BTC ETH ADA BNB TIA OXT SOL LINK
+<marquee behavior="scroll" direction="left" scrollamount="5">
+    TOP STOCKS:
+    {% for stock in top_stocks %}
+        {{ stock.symbol }} - {{ stock.current_price }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    {% endfor %}
 </marquee>
 
 <button onclick="openPopup()">Stock Filters</button>
