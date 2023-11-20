@@ -1,40 +1,44 @@
+<!-- NFTmarketplace.html -->
+
 {% extends "Base/base.html" %}
 {% load static %}
+
 {% block extraHead %}
-    <link rel="stylesheet" href="{% static 'css/news.css' %}">
+    <link rel="stylesheet" href="{% static 'css/nft_marketplace.css' %}">
+    <!-- Add any additional stylesheets or scripts you need for this page -->
 {% endblock extraHead %}
 
 {% block content %}
-
-<!-- main_page.html -->
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NFT Marketplace</title>
-    <!-- Add your CSS and styling links here -->
-    <link rel="stylesheet" href="{% static 'css/main_page.css' %}">
-</head>
-<body>
-    <header>
+    <div class="container mt-4">
         <h1>NFT Marketplace</h1>
-    </header>
-    <div class="container">
-        <section class="nft-cards">
-            <h2>Available NFTs for Sale</h2>            
+        <a href="{% url 'create_nft' %}" class="btn btn-primary btn-sell-nft">Sell NFT</a>
+    </div>
+
+    <div class="container mt-4">
+        <section class="nft-cards">         
             <div class="row">
                 {% for nft in nfts %}
                     {% if nft.is_for_sale %}
                         <div class="col-md-4 nft-card">
                             <a href="{% url 'nft_detail' nft.id %}">
-                                <div class="card">
-                                    <img src="{{ nft.image.url }}" >
+                                <div class="card h-100">
+                                    <img src="{{ nft.image.url }}" class="card-img-top" alt="NFT Image">
                                     <div class="card-body">
-                                        <h3 class="card-title">{{ nft.description }}</h3>
-                                        <p class="card-text">Owner: {{ nft.owner.username }}</p>
-                                        <p class="card-text">Price: {{ nft.price }} {{ nft.currency }}</p>
+                                        <h3 class="card-title">{{ nft.symbol }}</h3>
+                                        <p class="card-text">Owner: {{ nft.company_name.get_short_name }}</p>
+                                        <p class="card-text">Price: {{ nft.current_price }} {{ nft.currency }}</p>
+                                        <form method="post" action="{% url 'buy_nft' nft.id %}">
+                                            {% csrf_token %}
+                                            <label for="quantity">Quantity:</label>
+                                            <input type="number" name="quantity" value="1" min="1" required>
+                                            <div id="card-element">
+                                                <!-- A Stripe Element will be inserted here. -->
+                                            </div>
+                                            <!-- Used to display form errors. -->
+                                            <div id="card-errors" role="alert"></div>
+                                            <input type="hidden" name="stripeToken">
+                                            <button type="submit" class="btn btn-success">Buy NFT</button>
+                                        </form>
                                     </div>
                                 </div>
                             </a>
@@ -44,11 +48,38 @@
             </div>
         </section>
     </div>
+
     <section class="pagination">
         <!-- Add pagination links for navigating through NFTs -->
     </section>
-</body>
-</html>
 
+    <script>
+        var stripe = Stripe('{{ PUBLIC_KEY }}');
+        var elements = stripe.elements();
+        var card = elements.create('card');
+        card.mount('#card-element');
+        card.addEventListener('change', function(event) {
+            var displayError = document.getElementById('card-errors');
+            if (event.error) {
+                displayError.textContent = event.error.message;
+            } else {
+                displayError.textContent = '';
+            }
+        });
+        var form = document.querySelector('form');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            stripe.createToken(card).then(function(result) {
+                if (result.error) {
+                    var errorElement = document.getElementById('card-errors');
+                    errorElement.textContent = result.error.message;
+                } else {
+                    var stripeToken = document.querySelector('input[name="stripeToken"]');
+                    stripeToken.value = result.token.id;
+                    form.submit();
+                }
+            });
+        });
+    </script>
 
 {% endblock content %}

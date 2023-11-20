@@ -1,12 +1,12 @@
 from django import forms
-from .models import User, Post, Comment,Transaction,NewsComments, News
+from .models import User, Post, Comment, Transaction, NewsComments, News
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.utils.text import slugify
 
 # from django.contrib.auth.forms import UserCreationForm
 
-from .models import User, Post, Comment, Transaction, NewsComments, Feedback, Stock, CourseCategory, Learn
+from .models import User, Post, Comment, Transaction, NewsComments, Feedback, Stock, CourseCategory, Learn, GlossaryTerm
 
 
 class UserCreationForm(forms.ModelForm):
@@ -153,7 +153,7 @@ class NewsCommentForm(forms.ModelForm):
 class NewsCreateForm(forms.ModelForm):
     class Meta:
         model = News
-        fields = ['title', 'cover_image','sub_title', 'description']
+        fields = ['title', 'cover_image', 'sub_title', 'description']
         widgets = {
             'cover_image': forms.FileInput(attrs={'class': "news-file-upload-input form-input-field"}),
             'title': forms.TextInput(attrs={'class': "news-title-input form-input-field", 'placeholder': "Enter Title"}),
@@ -163,9 +163,12 @@ class NewsCreateForm(forms.ModelForm):
         exclude = ['publish_datetime']
 
     title = forms.CharField(label="News Title", required=True, max_length=225)
-    sub_title = forms.CharField(label="News Sub Title", required=False, max_length=225)
-    description = forms.CharField(label="News Description", required=True, max_length=1000, widget=forms.Textarea)
+    sub_title = forms.CharField(
+        label="News Sub Title", required=False, max_length=225)
+    description = forms.CharField(
+        label="News Description", required=True, max_length=1000, widget=forms.Textarea)
     cover_image = forms.ImageField(label="Cover Image", required=False)
+
 
 class FeedbackRatingForm(forms.ModelForm):
     class Meta:
@@ -173,24 +176,57 @@ class FeedbackRatingForm(forms.ModelForm):
         fields = ["subject", "feedback", "rating"]
 
 
+class NFTForm(forms.ModelForm):
+    class Meta:
+        model = NFT
+        fields = [
+            'image',
+            'symbol',
+            'description',
+            'quantity',
+            'is_for_sale',
+            'current_price',
+            'currency',
+            'is_bidding_allowed',
+        ]
+
+
+class BuyNFTForm(forms.Form):
+    quantity = forms.IntegerField(
+        min_value=1, widget=forms.NumberInput(attrs={"required": "required"}))
+    stripeToken = forms.CharField(widget=forms.HiddenInput())
+
+
+class SellNFTForm(forms.Form):
+    quantity = forms.IntegerField(min_value=1, required=True, widget=forms.NumberInput(
+        attrs={'class': 'form-control'}))
+    nft_id = forms.IntegerField(widget=forms.HiddenInput())
+
+
 class StockFilterForm(forms.ModelForm):
     class Meta:
         model = Stock
-        fields=["current_price"]
+        fields = ["current_price"]
+
 
 class CurrencyConverterForm(forms.Form):
-    amount = forms.DecimalField(min_value=0.01, label='Amount', widget=forms.NumberInput(attrs={'class': 'form-control'}))
-    currency_from = forms.ChoiceField(label='From Currency', widget=forms.Select(attrs={'class': 'form-control'}))
-    currency_to = forms.ChoiceField(label='To Currency', widget=forms.Select(attrs={'class': 'form-control'}))
+    amount = forms.DecimalField(min_value=0.01, label='Amount', widget=forms.NumberInput(
+        attrs={'class': 'form-control'}))
+    currency_from = forms.ChoiceField(
+        label='From Currency', widget=forms.Select(attrs={'class': 'form-control'}))
+    currency_to = forms.ChoiceField(
+        label='To Currency', widget=forms.Select(attrs={'class': 'form-control'}))
 
     def set_currency_choices(self, choices):
         self.fields['currency_from'].choices = choices
         self.fields['currency_to'].choices = choices
 
+
 class TopicCreateForm(forms.ModelForm):
     class Meta:
         model = CourseCategory
         fields = ['name']
+
 
 class SubjectCreateForm(forms.ModelForm):
     class Meta:
@@ -208,6 +244,7 @@ class SubjectCreateForm(forms.ModelForm):
         'category': forms.Select(attrs={'class': 'form-control'}),
         'image': forms.FileInput(attrs={'class': 'form-control'}),
     }
+
     def save(self, commit=True):
         instance = super().save(commit=False)
         instance.slug = slugify(instance.title)
@@ -215,3 +252,9 @@ class SubjectCreateForm(forms.ModelForm):
             instance.save()
         else:
             return instance
+
+
+class GlossaryTermForm(forms.ModelForm):
+    class Meta:
+        model = GlossaryTerm
+        fields = ['term', 'definition']

@@ -1,3 +1,9 @@
+from django.shortcuts import render, get_object_or_404
+from django.contrib.contenttypes.models import ContentType
+from .forms import BuyNFTForm
+from .models import NFT, Transaction, UserHolding
+from django.contrib.auth.decorators import login_required  # Import login_required
+from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.utils import timezone
@@ -13,7 +19,12 @@ from django.urls import reverse
 from django.contrib import messages
 from django.core.exceptions import *
 from .filters import StockFilters
-from .constants import top_30_currencies,crypto_data
+from .constants import top_30_currencies, crypto_data
+from .models import NFT
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import NFT, Transaction
+import stripe
+from django.conf import settings
 import requests
 
 from .forms import (
@@ -28,7 +39,10 @@ from .forms import (
     CurrencyConverterForm,
     NewsCreateForm,
     TopicCreateForm,
-    SubjectCreateForm
+    SubjectCreateForm,
+    CurrencyConverterForm,
+    NFTForm,
+    GlossaryTermForm,
 )
 
 from .forms import (
@@ -37,13 +51,14 @@ from .forms import (
     PostForm,
     CommentForm,
     NewsCommentForm,
+    SellStockForm, SellNFTForm,
 )
 from .models import (
     Transaction,
     UserHolding,
     User,
     Learn,
-StockPrice,
+    StockPrice,
     CourseCategory,
     Feedback,
     News,
@@ -52,6 +67,7 @@ StockPrice,
     Stock,
     NFT,
     Bid,
+    GlossaryTerm,
 )
 
 stripe.api_key = settings.STRIPE_PRIVATE_KEY
@@ -72,20 +88,21 @@ def home(request):
     elif ord_by == "min-market-cap":
         order_string = "market_cap"
 
-    stock_filter = StockFilters(request.GET,queryset=Stock.objects.all().order_by(order_string))
+    stock_filter = StockFilters(
+        request.GET, queryset=Stock.objects.all().order_by(order_string))
     context = {"stocks": stock_filter.qs,
-               "form":stock_filter.form}
-    return render(request, "index.html",context )
+               "form": stock_filter.form}
+    return render(request, "index.html", context)
+
 
 def about(request):
     return render(request, "about.html")
 
 
-def test(request,stock_id):
-    s=Stock.objects.get(pk=stock_id)
-    p=StockPrice.objects.filter(stock=s)
-    return render(request, "test.html",{"p":p,"s":s})
-
+def test(request, stock_id):
+    s = Stock.objects.get(pk=stock_id)
+    p = StockPrice.objects.filter(stock=s)
+    return render(request, "test.html", {"p": p, "s": s})
 
 
 def services(request):
@@ -145,8 +162,9 @@ def news(request):
                 messages.success(request, 'News created successfully!')
                 return redirect('news')
 
-    newsForm = NewsCreateForm();
-    context = {"title": "Latest Crypto News", "news": News.objects.all(), 'newsForm': newsForm, 'displayForm':displayForm}
+    newsForm = NewsCreateForm()
+    context = {"title": "Latest Crypto News", "news": News.objects.all(
+    ), 'newsForm': newsForm, 'displayForm': displayForm}
     return render(request, "News/index.html", context)
 
 
@@ -180,12 +198,14 @@ def categories_course(request):
         form = TopicCreateForm(request.POST)
         if form.is_valid():
             new_topic = form.cleaned_data['name']
-            existing_topic = CourseCategory.objects.filter(name=new_topic).first()
+            existing_topic = CourseCategory.objects.filter(
+                name=new_topic).first()
             if existing_topic:
                 messages.error(request, f'Topic "{new_topic}" already exists.')
             else:
                 form.save()
-                messages.success(request, f'Topic "{new_topic}" created successfully.')
+                messages.success(
+                    request, f'Topic "{new_topic}" created successfully.')
             return redirect(url)
 
         form2 = SubjectCreateForm(request.POST, request.FILES)
@@ -371,16 +391,17 @@ def newsDetails(request, news_id):
     form = NewsCommentForm()
     return render(request, 'NewsDetails/index.html', {'news': newsDetails})
 
+
 @login_required(login_url="/login/")
 def buy_stock(request, stock_symbol):
     error_message = ""
-    stocks = Stock.objects.get(symbol=stock_symbol)
+    stock = get_object_or_404(Stock, symbol=stock_symbol)
+
     if request.method == 'POST':
         form = BuyStockForm(request.POST)
 
         if form.is_valid():
             quantity = form.cleaned_data['quantity']
-            stock = stocks
             total_price = stock.current_price * quantity  # Calculate total price
 
             # Handle Stripe payment
@@ -396,7 +417,7 @@ def buy_stock(request, stock_symbol):
                 # Record the transaction
                 transaction = Transaction(
                     user=request.user,
-                    stock=stock,
+                    asset=stock,  # Use the generic asset field
                     transaction_type="Buy",
                     quantity=quantity,
                     price=total_price,
@@ -405,7 +426,7 @@ def buy_stock(request, stock_symbol):
 
                 # Update user holdings
                 holding, created = UserHolding.objects.get_or_create(
-                    user=request.user, stock=stock
+                    user=request.user, content_type=ContentType.objects.get_for_model(stock), object_id=stock.id
                 )
                 holding.quantity += quantity
                 holding.save()
@@ -421,7 +442,7 @@ def buy_stock(request, stock_symbol):
         request,
         "Stocks/buy_stock.html",
         {
-            "stock": stocks,
+            "stock": stock,
             "error_message": error_message,
             "PUBLIC_KEY": settings.STRIPE_PUBLIC_KEY,
             "form": form,
@@ -432,7 +453,8 @@ def buy_stock(request, stock_symbol):
 @login_required(login_url="/login/")
 def user_holdings(request):
     holdings = UserHolding.objects.filter(user=request.user)
-    sell_form = SellStockForm()
+    sell_stock_form = SellStockForm()
+    sell_nft_form = SellNFTForm()
     items_per_page = 10
     paginator = Paginator(holdings, items_per_page)
     page = request.GET.get('page')
@@ -443,39 +465,71 @@ def user_holdings(request):
         holdings_page = paginator.page(1)
     except EmptyPage:
         holdings_page = paginator.page(paginator.num_pages)
+
     if request.method == 'POST':
-        sell_form = SellStockForm(request.POST)
+        if 'sell_stock' in request.POST:
+            sell_stock_form = SellStockForm(request.POST)
+            if sell_stock_form.is_valid():
+                stock_symbol = sell_stock_form.cleaned_data['stock_symbol']
+                quantity_to_sell = sell_stock_form.cleaned_data['quantity']
+                stock = Stock.objects.get(symbol=stock_symbol)
+                holding = holdings.filter(stock=stock).first()
+                if holding and quantity_to_sell > 0 and quantity_to_sell <= holding.quantity:
+                    sell_price = stock.current_price * quantity_to_sell
 
-        if sell_form.is_valid():
-            stock_symbol = sell_form.cleaned_data['stock_symbol']
-            quantity_to_sell = sell_form.cleaned_data['quantity']
-            stock = Stock.objects.get(symbol=stock_symbol)
-            holding = holdings.filter(stock=stock).first()
-            if holding and quantity_to_sell > 0 and quantity_to_sell <= holding.quantity:
-                sell_price = stock.current_price * quantity_to_sell
+                    sell_transaction = Transaction(
+                        user=request.user,
+                        stock=stock,
+                        transaction_type="Sell",
+                        quantity=quantity_to_sell,
+                        price=sell_price,
+                    )
+                    sell_transaction.save()
+                    holding.quantity -= quantity_to_sell
+                    holding.save()
+                    request.user.wallet += Decimal(sell_price)
+                    request.user.save()
+                    if holding.quantity == 0:
+                        holding.delete()
 
-                sell_transaction = Transaction(
-                    user=request.user,
-                    stock=stock,
-                    transaction_type="Sell",
-                    quantity=quantity_to_sell,
-                    price=sell_price,
-                )
-                sell_transaction.save()
-                holding.quantity -= quantity_to_sell
-                holding.save()
-                request.user.wallet += Decimal(sell_price)
-                request.user.save()
-                if holding.quantity == 0:
-                    holding.delete()
+                    return redirect("user-holdings")
+                else:
+                    error_message = 'Invalid quantity to sell. Please select a valid quantity.'
+                    sell_stock_form.add_error('quantity', error_message)
 
-                return redirect("user-holdings")
-            else:
-                error_message = 'Invalid quantity to sell. Please select a valid quantity.'
-                sell_form.add_error('quantity', error_message)
+        elif 'sell_nft' in request.POST:
+            sell_nft_form = SellNFTForm(request.POST)
+            if sell_nft_form.is_valid():
+                nft_symbol = sell_nft_form.cleaned_data['nft_symbol']
+                quantity_to_sell = sell_nft_form.cleaned_data['quantity']
+                nft = NFT.objects.get(symbol=nft_symbol)
+                holding = holdings.filter(nft=nft).first()
+                if holding and quantity_to_sell > 0 and quantity_to_sell <= holding.quantity:
+                    sell_price = nft.current_price * quantity_to_sell
+
+                    sell_transaction = Transaction(
+                        user=request.user,
+                        nft=nft,
+                        transaction_type="Sell",
+                        quantity=quantity_to_sell,
+                        price=sell_price,
+                    )
+                    sell_transaction.save()
+                    holding.quantity -= quantity_to_sell
+                    holding.save()
+                    request.user.wallet += Decimal(sell_price)
+                    request.user.save()
+                    if holding.quantity == 0:
+                        holding.delete()
+
+                    return redirect("user-holdings")
+
+                else:
+                    error_message = 'Invalid quantity to sell. Please select a valid quantity.'
+                    sell_nft_form.add_error('quantity', error_message)
 
     return render(request, 'userholding/user_holdings.html',
-                  {'user': request.user, 'holdings': holdings_page, 'sell_form': sell_form})
+                  {'user': request.user, 'holdings': holdings_page, 'sell_stock_form': sell_stock_form, 'sell_nft_form': sell_nft_form})
 
 
 def newsDetails(request, news_id):
@@ -499,11 +553,94 @@ def nft_detail(request, nft_id):
     return render(request, "nft/NFT.html", {"nft": nft})
 
 
+def create_nft(request):
+    if request.method == 'POST':
+        form = NFTForm(request.POST, request.FILES)
+        if form.is_valid():
+            nft_instance = form.save(commit=False)
 
-def convert(source,to,amount):
+            # Check if the user is authenticated (logged in)
+            if request.user.is_authenticated:
+                nft_instance.owner = request.user
+                nft_instance.save()
+                return redirect('nft_detail', nft_id=nft_instance.id)
+            else:
+                # Handle the case when the user is not logged in (redirect to login page, for example)
+                # Replace 'login' with the actual login URL
+                return redirect('login')
+
+    else:
+        form = NFTForm()
+
+    return render(request, 'nft/create_nft.html', {'form': form})
+
+# views.py
+
+
+# Updated buy_nft view
+@login_required(login_url="/login/")
+def buy_nft(request, nft_id):
+    error_message = ""
+    nft = get_object_or_404(NFT, id=nft_id)
+
+    if request.method == 'POST':
+        form = BuyNFTForm(request.POST)
+
+        if form.is_valid():
+            quantity = form.cleaned_data['quantity']
+            total_price = nft.current_price * quantity  # Calculate total price
+
+            # Handle Stripe payment
+            token = form.cleaned_data["stripeToken"]
+            try:
+                charge = stripe.Charge.create(
+                    amount=int(total_price * 100),  # Amount in cents
+                    currency="usd",  # Adjust currency based on your needs
+                    source=token,
+                    description=f"NFT Purchase: {nft.symbol}",
+                )
+                # Record the transaction
+                transaction = Transaction(
+                    user=request.user,
+                    nft=nft,
+                    transaction_type="Buy",
+                    quantity=quantity,
+                    price=total_price,
+                )
+                transaction.save()
+                # Example: Update UserHolding
+                holding, created = UserHolding.objects.get_or_create(
+                    user=request.user, nft=nft)
+                holding.quantity += form.cleaned_data['quantity']
+                holding.save()
+
+                # Redirect to user holdings or a success page
+                # Adjust the URL based on your configuration
+                return redirect("user-holdings")
+            except stripe.error.CardError as e:
+                error_message = e.error.message
+                print(f"Stripe CardError: {error_message}")
+    else:
+        form = BuyNFTForm()
+
+    return render(
+        request,
+        "Nft/buy_nft.html",  # Adjust the template path based on your app structure
+        {
+            "nft": nft,
+            "error_message": error_message,
+            "PUBLIC_KEY": settings.STRIPE_PUBLIC_KEY,
+            "form": form,
+        },
+    )
+
+
+def convert(source, to, amount):
     # Corrected dictionary creation with ID as key and name as value
-    collective_dict = {str(identifier): name for identifier, name in top_30_currencies}
-    collective_dict.update({str(identifier): name for identifier, name in crypto_data})
+    collective_dict = {str(identifier): name for identifier,
+                       name in top_30_currencies}
+    collective_dict.update(
+        {str(identifier): name for identifier, name in crypto_data})
 
     # collective_dict += {name: identifier for identifier, name in crypto_data}
 
@@ -513,9 +650,9 @@ def convert(source,to,amount):
 
     url = 'https://sandbox-api.coinmarketcap.com/v2/tools/price-conversion'
     parameters = {
-        'id':source,
-        'convert_id':to,
-        'amount':amount
+        'id': source,
+        'convert_id': to,
+        'amount': amount
     }
 
     headers = {
@@ -526,11 +663,12 @@ def convert(source,to,amount):
 
     try:
         response = requests.get(url, params=parameters, headers=headers)
-        data=response.json()
-        return str(amount) + " "+ collective_dict[str(source)]+" = " + str(round(data['data'][source]['quote'][to]['price'],4))+" "+collective_dict[str(to)]
+        data = response.json()
+        return str(amount) + " " + collective_dict[str(source)]+" = " + str(round(data['data'][source]['quote'][to]['price'], 4))+" "+collective_dict[str(to)]
         # return str(amount) + " "+ collective_dict[str(source)]+" = " + str(round(data['data']['quote'][to]['price'],4))+" "+collective_dict[str(to)]
     except:
         return "Some error occured"
+
 
 def convert_data(request):
     result = None
@@ -542,12 +680,26 @@ def convert_data(request):
         form = CurrencyConverterForm(request.POST)
         form.set_currency_choices(currency_choices)
         if form.is_valid():
-            result=convert(form.cleaned_data['currency_from'],form.cleaned_data['currency_to'],form.cleaned_data['amount'])
+            result = convert(
+                form.cleaned_data['currency_from'], form.cleaned_data['currency_to'], form.cleaned_data['amount'])
         return render(request, 'converter_template.html', {'form': form, 'result': result})
-
 
     else:
         form = CurrencyConverterForm()
         form.set_currency_choices(currency_choices)
 
     return render(request, 'converter_template.html', {'form': form, 'result': result})
+
+
+def glossary(request):
+    # Retrieve all glossary terms ordered alphabetically
+    terms = GlossaryTerm.objects.order_by('term')
+
+    return render(request, 'Glossary/Terms.html', {'terms': terms})
+
+
+def term_detail(request, term_id):
+    # Retrieve the detailed information for a specific term
+    term = get_object_or_404(GlossaryTerm, id=term_id)
+
+    return render(request, 'Glossary/Terms_details.html', {'term': term})
