@@ -1,9 +1,12 @@
 from django import forms
+from .models import User, Post, Comment,Transaction,NewsComments, News
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
+from django.utils.text import slugify
 
 # from django.contrib.auth.forms import UserCreationForm
 
-from .models import User, Post, Comment, Transaction, NewsComments, Feedback, Stock
+from .models import User, Post, Comment, Transaction, NewsComments, Feedback, Stock, CourseCategory, Learn
 
 
 class UserCreationForm(forms.ModelForm):
@@ -147,6 +150,23 @@ class NewsCommentForm(forms.ModelForm):
         }
 
 
+class NewsCreateForm(forms.ModelForm):
+    class Meta:
+        model = News
+        fields = ['title', 'cover_image','sub_title', 'description']
+        widgets = {
+            'cover_image': forms.FileInput(attrs={'class': "news-file-upload-input form-input-field"}),
+            'title': forms.TextInput(attrs={'class': "news-title-input form-input-field", 'placeholder': "Enter Title"}),
+            'sub_title': forms.TextInput(attrs={'class': "news-sub-title-input form-input-field", 'placeholder': "Enter Sub-Title"}),
+            'description': forms.Textarea(attrs={'class': "news-description-input form-input-field", 'placeholder': "Enter News Description"}),
+        }
+        exclude = ['publish_datetime']
+
+    title = forms.CharField(label="News Title", required=True, max_length=225)
+    sub_title = forms.CharField(label="News Sub Title", required=False, max_length=225)
+    description = forms.CharField(label="News Description", required=True, max_length=1000, widget=forms.Textarea)
+    cover_image = forms.ImageField(label="Cover Image", required=False)
+
 class FeedbackRatingForm(forms.ModelForm):
     class Meta:
         model = Feedback
@@ -166,3 +186,32 @@ class CurrencyConverterForm(forms.Form):
     def set_currency_choices(self, choices):
         self.fields['currency_from'].choices = choices
         self.fields['currency_to'].choices = choices
+
+class TopicCreateForm(forms.ModelForm):
+    class Meta:
+        model = CourseCategory
+        fields = ['name']
+
+class SubjectCreateForm(forms.ModelForm):
+    class Meta:
+        model = Learn
+        fields = ['title', 'description', 'category', 'image']
+        exclude = ['slug']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['category'].queryset = CourseCategory.objects.all()
+
+    widgets = {
+        'title': forms.TextInput(attrs={'class': 'form-control'}),
+        'description': forms.Textarea(attrs={'class': 'form-control'}),
+        'category': forms.Select(attrs={'class': 'form-control'}),
+        'image': forms.FileInput(attrs={'class': 'form-control'}),
+    }
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance.slug = slugify(instance.title)
+        if commit:
+            instance.save()
+        else:
+            return instance

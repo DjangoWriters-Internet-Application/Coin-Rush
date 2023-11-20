@@ -1,0 +1,57 @@
+{% extends "Base/base.html" %}
+{% load static %}
+{% block extraHead %}
+    <link rel="stylesheet" href="{% static 'css/news.css' %}">
+{% endblock extraHead %}
+
+{% block banner %}
+    <div class="container-fluid hero-header bg-light py-2 mb-5">
+        <div class="container py-5">
+            <div class="row g-5 align-items-center">
+                <div class="col-lg-9">
+                    <h1 class="display-4 mb-3 animated slideInDown">Currency Converter</h1>
+                </div>
+                <div class="col-lg-3 animated fadeIn">
+                    <img class="img-fluid animated pulse infinite banner-img"
+                         src="{% static 'images/hero-conv.png' %}" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock banner%}
+{% block content %}
+<pre>{{ data | safe }}</pre>
+    <div class="container mb-5">
+        <div class="card w-75 mx-auto rounded shadow" >
+            <div class="card-body">
+
+                <form method="post" class="needs-validation" >
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="{{ form.amount.id_for_label }}">Amount</label>
+                        {{ form.amount }}
+                    </div>
+                    <div class="row">
+                    <div class="col-sm-6 form-group mt-2">
+                        <label for="{{ form.currency_from.id_for_label }}">From Currency</label>
+                        {{ form.currency_from }}
+                    </div>
+                    <div class="col-sm-6 form-group mt-2">
+                        <label for="{{ form.currency_to.id_for_label }}">To Currency</label>
+                        {{ form.currency_to }}
+                    </div>
+                        </div>
+                    <center><button type="submit" class="btn btn-primary btn-block mt-2">Convert</button></center>
+                </form>
+
+                {% if result %}
+                    <div class="mt-4">
+                        <h4>Result:</h4>
+                        <p>{{ result }}</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
