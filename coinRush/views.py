@@ -85,8 +85,6 @@ def about(request):
 
 
 
-
-
 def services(request):
     return render(request, "services.html")
 
@@ -153,7 +151,6 @@ def news(request):
 def transaction_history(request):
     user = request.user
     transactions = Transaction.objects.filter(user=user).order_by("-timestamp")
-    return render(request, "transaction/transaction_history.html", {"transactions": transactions})
 
     items_per_page = 10
     paginator = Paginator(transactions, items_per_page)
@@ -312,50 +309,6 @@ def stock_chart(request,stock_id):
     dates = [str(stock.date) for stock in priced_stock]
     price = [str(stock.price) for stock in priced_stock]
     return render(request, "stock_prices_chart.html",{"price":price,"dates":dates})
-
-
-def buy_stock(request, stock_symbol):
-    error_message = ''
-    if request.method == 'POST':
-        # stock_symbol = request.POST.get('stock_symbol')
-        print(f"Received stock symbol: {stock_symbol}")
-        quantity = int(request.POST.get('quantity', 0))
-        if quantity <= 0:
-            raise ValueError("Quantity should be a positive integer.")
-
-        stock = Stock.objects.get(symbol=stock_symbol)
-        total_price = stock.current_price * quantity  # Calculate total price
-
-        # Handle Stripe payment
-        token = request.POST['stripeToken']
-        try:
-            charge = stripe.Charge.create(
-                amount=int(total_price * 100),  # Amount in cents
-                currency='cad',
-                source=token,
-                description=f"Stock Purchase: {stock_symbol}",
-            )
-
-            # Record the transaction
-            transaction = Transaction(
-                user=request.user, stock=stock, transaction_type='Buy', quantity=quantity, price=total_price)
-            transaction.save()
-
-            # Update user holdings
-            holding, created = UserHolding.objects.get_or_create(
-                user=request.user, stock=stock)
-            holding.quantity += quantity
-            holding.save()
-            print(holding)
-            return redirect('transaction-history')
-        except stripe.error.CardError as e:
-            error_message = e.error.message
-            print(f"Stripe CardError: {error_message}")
-
-    stocks = Stock.objects.get(symbol=stock_symbol)
-    return render(request, 'Stocks/buy_stock.html',
-                  {'stock': stocks, 'error_message': error_message, 'PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY})
-
 
 def newsDetails(request, news_id):
     if 'like_news' in request.POST:

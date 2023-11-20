@@ -4,14 +4,26 @@
     <link rel="stylesheet" href="{% static 'css/news.css' %}">
 {% endblock extraHead %}
 
+{% block banner %}
+    <div class="container-fluid hero-header bg-light py-2 mb-5">
+        <div class="container py-5">
+            <div class="row g-5 align-items-center">
+                <div class="col-lg-9">
+                    <h1 class="display-4 mb-3 animated slideInDown">Currency Converter</h1>
+                </div>
+                <div class="col-lg-3 animated fadeIn">
+                    <img class="img-fluid animated pulse infinite banner-img"
+                         src="{% static 'images/hero-conv.png' %}" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock banner%}
 {% block content %}
-
-    <pre>{{ data | safe }}</pre>
-
-    <div class="container my-5">
+<pre>{{ data | safe }}</pre>
+    <div class="container mb-5">
         <div class="card w-75 mx-auto rounded shadow" >
             <div class="card-body">
-                <h3 class="card-title my-2 text-center ">Currency Converter</h3>
 
                 <form method="post" class="needs-validation" >
                     {% csrf_token %}
