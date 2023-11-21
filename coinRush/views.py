@@ -13,17 +13,22 @@ from decimal import Decimal
 from django.urls import reverse
 from django.contrib import messages
 from django.core.exceptions import *
-from .models import NFT
-
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import NFT, Transaction 
 import stripe
 from django.conf import settings
 from .filters import StockFilters
-from .constants import top_30_currencies,crypto_data
+from .constants import top_30_currencies, crypto_data
 import requests
 
+from django.shortcuts import render, get_object_or_404
+from django.contrib import messages
+from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required  # Import login_required
+from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
+
 from .forms import (
+    BuyNFTForm,
     RegistrationForm,
     PostForm,
     CommentForm,
@@ -50,11 +55,12 @@ from .forms import (
     SellStockForm, SellNFTForm,
 )
 from .models import (
+    NFT, Transaction, UserHolding,
     Transaction,
     UserHolding,
     User,
     Learn,
-StockPrice,
+    StockPrice,
     CourseCategory,
     Feedback,
     News,
@@ -86,17 +92,17 @@ def home(request):
     elif ord_by == "min-market-cap":
         order_string = "market_cap"
 
-    stock_filter = StockFilters(request.GET,queryset=Stock.objects.all().order_by(order_string))
+    stock_filter = StockFilters(request.GET, queryset=Stock.objects.all().order_by(order_string))
     top_10_stocks = Stock.objects.all().order_by('-current_price')[:10]
 
     context = {"stocks": stock_filter.qs,
-               "form":stock_filter.form,
-               "top_stocks":top_10_stocks}
-    return render(request, "index.html",context )
+               "form": stock_filter.form,
+               "top_stocks": top_10_stocks}
+    return render(request, "index.html", context)
+
 
 def about(request):
     return render(request, "about.html")
-
 
 
 def services(request):
@@ -157,9 +163,9 @@ def news(request):
                 return redirect('news')
 
     newsForm = NewsCreateForm();
-    context = {"title": "Latest Crypto News", "news": News.objects.all(), 'newsForm': newsForm, 'displayForm':displayForm}
+    context = {"title": "Latest Crypto News", "news": News.objects.all(), 'newsForm': newsForm,
+               'displayForm': displayForm}
     return render(request, "News/index.html", context)
-
 
 
 @login_required(login_url="/login/")
@@ -182,6 +188,7 @@ def transaction_history(request):
         request, "transaction/transaction_history.html", {
             "transactions": transactions}
     )
+
 
 @login_required(login_url="/login/")
 def buy_stock(request, stock_symbol):
@@ -288,7 +295,6 @@ def user_holdings(request):
 
     return render(request, 'userholding/user_holdings.html',
                   {'user': request.user, 'holdings': holdings_page, 'sell_form': sell_form})
-
 
 
 def categories_course(request):
@@ -425,12 +431,13 @@ def discussion_single(request, post_id):
     )
 
 
-def stock_chart(request,stock_id):
-    stock=Stock.objects.get(pk=stock_id)
-    priced_stock=StockPrice.objects.filter(stock=stock).order_by('date')
+def stock_chart(request, stock_id):
+    stock = Stock.objects.get(pk=stock_id)
+    priced_stock = StockPrice.objects.filter(stock=stock).order_by('date')
     dates = [str(stock.date) for stock in priced_stock]
     price = [str(stock.price) for stock in priced_stock]
-    return render(request, "stock_prices_chart.html",{"price":price,"dates":dates})
+    return render(request, "stock_prices_chart.html", {"price": price, "dates": dates})
+
 
 def newsDetails(request, news_id):
     if 'like_news' in request.POST:
@@ -449,7 +456,6 @@ def newsDetails(request, news_id):
     return render(request, 'NewsDetails/index.html', {'news': newsDetails})
 
 
-    
 def newsDetails(request, news_id):
     if request.method == "POST":
         comment = NewsCommentForm(request.POST)
@@ -470,12 +476,13 @@ def nft_detail(request, nft_id):
     nft = get_object_or_404(NFT, pk=nft_id)
     return render(request, "nft/NFT.html", {"nft": nft})
 
+
 def create_nft(request):
     if request.method == 'POST':
         form = NFTForm(request.POST, request.FILES)
         if form.is_valid():
             nft_instance = form.save(commit=False)
-            
+
             # Check if the user is authenticated (logged in)
             if request.user.is_authenticated:
                 nft_instance.owner = request.user
@@ -489,18 +496,6 @@ def create_nft(request):
         form = NFTForm()
 
     return render(request, 'nft/create_nft.html', {'form': form})
-
-# views.py
-
-from django.shortcuts import render, get_object_or_404
-from django.contrib import messages
-from django.shortcuts import redirect
-from django.contrib.auth.decorators import login_required  # Import login_required
-from .models import NFT, Transaction, UserHolding
-from .forms import BuyNFTForm
-import stripe
-from django.conf import settings
-from django.contrib.contenttypes.models import ContentType
 
 
 @login_required(login_url="/login/")
@@ -556,6 +551,7 @@ def buy_nft(request, nft_symbol):
     }
 
     return render(request, 'nft/buy_nft.html', context)
+
 
 @login_required(login_url="/login/")
 def nft_transaction_history(request):
@@ -632,7 +628,8 @@ def nft_user_holdings(request):
     return render(request, 'nft/nft_user_holdings.html',
                   {'user': request.user, 'holdings': holdings_page, 'sell_form': sell_form})
 
-def convert(source,to,amount):
+
+def convert(source, to, amount):
     # Corrected dictionary creation with ID as key and name as value
     collective_dict = {str(identifier): name for identifier, name in top_30_currencies}
     collective_dict.update({str(identifier): name for identifier, name in crypto_data})
@@ -641,40 +638,43 @@ def convert(source,to,amount):
 
     # url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/map'
     # url = 'https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/map'
-    # url = 'https://pro-api.coinmarketcap.com/v2/tools/price-conversion'
+    url = 'https://pro-api.coinmarketcap.com/v2/tools/price-conversion'
 
-    url = 'https://sandbox-api.coinmarketcap.com/v2/tools/price-conversion'
+    # url = 'https://sandbox-api.coinmarketcap.com/v2/tools/price-conversion'
     parameters = {
-        'id':source,
-        'convert_id':to,
-        'amount':amount
+        'id': source,
+        'convert_id': to,
+        'amount': amount
     }
 
     headers = {
         "Accepts": "application/json",
-        # 'X-CMC_PRO_API_KEY': '6f66fcc3-73b3-48ea-a584-32af97de8e12',
-        "X-CMC_PRO_API_KEY": "b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c",
+        'X-CMC_PRO_API_KEY': '6f66fcc3-73b3-48ea-a584-32af97de8e12',
+        # "X-CMC_PRO_API_KEY": "b54bcf4d-1bca-4e8e-9a24-22ff2c3d462c",
     }
 
     try:
         response = requests.get(url, params=parameters, headers=headers)
-        data=response.json()
-        return str(amount) + " "+ collective_dict[str(source)]+" = " + str(round(data['data'][source]['quote'][to]['price'],4))+" "+collective_dict[str(to)]
-        # return str(amount) + " "+ collective_dict[str(source)]+" = " + str(round(data['data']['quote'][to]['price'],4))+" "+collective_dict[str(to)]
+        data = response.json()
+        # return str(amount) + " " + collective_dict[str(source)] + " = " + str(
+        #     round(data['data'][source]['quote'][to]['price'], 4)) + " " + collective_dict[str(to)]
+        return str(amount) + " "+ collective_dict[str(source)]+" = " + str(round(data['data']['quote'][to]['price'],4))+" "+collective_dict[str(to)]
     except:
         return "Some error occured"
+
 
 def convert_data(request):
     result = None
 
     # Example choices (you can replace this with actual currency choices)
-    currency_choices = top_30_currencies+crypto_data
+    currency_choices = top_30_currencies + crypto_data
 
     if request.method == 'POST':
         form = CurrencyConverterForm(request.POST)
         form.set_currency_choices(currency_choices)
         if form.is_valid():
-            result=convert(form.cleaned_data['currency_from'],form.cleaned_data['currency_to'],form.cleaned_data['amount'])
+            result = convert(form.cleaned_data['currency_from'], form.cleaned_data['currency_to'],
+                             form.cleaned_data['amount'])
         return render(request, 'converter_template.html', {'form': form, 'result': result})
 
 
@@ -682,18 +682,18 @@ def convert_data(request):
         form = CurrencyConverterForm()
         form.set_currency_choices(currency_choices)
 
-    return render(request, 'test_template.html', {'form': form, 'result': result})
+    return render(request, 'converter_template.html', {'form': form, 'result': result})
 
 
 def glossary(request):
     # Retrieve all glossary terms ordered alphabetically
     terms = GlossaryTerm.objects.order_by('term')
-    
+
     return render(request, 'Glossary/Terms.html', {'terms': terms})
+
 
 def term_detail(request, term_id):
     # Retrieve the detailed information for a specific term
     term = get_object_or_404(GlossaryTerm, id=term_id)
-    
+
     return render(request, 'Glossary/Terms_details.html', {'term': term})
-    return render(request, 'converter_template.html', {'form': form, 'result': result})
