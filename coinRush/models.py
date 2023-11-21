@@ -14,8 +14,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(default="", unique=True, blank=True, max_length=255)
     name = models.CharField(max_length=255, blank=True, default="")
 
-    profile_pic = models.ImageField(upload_to="profile_pics/", null=True, blank=True)
-    photo_id = models.ImageField(null=True, blank=True)
+    # profile_pic = models.ImageField(upload_to="profile_pics/", null=True, blank=True)
+    # photo_id = models.ImageField(upload_to="photo_ids/", null=True, blank=True)
+
+    profile_pic = models.TextField(null=True, blank=True, default="")
+    photo_id = models.TextField(null=True, blank=True, default="")
 
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
@@ -25,7 +28,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_login = models.DateTimeField(blank=True, null=True)
     wallet = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
 
-    liked_news = models.ManyToManyField('News', blank=True, null=True)
+    liked_news = models.ManyToManyField("News", blank=True, null=True)
 
     objects = AuthUserManager()
 
@@ -72,47 +75,54 @@ class Stock(models.Model):
     current_price = models.DecimalField(max_digits=10, decimal_places=2)
     market_cap = models.DecimalField(max_digits=10, decimal_places=2)
     last_updated = models.DateTimeField(auto_now=True)
-    image = models.ImageField(upload_to='stock_pics/',blank=True, null=True)
+    image = models.ImageField(upload_to="stock_pics/", blank=True, null=True)
 
     def __str__(self):
         return self.symbol
- 
+
+
 class NFT(models.Model):
     CURRENCY_CHOICES = [
         ("USD", "US Dollar"),
         ("BTC", "Bitcoin"),
         ("ETH", "Ethereum"),
     ]
-    
+
     symbol = models.CharField(max_length=15, blank=True)
     company_name = models.CharField(max_length=255)
     image = models.ImageField(upload_to="nft_images/")
     description = models.TextField()
     quantity = models.PositiveIntegerField(default=1)
     is_for_sale = models.BooleanField(default=False)
-    current_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    current_price = models.DecimalField(
+        max_digits=10, decimal_places=2, null=True, blank=True
+    )
     currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES, default="USD")
     is_bidding_allowed = models.BooleanField(default=False)
 
     def __str__(self):
         return self.symbol
 
+
 class NFTTransaction(models.Model):
     TYPE_CHOICES = [
         ("BUY", "Buy"),
         ("SELL", "Sell"),
     ]
-    
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     nft = models.ForeignKey(NFT, on_delete=models.CASCADE)
-    transaction_type = models.CharField(max_length=10, choices=TYPE_CHOICES, default="BUY")
+    transaction_type = models.CharField(
+        max_length=10, choices=TYPE_CHOICES, default="BUY"
+    )
     quantity = models.PositiveIntegerField(default=0)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.user.email} - {self.transaction_type} {self.quantity} {self.nft.symbol} @ {self.price}"
-    
+
+
 class NFTUserHolding(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     nft = models.ForeignKey(NFT, on_delete=models.CASCADE)
@@ -120,6 +130,7 @@ class NFTUserHolding(models.Model):
 
     def __str__(self):
         return f"{self.user.email} - {self.quantity} {self.nft.symbol}"
+
 
 class Transaction(models.Model):
     TYPE = [("BUY", "Buy"), ("SELL", "Sell")]
@@ -141,7 +152,7 @@ class UserHolding(models.Model):
 
     def __str__(self):
         return f"{self.user.email} - {self.quantity} {self.stock.symbol}"
-    
+
 
 # Define a model for StockPrice (to store historical price data)
 class StockPrice(models.Model):
@@ -152,13 +163,19 @@ class StockPrice(models.Model):
 
     def __str__(self):
         return self.symbol
-    
+
+
 class News(models.Model):
     title = models.CharField(max_length=255)
     sub_title = models.CharField(max_length=255)
-    cover_image = models.ImageField(upload_to='news_covers/', null=True, blank=True, default='news_covers/placeholder.png')
+    cover_image = models.ImageField(
+        upload_to="news_covers/",
+        null=True,
+        blank=True,
+        default="news_covers/placeholder.png",
+    )
     description = models.TextField(max_length=1000)
-    likes = models.ManyToManyField(User,  blank=True, null=True)
+    likes = models.ManyToManyField(User, blank=True, null=True)
     publish_datetime = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -187,13 +204,19 @@ class Learn(models.Model):
     description = models.TextField(blank=True)
     category = models.ForeignKey(CourseCategory, on_delete=models.CASCADE, default=1)
     slug = models.SlugField(default="", null=False)
-    image = models.ImageField(upload_to='topic_images/', null=True, blank=True, default='topic_images/no-image-available.png')
+    image = models.ImageField(
+        upload_to="topic_images/",
+        null=True,
+        blank=True,
+        default="topic_images/no-image-available.png",
+    )
 
     def __str__(self):
         return self.title
 
     class Meta:
         verbose_name_plural = "Subjects"
+
 
 class Feedback(models.Model):
     topic = models.ForeignKey(Learn, on_delete=models.CASCADE)
@@ -208,8 +231,6 @@ class Feedback(models.Model):
 
     def __str__(self):
         return self.subject
-
-
 
 
 class Bid(models.Model):

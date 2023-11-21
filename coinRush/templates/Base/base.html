@@ -11,17 +11,24 @@
         integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+    <!-- Jquery -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-hOqRoN/Bwa6QQwUiG6dHNS1Icc99BTtI6cA5d2Q6b6EGGoS9zPzsOdShVobICDge" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+        integrity="sha384-hOqRoN/Bwa6QQwUiG6dHNS1Icc99BTtI6cA5d2Q6b6EGGoS9zPzsOdShVobICDge" crossorigin="anonymous">
+
+    <!-- Include Dropzone.js styles -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.css">
 
     <!-- custom CSS -->
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
-    <link rel="stylesheet" href="{% static 'lib/animate/animate.min.css' %}"/>
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'lib/animate/animate.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
     {% block extraHead %}
     {% endblock extraHead %}
 
@@ -31,11 +38,23 @@
 <body>
 
     {% include 'Base/navbar.html' %}
-{% block banner %}{% endblock %}
+
     <div class="container-fluid">
-<!--        {{user.get_short_name}}-->
-        {% block content %}
-        {% endblock %}
+        <div class="d-flex justify-content-between">
+            <div class="">
+                {% if user.is_authenticated %}
+                {% include 'Base/sidebar.html' %}
+                {% endif %}
+            </div>
+            <div class="{% if not user.is_authenticated %} w-100 {% else %} w-80 {% endif %}">
+                {% block banner %}{% endblock %}
+
+                {% block content %}
+                {% endblock %}
+            </div>
+        </div>
+
+
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous">
@@ -43,4 +62,5 @@
     {% block script %}
     {% endblock script %}
 </body>
+
 </html>
