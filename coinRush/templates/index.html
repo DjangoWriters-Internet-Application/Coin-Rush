@@ -7,14 +7,92 @@
 {% endblock extraHead %}
 
 
-<marquee behavior="scroll" direction="left" scrollamount="5">
-    TOP STOCKS:
-    {% for stock in top_stocks %}
-        {{ stock.symbol }} - {{ stock.current_price }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    {% endfor %}
-</marquee>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <!-- Toggle button icon with reduced margin -->
+        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#stockCarousel" aria-expanded="false" aria-controls="stockCarousel" id="toggleButton">
+            <i class="fas fa-toggle-on"></i>
+            Trending Stocks
+        </button>
+    </div>
 
-<button onclick="openPopup()">Stock Filters</button>
+    <div class="row">
+        <div class="col-md-3">
+            <!-- Your existing carousel -->
+            <div id="stockCarousel" class="carousel slide collapse" data-ride="carousel" data-interval="1500">
+                <div class="carousel-inner">
+                    {% for stock in top_stocks %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h5 class="mb-1"><strong>{{ stock.company_name }}</strong> ({{ stock.symbol }})</h5>
+                                    <p class="mb-1">Current Price: ${{ stock.current_price }}</p>
+                                    <p class="mb-1">Market Cap: ${{ stock.market_cap }}</p>
+                                </div>
+                                <div class="col-md-4 text-right">
+                                    {% if stock.current_price > 100 %}  <!-- Adjust the threshold as needed -->
+                                        <span class="badge badge-success">Higher Price</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <a class="carousel-control-prev" href="#stockCarousel" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#stockCarousel" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Add three more carousels here with the same structure as the existing one -->
+        <!-- You can copy the existing carousel code and modify it for each additional carousel -->
+
+        <div class="col-md-3">
+            <!-- Second carousel -->
+            <!-- Add your content for the second carousel here -->
+        </div>
+
+        <div class="col-md-3">
+            <!-- Third carousel -->
+            <!-- Add your content for the third carousel here -->
+        </div>
+
+    </div>
+</div>
+
+<!-- Include Bootstrap JS, Popper.js, and jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Include Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha384-lY6vUp9BEi3iIdva62I0pbTXJswAfPp7bg5+5lU7I95NXRSFQ6F6gJHSa9PxI1Wi" crossorigin="anonymous">
+
+<script>
+    $(document).ready(function () {
+        // Toggle button state based on collapse events
+        $('#stockCarousel').on('show.bs.collapse', function () {
+            $('#toggleButton i').removeClass('fa-toggle-off').addClass('fa-toggle-on');
+        });
+
+        $('#stockCarousel').on('hide.bs.collapse', function () {
+            $('#toggleButton i').removeClass('fa-toggle-on').addClass('fa-toggle-off');
+        });
+    });
+</script>
+
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+<button class="btn btn-primary stock-button" onclick="openPopup()">Stock Filters</button>
+</div>
+</div>
+
 <div id="filterPopup" class="popup">
         <span class="close" onclick="closePopup()">&times;</span>
 
