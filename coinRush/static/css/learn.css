@@ -31,8 +31,8 @@ h1{
   font-family: Calibri;
   text-align: center;
   margin-top: 50px;
-  margin-left: 24rem;
-  margin-right: 24rem;
+  margin-left: auto;
+  margin-right: auto;
   margin-bottom: 2.5rem;
   font-weight: bold;
 }
@@ -107,7 +107,7 @@ h4{
 /*}*/
 
 .centered-buttons-scroll {
-  display: flex;
+  display: block;
   justify-content: center;
   margin-bottom: 5rem;
   margin-top: 5rem;

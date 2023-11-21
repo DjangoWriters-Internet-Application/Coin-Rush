@@ -6,10 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="2c1604f2-4a48-491f-b1c4-4c0af06d1c4c" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/coinRush/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/coinRush/migrations/0002_alter_user_created_date.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/coinRush/migrations/0003_user_wallet_alter_user_created_date.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/migrations/0002_alter_user_photo_id.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/migrations/0003_alter_user_photo_id_alter_user_profile_pic.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/static/css/learn.css" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/static/css/learn.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,6 +23,8 @@
       <list>
         <option value="HTML File" />
         <option value="CSS File" />
+        <option value="Python Script" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -41,37 +42,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;megha&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/Internetapplication/Coin-Rush/coinRush/static/images&quot;,
-    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "E:/UoWSemester3/IADS/Coin-Rush/static/images/topic_images",
+    "list.type.of.created.stylesheet": "CSS",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="E:\Internetapplication\Coin-Rush\coinRush\static\images" />
+      <recent name="E:\UoWSemester3\IADS\Coin-Rush\static\images\topic_images" />
+      <recent name="E:\UoWSemester3\IADS\Coin-Rush\coinRush\static\images\topic_images" />
       <recent name="E:\UoWSemester3\IADS\Coin-Rush" />
+      <recent name="E:\UoWSemester3\IADS\Coin-Rush\coinRush\static\images" />
       <recent name="E:\UoWSemester3\IADS\Coin-Rush\coinRush\migrations" />
-      <recent name="$PROJECT_DIR$/coinRush/templates" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="E:\Internetapplication\Coin-Rush\coinRush\templates\userholding" />
-      <recent name="E:\Internetapplication\Coin-Rush\coinRush\templates\transaction" />
-      <recent name="E:\Internetapplication\Coin-Rush\coinRush\static\images" />
-      <recent name="E:\Internetapplication\Coin-Rush\media" />
+      <recent name="E:\UoWSemester3\IADS\Coin-Rush\coinRush\static\images" />
     </key>
   </component>
   <component name="RunManager" selected="Django Server.Coin-Rush">
@@ -128,7 +127,7 @@
       </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="launchJavascriptDebuger" value="false" />
@@ -164,11 +163,21 @@
       <workItem from="1699655977408" duration="2152000" />
       <workItem from="1699900792886" duration="340000" />
       <workItem from="1699921104474" duration="3749000" />
-      <workItem from="1699927729491" duration="309000" />
-      <workItem from="1699928086226" duration="2868000" />
-      <workItem from="1699981089665" duration="15095000" />
-      <workItem from="1700264780160" duration="600000" />
-      <workItem from="1700440232056" duration="867000" />
+      <workItem from="1699925120584" duration="16148000" />
+      <workItem from="1699990810031" duration="21000" />
+      <workItem from="1700014484143" duration="4954000" />
+      <workItem from="1700066857153" duration="558000" />
+      <workItem from="1700067457540" duration="197000" />
+      <workItem from="1700067823695" duration="1281000" />
+      <workItem from="1700069357563" duration="164000" />
+      <workItem from="1700087114284" duration="924000" />
+      <workItem from="1700111630097" duration="5064000" />
+      <workItem from="1700159731308" duration="68000" />
+      <workItem from="1700159914676" duration="17995000" />
+      <workItem from="1700182089101" duration="14209000" />
+      <workItem from="1700275275466" duration="7205000" />
+      <workItem from="1700343551785" duration="142000" />
+      <workItem from="1700596394781" duration="1407000" />
     </task>
     <servers />
   </component>
@@ -177,8 +186,5 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="LAST_COMMIT_MESSAGE" value="" />
-  </component>
-  <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Coin_Rush$manage.coverage" NAME="manage Coverage Results" MODIFIED="1698441220500" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
