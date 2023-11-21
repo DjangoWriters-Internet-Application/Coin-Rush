@@ -12,6 +12,9 @@
     z-index: 1;
 }
 
+.stock-button {
+    margin-left: 50px; /* Adjust the margin as needed */
+}
 /* Styles for the overlay background */
 .overlay {
     display: none; /* Set to none by default */
