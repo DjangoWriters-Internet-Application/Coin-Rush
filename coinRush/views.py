@@ -1,31 +1,18 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse
 from django.utils import timezone
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.auth import login
-from django.conf import settings
 from django.contrib.auth.views import LoginView
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
-import stripe
-from django.db import transaction
 from decimal import Decimal
-from django.urls import reverse
-from django.contrib import messages
-from django.core.exceptions import *
-from django.shortcuts import render, get_object_or_404, redirect
 import stripe
-from django.conf import settings
 from .filters import StockFilters
 from .constants import top_30_currencies, crypto_data
 import requests
-
-from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required  # Import login_required
 from django.conf import settings
-from django.contrib.contenttypes.models import ContentType
 
 from .forms import (
     BuyNFTForm,
@@ -35,49 +22,34 @@ from .forms import (
     NewsCommentForm,
     FeedbackRatingForm,
     BuyStockForm,
-    SellStockForm,
-    CurrencyConverterForm,
     NFTForm,
-    GlossaryTermForm,
-    StockFilterForm,
     CurrencyConverterForm,
     NewsCreateForm,
     TopicCreateForm,
-    SubjectCreateForm, CustomAuthenticationForm, TransactionFilterForm,  SellStockForm, SellNFTForm,
+    SubjectCreateForm,
+    CustomAuthenticationForm,
+    TransactionFilterForm,
+    SellStockForm,
+    SellNFTForm,
 )
 
-# from .forms import (
-#     CustomAuthenticationForm,
-#     RegistrationForm,
-#     PostForm,
-#     CommentForm,
-#     NewsCommentForm,
-
-# )
 from .models import (
-    NFT, Transaction, UserHolding,
     Transaction,
     UserHolding,
-    User,
     Learn,
     StockPrice,
     CourseCategory,
     Feedback,
     News,
     Post,
-    Comment,
     Stock,
     NFT,
-    Bid,
     GlossaryTerm,
     NFTTransaction,
     NFTUserHolding,
 )
 
 stripe.api_key = settings.STRIPE_PRIVATE_KEY
-
-
-# Create your views here.
 
 
 def home(request):
@@ -101,19 +73,15 @@ def home(request):
                "top_stocks": top_10_stocks}
     return render(request, "index.html", context)
 
-
 def about(request):
     return render(request, "about.html")
-
 
 def services(request):
     return render(request, "services.html")
 
-
 class CustomLoginView(LoginView):
     form_class = CustomAuthenticationForm
     template_name = "registration/login.html"
-
 
 def register(request):
     context = {"form": "", "errors": ""}
@@ -136,7 +104,6 @@ def register(request):
         form = RegistrationForm()
         context["form"] = form
     return render(request, "registration/register.html", context)
-
 
 def news(request):
     displayForm = False
@@ -168,17 +135,15 @@ def news(request):
                'displayForm': displayForm}
     return render(request, "News/index.html", context)
 
-
 @login_required(login_url="/login/")
 def transaction_history(request):
     user = request.user
     transactions = Transaction.objects.filter(user=user).order_by("-timestamp")
-    
+
     if request.method == 'GET':
         form = TransactionFilterForm(request.GET)
         print(form.is_valid())
         if form.is_valid():
-            print("lokjhg")
             transaction_type = form.cleaned_data.get('transaction_type')
             stock_symbol = form.cleaned_data.get('stock_symbol')
             start_date = form.cleaned_data.get('start_date')
@@ -216,114 +181,6 @@ def transaction_history(request):
             "transactions": transactions, "form": form}
     )
 
-
-@login_required(login_url="/login/")
-def buy_stock(request, stock_symbol):
-    error_message = ""
-    stocks = Stock.objects.get(symbol=stock_symbol)
-    if request.method == 'POST':
-        form = BuyStockForm(request.POST)
-
-        if form.is_valid():
-            quantity = form.cleaned_data['quantity']
-            stock = stocks
-            total_price = stock.current_price * quantity  # Calculate total price
-
-            # Handle Stripe payment
-            token = form.cleaned_data["stripeToken"]
-            try:
-                charge = stripe.Charge.create(
-                    amount=int(total_price * 100),  # Amount in cents
-                    currency="cad",
-                    source=token,
-                    description=f"Stock Purchase: {stock_symbol}",
-                )
-
-                # Record the transaction
-                transaction = Transaction(
-                    user=request.user,
-                    stock=stock,
-                    transaction_type="Buy",
-                    quantity=quantity,
-                    price=total_price,
-                )
-                transaction.save()
-
-                # Update user holdings
-                holding, created = UserHolding.objects.get_or_create(
-                    user=request.user, stock=stock
-                )
-                holding.quantity += quantity
-                holding.save()
-
-                return redirect("transaction-history")
-            except stripe.error.CardError as e:
-                error_message = e.error.message
-                print(f"Stripe CardError: {error_message}")
-    else:
-        form = BuyStockForm()
-
-    return render(
-        request,
-        "Stocks/buy_stock.html",
-        {
-            "stock": stocks,
-            "error_message": error_message,
-            "PUBLIC_KEY": settings.STRIPE_PUBLIC_KEY,
-            "form": form,
-        },
-    )
-
-
-@login_required(login_url="/login/")
-def user_holdings(request):
-    holdings = UserHolding.objects.filter(user=request.user)
-    sell_form = SellStockForm()
-    items_per_page = 10
-    paginator = Paginator(holdings, items_per_page)
-    page = request.GET.get('page')
-
-    try:
-        holdings_page = paginator.page(page)
-    except PageNotAnInteger:
-        holdings_page = paginator.page(1)
-    except EmptyPage:
-        holdings_page = paginator.page(paginator.num_pages)
-    if request.method == 'POST':
-        sell_form = SellStockForm(request.POST)
-
-        if sell_form.is_valid():
-            stock_symbol = sell_form.cleaned_data['stock_symbol']
-            quantity_to_sell = sell_form.cleaned_data['quantity']
-            stock = Stock.objects.get(symbol=stock_symbol)
-            holding = holdings.filter(stock=stock).first()
-            if holding and quantity_to_sell > 0 and quantity_to_sell <= holding.quantity:
-                sell_price = stock.current_price * quantity_to_sell
-
-                sell_transaction = Transaction(
-                    user=request.user,
-                    stock=stock,
-                    transaction_type="Sell",
-                    quantity=quantity_to_sell,
-                    price=sell_price,
-                )
-                sell_transaction.save()
-                holding.quantity -= quantity_to_sell
-                holding.save()
-                request.user.wallet += Decimal(sell_price)
-                request.user.save()
-                if holding.quantity == 0:
-                    holding.delete()
-
-                return redirect("user-holdings")
-            else:
-                error_message = 'Invalid quantity to sell. Please select a valid quantity.'
-                sell_form.add_error('quantity', error_message)
-
-    return render(request, 'userholding/user_holdings.html',
-                  {'user': request.user, 'holdings': holdings_page, 'sell_form': sell_form})
-
-
 def categories_course(request):
     categories = CourseCategory.objects.all()
     url = request.META.get("HTTP_REFERER")
@@ -353,7 +210,6 @@ def categories_course(request):
         form2 = SubjectCreateForm()
     return render(request, "Learn/learning.html", {"categories": categories, 'form': form, 'form2': form2})
 
-
 def subject_info(request, slug):
     subject = get_object_or_404(Learn, slug=slug)
     description = subject.description
@@ -363,7 +219,6 @@ def subject_info(request, slug):
         "Learn/learning-details.html",
         {"subject": subject, "description": description, "image": image},
     )
-
 
 def submit_feedback(request, sub_id):
     url = request.META.get("HTTP_REFERER")
@@ -391,7 +246,6 @@ def submit_feedback(request, sub_id):
                     request, "Thank you! Your feedback has been submitted."
                 )
                 return redirect(url)
-
 
 def discussion(request):
     ord_by = request.GET.get("order_by")
@@ -421,7 +275,6 @@ def discussion(request):
     else:
         form = PostForm()
     return render(request, "posts/discussion_all.html", {"posts": posts, "form": form})
-
 
 def discussion_single(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
@@ -459,14 +312,12 @@ def discussion_single(request, post_id):
         {"post": post, "comments": comments_page, "form": form},
     )
 
-
 def stock_chart(request, stock_id):
     stock = Stock.objects.get(pk=stock_id)
     priced_stock = StockPrice.objects.filter(stock=stock).order_by('date')
     dates = [str(stock.date) for stock in priced_stock]
     price = [str(stock.price) for stock in priced_stock]
     return render(request, "stock_prices_chart.html", {"price": price, "dates": dates})
-
 
 def newsDetails(request, news_id):
     if 'like_news' in request.POST:
@@ -483,7 +334,6 @@ def newsDetails(request, news_id):
     newsDetails = get_object_or_404(News, pk=news_id)
     form = NewsCommentForm()
     return render(request, 'NewsDetails/index.html', {'news': newsDetails})
-
 
 @login_required(login_url="/login/")
 def buy_stock(request, stock_symbol):
@@ -542,7 +392,6 @@ def buy_stock(request, stock_symbol):
         },
     )
 
-
 @login_required(login_url="/login/")
 def user_holdings(request):
     holdings = UserHolding.objects.filter(user=request.user)
@@ -591,7 +440,6 @@ def user_holdings(request):
     return render(request, 'userholding/user_holdings.html',
                   {'user': request.user, 'holdings': holdings_page, 'sell_form': sell_form})
 
-
 def newsDetails(request, news_id):
     if request.method == "POST":
         comment = NewsCommentForm(request.POST)
@@ -602,16 +450,13 @@ def newsDetails(request, news_id):
         request, "NewsDetails/index.html", {"news": newsDetails, "form": form}
     )
 
-
 def nftmarketplace(request):
     nfts = NFT.objects.all()
     return render(request, "Nft/NFTmarketplace.html", {"nfts": nfts})
 
-
 def nft_detail(request, nft_id):
     nft = get_object_or_404(NFT, pk=nft_id)
     return render(request, "nft/NFT.html", {"nft": nft})
-
 
 def create_nft(request):
     if request.method == 'POST':
@@ -633,7 +478,6 @@ def create_nft(request):
         form = NFTForm()
 
     return render(request, 'nft/create_nft.html', {'form': form})
-
 
 @login_required(login_url="/login/")
 def buy_nft(request, nft_symbol):
@@ -689,7 +533,6 @@ def buy_nft(request, nft_symbol):
 
     return render(request, 'nft/buy_nft.html', context)
 
-
 @login_required(login_url="/login/")
 def nft_transaction_history(request):
     user = request.user
@@ -708,10 +551,9 @@ def nft_transaction_history(request):
         nft_transactions = paginator.page(paginator.num_pages)
 
     return render(
-        request, "nft/nft_transaction_history.html", {
+        request, "transaction/nft_transaction_history.html", {
             "nft_transactions": nft_transactions}
     )
-
 
 @login_required(login_url="/login/")
 def nft_user_holdings(request):
@@ -763,9 +605,8 @@ def nft_user_holdings(request):
                 error_message = 'Invalid quantity to sell. Please select a valid quantity.'
                 sell_form.add_error('quantity', error_message)
 
-    return render(request, 'nft/nft_user_holdings.html',
+    return render(request, 'userholding/nft_user_holdings.html',
                   {'user': request.user, 'holdings': holdings_page, 'sell_form': sell_form})
-
 
 def convert(source, to, amount):
     # Corrected dictionary creation with ID as key and name as value
@@ -802,7 +643,6 @@ def convert(source, to, amount):
     except:
         return "Some error occured"
 
-
 def convert_data(request):
     result = None
 
@@ -823,13 +663,11 @@ def convert_data(request):
 
     return render(request, 'converter_template.html', {'form': form, 'result': result})
 
-
 def glossary(request):
     # Retrieve all glossary terms ordered alphabetically
     terms = GlossaryTerm.objects.order_by('term')
 
     return render(request, 'Glossary/Terms.html', {'terms': terms})
-
 
 def term_detail(request, term_id):
     # Retrieve the detailed information for a specific term
