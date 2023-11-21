@@ -43,17 +43,17 @@ from .forms import (
     CurrencyConverterForm,
     NewsCreateForm,
     TopicCreateForm,
-    SubjectCreateForm
+    SubjectCreateForm, CustomAuthenticationForm, TransactionFilterForm,  SellStockForm, SellNFTForm,
 )
 
-from .forms import (
-    CustomAuthenticationForm,
-    RegistrationForm,
-    PostForm,
-    CommentForm,
-    NewsCommentForm,
-    SellStockForm, SellNFTForm,
-)
+# from .forms import (
+#     CustomAuthenticationForm,
+#     RegistrationForm,
+#     PostForm,
+#     CommentForm,
+#     NewsCommentForm,
+
+# )
 from .models import (
     NFT, Transaction, UserHolding,
     Transaction,
@@ -92,7 +92,8 @@ def home(request):
     elif ord_by == "min-market-cap":
         order_string = "market_cap"
 
-    stock_filter = StockFilters(request.GET, queryset=Stock.objects.all().order_by(order_string))
+    stock_filter = StockFilters(
+        request.GET, queryset=Stock.objects.all().order_by(order_string))
     top_10_stocks = Stock.objects.all().order_by('-current_price')[:10]
 
     context = {"stocks": stock_filter.qs,
@@ -162,7 +163,7 @@ def news(request):
                 messages.success(request, 'News created successfully!')
                 return redirect('news')
 
-    newsForm = NewsCreateForm();
+    newsForm = NewsCreateForm()
     context = {"title": "Latest Crypto News", "news": News.objects.all(), 'newsForm': newsForm,
                'displayForm': displayForm}
     return render(request, "News/index.html", context)
@@ -172,6 +173,32 @@ def news(request):
 def transaction_history(request):
     user = request.user
     transactions = Transaction.objects.filter(user=user).order_by("-timestamp")
+    
+    if request.method == 'GET':
+        form = TransactionFilterForm(request.GET)
+        print(form.is_valid())
+        if form.is_valid():
+            print("lokjhg")
+            transaction_type = form.cleaned_data.get('transaction_type')
+            stock_symbol = form.cleaned_data.get('stock_symbol')
+            start_date = form.cleaned_data.get('start_date')
+            end_date = form.cleaned_data.get('end_date')
+            if start_date and end_date and start_date > end_date:
+                form.add_error(
+                    'start_date', 'Start date cannot be greater than end date.')
+            else:
+                if transaction_type:
+                    transaction_type = transaction_type.capitalize()
+                    transactions = transactions.filter(
+                        transaction_type=transaction_type)
+                if stock_symbol:
+                    transactions = transactions.filter(
+                        stock__symbol__icontains=stock_symbol)
+                if start_date:
+                    transactions = transactions.filter(
+                        timestamp__gte=start_date)
+                if end_date:
+                    transactions = transactions.filter(timestamp__lte=end_date)
 
     items_per_page = 10
     paginator = Paginator(transactions, items_per_page)
@@ -183,10 +210,10 @@ def transaction_history(request):
         transactions = paginator.page(1)
     except EmptyPage:
         transactions = paginator.page(paginator.num_pages)
-
+    form = TransactionFilterForm(request.GET)
     return render(
         request, "transaction/transaction_history.html", {
-            "transactions": transactions}
+            "transactions": transactions, "form": form}
     )
 
 
@@ -304,12 +331,14 @@ def categories_course(request):
         form = TopicCreateForm(request.POST)
         if form.is_valid():
             new_topic = form.cleaned_data['name']
-            existing_topic = CourseCategory.objects.filter(name=new_topic).first()
+            existing_topic = CourseCategory.objects.filter(
+                name=new_topic).first()
             if existing_topic:
                 messages.error(request, f'Topic "{new_topic}" already exists.')
             else:
                 form.save()
-                messages.success(request, f'Topic "{new_topic}" created successfully.')
+                messages.success(
+                    request, f'Topic "{new_topic}" created successfully.')
             return redirect(url)
 
         form2 = SubjectCreateForm(request.POST, request.FILES)
@@ -456,6 +485,113 @@ def newsDetails(request, news_id):
     return render(request, 'NewsDetails/index.html', {'news': newsDetails})
 
 
+@login_required(login_url="/login/")
+def buy_stock(request, stock_symbol):
+    error_message = ""
+    stocks = Stock.objects.get(symbol=stock_symbol)
+    if request.method == 'POST':
+        form = BuyStockForm(request.POST)
+
+        if form.is_valid():
+            quantity = form.cleaned_data['quantity']
+            stock = stocks
+            total_price = stock.current_price * quantity  # Calculate total price
+
+            # Handle Stripe payment
+            token = form.cleaned_data["stripeToken"]
+            try:
+                charge = stripe.Charge.create(
+                    amount=int(total_price * 100),  # Amount in cents
+                    currency="cad",
+                    source=token,
+                    description=f"Stock Purchase: {stock_symbol}",
+                )
+
+                # Record the transaction
+                transaction = Transaction(
+                    user=request.user,
+                    stock=stock,
+                    transaction_type="Buy",
+                    quantity=quantity,
+                    price=total_price,
+                )
+                transaction.save()
+
+                # Update user holdings
+                holding, created = UserHolding.objects.get_or_create(
+                    user=request.user, stock=stock
+                )
+                holding.quantity += quantity
+                holding.save()
+
+                return redirect("transaction-history")
+            except stripe.error.CardError as e:
+                error_message = e.error.message
+                print(f"Stripe CardError: {error_message}")
+    else:
+        form = BuyStockForm()
+
+    return render(
+        request,
+        "Stocks/buy_stock.html",
+        {
+            "stock": stocks,
+            "error_message": error_message,
+            "PUBLIC_KEY": settings.STRIPE_PUBLIC_KEY,
+            "form": form,
+        },
+    )
+
+
+@login_required(login_url="/login/")
+def user_holdings(request):
+    holdings = UserHolding.objects.filter(user=request.user)
+    sell_form = SellStockForm()
+    items_per_page = 10
+    paginator = Paginator(holdings, items_per_page)
+    page = request.GET.get('page')
+
+    try:
+        holdings_page = paginator.page(page)
+    except PageNotAnInteger:
+        holdings_page = paginator.page(1)
+    except EmptyPage:
+        holdings_page = paginator.page(paginator.num_pages)
+    if request.method == 'POST':
+        sell_form = SellStockForm(request.POST)
+
+        if sell_form.is_valid():
+            stock_symbol = sell_form.cleaned_data['stock_symbol']
+            quantity_to_sell = sell_form.cleaned_data['quantity']
+            stock = Stock.objects.get(symbol=stock_symbol)
+            holding = holdings.filter(stock=stock).first()
+            if holding and quantity_to_sell > 0 and quantity_to_sell <= holding.quantity:
+                sell_price = stock.current_price * quantity_to_sell
+
+                sell_transaction = Transaction(
+                    user=request.user,
+                    stock=stock,
+                    transaction_type="Sell",
+                    quantity=quantity_to_sell,
+                    price=sell_price,
+                )
+                sell_transaction.save()
+                holding.quantity -= quantity_to_sell
+                holding.save()
+                request.user.wallet += Decimal(sell_price)
+                request.user.save()
+                if holding.quantity == 0:
+                    holding.delete()
+
+                return redirect("user-holdings")
+            else:
+                error_message = 'Invalid quantity to sell. Please select a valid quantity.'
+                sell_form.add_error('quantity', error_message)
+
+    return render(request, 'userholding/user_holdings.html',
+                  {'user': request.user, 'holdings': holdings_page, 'sell_form': sell_form})
+
+
 def newsDetails(request, news_id):
     if request.method == "POST":
         comment = NewsCommentForm(request.POST)
@@ -490,7 +626,8 @@ def create_nft(request):
                 return redirect('nft_detail', nft_id=nft_instance.id)
             else:
                 # Handle the case when the user is not logged in (redirect to login page, for example)
-                return redirect('login')  # Replace 'login' with the actual login URL
+                # Replace 'login' with the actual login URL
+                return redirect('login')
 
     else:
         form = NFTForm()
@@ -556,7 +693,8 @@ def buy_nft(request, nft_symbol):
 @login_required(login_url="/login/")
 def nft_transaction_history(request):
     user = request.user
-    nft_transactions = NFTTransaction.objects.filter(user=user).order_by("-timestamp")
+    nft_transactions = NFTTransaction.objects.filter(
+        user=user).order_by("-timestamp")
 
     items_per_page = 10
     paginator = Paginator(nft_transactions, items_per_page)
@@ -631,8 +769,10 @@ def nft_user_holdings(request):
 
 def convert(source, to, amount):
     # Corrected dictionary creation with ID as key and name as value
-    collective_dict = {str(identifier): name for identifier, name in top_30_currencies}
-    collective_dict.update({str(identifier): name for identifier, name in crypto_data})
+    collective_dict = {str(identifier): name for identifier,
+                       name in top_30_currencies}
+    collective_dict.update(
+        {str(identifier): name for identifier, name in crypto_data})
 
     # collective_dict += {name: identifier for identifier, name in crypto_data}
 
@@ -658,7 +798,7 @@ def convert(source, to, amount):
         data = response.json()
         # return str(amount) + " " + collective_dict[str(source)] + " = " + str(
         #     round(data['data'][source]['quote'][to]['price'], 4)) + " " + collective_dict[str(to)]
-        return str(amount) + " "+ collective_dict[str(source)]+" = " + str(round(data['data']['quote'][to]['price'],4))+" "+collective_dict[str(to)]
+        return str(amount) + " " + collective_dict[str(source)]+" = " + str(round(data['data']['quote'][to]['price'], 4))+" "+collective_dict[str(to)]
     except:
         return "Some error occured"
 
@@ -676,7 +816,6 @@ def convert_data(request):
             result = convert(form.cleaned_data['currency_from'], form.cleaned_data['currency_to'],
                              form.cleaned_data['amount'])
         return render(request, 'converter_template.html', {'form': form, 'result': result})
-
 
     else:
         form = CurrencyConverterForm()
