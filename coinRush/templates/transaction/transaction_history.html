@@ -10,6 +10,12 @@
     #id_transaction_type {
         padding: 8px;
     }
+    label{
+        color:#111111;
+        font-weight: bold;
+        font-size: 16px;
+        margin-left: 10px;
+    }
 </style>{% endblock %}
 {% block banner %}
     <div class="container-fluid hero-header bg-light py-2 mb-5">
@@ -29,12 +35,16 @@
 {% block content %}
     <div class="container">
         <form method="get" class="mb-3">
+        <div class="mb-2">
+
             {% for field in form %}
                 {{ field.label_tag }}
                 {{ field }}
             {% endfor %}
         {{ form.non_field_errors }}
-            <button type="submit" class="btn btn-primary">Filter</button>
+        </div>
+            <button type="submit" class="btn btn-primary ">Filter <i class="bi bi-funnel"></i></button>
+   <a href="{% url 'transaction-history' %}" class="btn btn-secondary">Clear</a>
         </form>
         {% if transactions %}
             <div class="table-responsive">
@@ -87,4 +97,5 @@
             <p class="fw-bold text-primary mb-5" style="font-size: 40px">No transaction history available</p>
         {% endif %}
     </div>
+
 {% endblock %}

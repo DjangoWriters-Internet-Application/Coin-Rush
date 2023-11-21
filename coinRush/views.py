@@ -173,6 +173,7 @@ def news(request):
 def transaction_history(request):
     user = request.user
     transactions = Transaction.objects.filter(user=user).order_by("-timestamp")
+    
     if request.method == 'GET':
         form = TransactionFilterForm(request.GET)
         print(form.is_valid())
