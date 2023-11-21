@@ -1,0 +1,56 @@
+{% extends "Base/base.html" %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cryptoglossary</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Cryptoglossary</h1>
+
+{% regroup terms by term|first as term_grouped %}
+
+{% for group in term_grouped %}
+    <h2>{{ group.grouper }}</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Term</th>
+                <!-- Add other header columns as needed -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for term in group.list %}
+                <tr>
+                    <td><a href="{% url 'term_detail' term_id=term.id %}">{{ term.term }}</a></td>
+                    <!-- Add other columns as needed -->
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endfor %}
+
+</body>
+</html>
+{% endblock %}

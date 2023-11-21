@@ -6,7 +6,7 @@ from django.utils.text import slugify
 
 # from django.contrib.auth.forms import UserCreationForm
 
-from .models import User, Post, Comment, Transaction, NewsComments, Feedback, Stock, CourseCategory, Learn
+from .models import User, Post, Comment, Transaction, NewsComments, Feedback, Stock, CourseCategory, Learn, GlossaryTerm, NFT
 
 
 class UserCreationForm(forms.ModelForm):
@@ -134,6 +134,8 @@ class SellStockForm(forms.Form):
     stock_symbol = forms.CharField(widget=forms.HiddenInput())
 
 
+
+
 class NewsCommentForm(forms.ModelForm):
     class Meta:
         model = NewsComments
@@ -172,6 +174,34 @@ class FeedbackRatingForm(forms.ModelForm):
         model = Feedback
         fields = ["subject", "feedback", "rating"]
 
+class NFTForm(forms.ModelForm):
+    class Meta:
+        model = NFT
+        fields = [
+            'image',
+            'symbol',
+            'description',
+            'quantity',
+            'is_for_sale',
+            'current_price',
+            'currency',
+            'is_bidding_allowed',
+        ]
+
+
+from django import forms
+from .models import NFTTransaction
+
+class BuyNFTForm(forms.Form):
+    quantity = forms.IntegerField(min_value=1, widget=forms.NumberInput(attrs={'class': 'form-control'}))
+    stripeToken = forms.CharField(widget=forms.HiddenInput())
+    
+
+class SellNFTForm(forms.Form):
+    quantity = forms.IntegerField(min_value=1, widget=forms.NumberInput(attrs={'class': 'form-control'}))
+    nft_symbol = forms.CharField(widget=forms.HiddenInput())
+    
+
 
 class StockFilterForm(forms.ModelForm):
     class Meta:
@@ -187,6 +217,10 @@ class CurrencyConverterForm(forms.Form):
         self.fields['currency_from'].choices = choices
         self.fields['currency_to'].choices = choices
 
+class GlossaryTermForm(forms.ModelForm):
+    class Meta:
+        model = GlossaryTerm
+        fields = ['term', 'definition']
 class TopicCreateForm(forms.ModelForm):
     class Meta:
         model = CourseCategory
