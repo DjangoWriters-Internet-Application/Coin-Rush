@@ -13,7 +13,7 @@ from django.urls import reverse
 from django.contrib import messages
 from django.core.exceptions import *
 from .filters import StockFilters
-from .constants import top_30_currencies,crypto_data
+from .constants import top_30_currencies, crypto_data
 import requests
 
 from .forms import (
@@ -28,22 +28,15 @@ from .forms import (
     CurrencyConverterForm,
     NewsCreateForm,
     TopicCreateForm,
-    SubjectCreateForm
+    SubjectCreateForm, CustomAuthenticationForm, TransactionFilterForm
 )
 
-from .forms import (
-    CustomAuthenticationForm,
-    RegistrationForm,
-    PostForm,
-    CommentForm,
-    NewsCommentForm,
-)
 from .models import (
     Transaction,
     UserHolding,
     User,
     Learn,
-StockPrice,
+    StockPrice,
     CourseCategory,
     Feedback,
     News,
@@ -72,20 +65,20 @@ def home(request):
     elif ord_by == "min-market-cap":
         order_string = "market_cap"
 
-    stock_filter = StockFilters(request.GET,queryset=Stock.objects.all().order_by(order_string))
+    stock_filter = StockFilters(request.GET, queryset=Stock.objects.all().order_by(order_string))
     context = {"stocks": stock_filter.qs,
-               "form":stock_filter.form}
-    return render(request, "index.html",context )
+               "form": stock_filter.form}
+    return render(request, "index.html", context)
+
 
 def about(request):
     return render(request, "about.html")
 
 
-def test(request,stock_id):
-    s=Stock.objects.get(pk=stock_id)
-    p=StockPrice.objects.filter(stock=s)
-    return render(request, "test.html",{"p":p,"s":s})
-
+def test(request, stock_id):
+    s = Stock.objects.get(pk=stock_id)
+    p = StockPrice.objects.filter(stock=s)
+    return render(request, "test.html", {"p": p, "s": s})
 
 
 def services(request):
@@ -146,7 +139,8 @@ def news(request):
                 return redirect('news')
 
     newsForm = NewsCreateForm();
-    context = {"title": "Latest Crypto News", "news": News.objects.all(), 'newsForm': newsForm, 'displayForm':displayForm}
+    context = {"title": "Latest Crypto News", "news": News.objects.all(), 'newsForm': newsForm,
+               'displayForm': displayForm}
     return render(request, "News/index.html", context)
 
 
@@ -154,6 +148,27 @@ def news(request):
 def transaction_history(request):
     user = request.user
     transactions = Transaction.objects.filter(user=user).order_by("-timestamp")
+    if request.method == 'GET':
+        form = TransactionFilterForm(request.GET)
+        print(form.is_valid())
+        if form.is_valid():
+            print("lokjhg")
+            transaction_type = form.cleaned_data.get('transaction_type')
+            stock_symbol = form.cleaned_data.get('stock_symbol')
+            start_date = form.cleaned_data.get('start_date')
+            end_date = form.cleaned_data.get('end_date')
+            if start_date and end_date and start_date > end_date:
+                form.add_error('start_date', 'Start date cannot be greater than end date.')
+            else:
+                if transaction_type:
+                    transaction_type=transaction_type.capitalize()
+                    transactions = transactions.filter(transaction_type=transaction_type)
+                if stock_symbol:
+                    transactions = transactions.filter(stock__symbol__icontains=stock_symbol)
+                if start_date:
+                    transactions = transactions.filter(timestamp__gte=start_date)
+                if end_date:
+                    transactions = transactions.filter(timestamp__lte=end_date)
 
     items_per_page = 10
     paginator = Paginator(transactions, items_per_page)
@@ -165,10 +180,10 @@ def transaction_history(request):
         transactions = paginator.page(1)
     except EmptyPage:
         transactions = paginator.page(paginator.num_pages)
-
+    form = TransactionFilterForm(request.GET)
     return render(
         request, "transaction/transaction_history.html", {
-            "transactions": transactions}
+            "transactions": transactions, "form": form}
     )
 
 
@@ -310,6 +325,7 @@ def show_stocks(request):
     stocks = Stock.objects.all()
     return render(request, "Stocks/showStocks.html", {"stocks": stocks})
 
+
 def newsDetails(request, news_id):
     if 'like_news' in request.POST:
         news_id = request.POST['like_news']
@@ -325,6 +341,7 @@ def newsDetails(request, news_id):
     newsDetails = get_object_or_404(News, pk=news_id)
     form = NewsCommentForm()
     return render(request, 'NewsDetails/index.html', {'news': newsDetails})
+
 
 @login_required(login_url="/login/")
 def buy_stock(request, stock_symbol):
@@ -454,8 +471,7 @@ def nft_detail(request, nft_id):
     return render(request, "nft/NFT.html", {"nft": nft})
 
 
-
-def convert(source,to,amount):
+def convert(source, to, amount):
     # Corrected dictionary creation with ID as key and name as value
     collective_dict = {str(identifier): name for identifier, name in top_30_currencies}
     collective_dict.update({str(identifier): name for identifier, name in crypto_data})
@@ -468,9 +484,9 @@ def convert(source,to,amount):
 
     url = 'https://sandbox-api.coinmarketcap.com/v2/tools/price-conversion'
     parameters = {
-        'id':source,
-        'convert_id':to,
-        'amount':amount
+        'id': source,
+        'convert_id': to,
+        'amount': amount
     }
 
     headers = {
@@ -481,23 +497,26 @@ def convert(source,to,amount):
 
     try:
         response = requests.get(url, params=parameters, headers=headers)
-        data=response.json()
-        return str(amount) + " "+ collective_dict[str(source)]+" = " + str(round(data['data'][source]['quote'][to]['price'],4))+" "+collective_dict[str(to)]
+        data = response.json()
+        return str(amount) + " " + collective_dict[str(source)] + " = " + str(
+            round(data['data'][source]['quote'][to]['price'], 4)) + " " + collective_dict[str(to)]
         # return str(amount) + " "+ collective_dict[str(source)]+" = " + str(round(data['data']['quote'][to]['price'],4))+" "+collective_dict[str(to)]
     except:
         return "Some error occured"
+
 
 def convert_data(request):
     result = None
 
     # Example choices (you can replace this with actual currency choices)
-    currency_choices = top_30_currencies+crypto_data
+    currency_choices = top_30_currencies + crypto_data
 
     if request.method == 'POST':
         form = CurrencyConverterForm(request.POST)
         form.set_currency_choices(currency_choices)
         if form.is_valid():
-            result=convert(form.cleaned_data['currency_from'],form.cleaned_data['currency_to'],form.cleaned_data['amount'])
+            result = convert(form.cleaned_data['currency_from'], form.cleaned_data['currency_to'],
+                             form.cleaned_data['amount'])
         return render(request, 'converter_template.html', {'form': form, 'result': result})
 
 

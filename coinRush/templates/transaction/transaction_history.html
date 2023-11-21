@@ -1,5 +1,16 @@
 {% extends "Base/base.html" %} {% block title %}Transaction{% endblock %}
 {% load static %}
+{% block extraHead %}<style>
+    .errorlist.nonfield {
+        color: red;
+        font-size: 14px;
+        margin-top: 5px;
+        list-style: none;
+    }
+    #id_transaction_type {
+        padding: 8px;
+    }
+</style>{% endblock %}
 {% block banner %}
     <div class="container-fluid hero-header bg-light py-2 mb-5">
         <div class="container py-5">
@@ -17,7 +28,14 @@
 {% endblock %}
 {% block content %}
     <div class="container">
-
+        <form method="get" class="mb-3">
+            {% for field in form %}
+                {{ field.label_tag }}
+                {{ field }}
+            {% endfor %}
+        {{ form.non_field_errors }}
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </form>
         {% if transactions %}
             <div class="table-responsive">
                 <table class="table table-striped">
