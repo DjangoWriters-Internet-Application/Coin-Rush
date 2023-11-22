@@ -5,8 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c1604f2-4a48-491f-b1c4-4c0af06d1c4c" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/coinRush/static/images/index-logo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/coinRush/static/images/nft_holding.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/Base/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/Base/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/Base/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/Base/navbar.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/Nft/buy_nft.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/Nft/buy_nft.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/Stocks/buy_stock.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/Stocks/buy_stock.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/coinRush/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/registration/user-profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/registration/user-profile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/userholding/nft_user_holdings.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/userholding/nft_user_holdings.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/userholding/user_holdings.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/userholding/user_holdings.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,6 +80,7 @@
       <recent name="E:\UoWSemester3\IADS\Coin-Rush\coinRush\migrations" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\Internetapplication\Coin-Rush\coinRush\static\images" />
       <recent name="E:\UoWSemester3\IADS\Coin-Rush\coinRush\static\images" />
     </key>
   </component>

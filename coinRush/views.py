@@ -3,21 +3,17 @@ from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.auth import login, authenticate
-from django.conf import settings
-from django.contrib.auth.views import LoginView
 from django.contrib.auth.hashers import make_password
 from decimal import Decimal
 import stripe
 from .filters import StockFilters
 from .constants import top_30_currencies, crypto_data
-from .constants import top_30_currencies, crypto_data
 import requests
 import pybase64
-
 from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
 from django.shortcuts import redirect
-from django.contrib.auth.decorators import login_required  # Import login_required
+from django.contrib.auth.decorators import login_required
 from django.conf import settings
 
 from .forms import (
@@ -33,9 +29,6 @@ from .forms import (
     NewsCreateForm,
     TopicCreateForm,
     SubjectCreateForm,
-)
-
-from .forms import (
     CustomAuthenticationForm,
     TransactionFilterForm,
     SellStockForm,
@@ -45,13 +38,9 @@ from .forms import (
 )
 
 from .models import (
-    NFT,
-    Transaction,
-    UserHolding,
     Transaction,
     UserHolding,
     Learn,
-    StockPrice,
     StockPrice,
     CourseCategory,
     Feedback,
@@ -78,14 +67,15 @@ def home(request):
         order_string = "-market_cap"
     elif ord_by == "min-market-cap":
         order_string = "market_cap"
-
-    stock_filter = StockFilters(
-        request.GET, queryset=Stock.objects.all().order_by(order_string)
-    )
+    stocks = Stock.objects.all().order_by(order_string)
+    stock_filter = StockFilters(request.GET, queryset=stocks)
+    paginator = Paginator(stock_filter.qs, 10)
+    page = request.GET.get("page")
+    stocks_page = paginator.get_page(page)
     top_10_stocks = Stock.objects.all().order_by("-current_price")[:10]
 
     context = {
-        "stocks": stock_filter.qs,
+        "stocks": stocks_page,
         "form": stock_filter.form,
         "top_stocks": top_10_stocks,
     }
@@ -289,7 +279,7 @@ def transaction_history(request):
 
     if request.method == "GET":
         form = TransactionFilterForm(request.GET)
-        print(form.is_valid())
+
         if form.is_valid():
             transaction_type = form.cleaned_data.get("transaction_type")
             stock_symbol = form.cleaned_data.get("stock_symbol")
@@ -326,7 +316,7 @@ def transaction_history(request):
         transactions = paginator.page(paginator.num_pages)
     form = TransactionFilterForm(request.GET)
     return render(
-        request, "transaction/transaction_history.html", {"transactions": transactions}
+        request, "transaction/transaction_history.html", {"transactions": transactions, 'form': form}
     )
 
 
@@ -572,9 +562,9 @@ def user_holdings(request):
             stock = Stock.objects.get(symbol=stock_symbol)
             holding = holdings.filter(stock=stock).first()
             if (
-                holding
-                and quantity_to_sell > 0
-                and quantity_to_sell <= holding.quantity
+                    holding
+                    and quantity_to_sell > 0
+                    and quantity_to_sell <= holding.quantity
             ):
                 sell_price = stock.current_price * quantity_to_sell
 
@@ -869,6 +859,30 @@ def buy_nft(request, nft_symbol):
 def nft_transaction_history(request):
     user = request.user
     nft_transactions = NFTTransaction.objects.filter(user=user).order_by("-timestamp")
+    if request.method == "GET":
+        form = TransactionFilterForm(request.GET)
+        if form.is_valid():
+            transaction_type = form.cleaned_data.get("transaction_type")
+            stock_symbol = form.cleaned_data.get("stock_symbol")
+            start_date = form.cleaned_data.get("start_date")
+            end_date = form.cleaned_data.get("end_date")
+            if start_date and end_date and start_date > end_date:
+                form.add_error(
+                    "start_date", "Start date cannot be greater than end date."
+                )
+            else:
+                if transaction_type:
+                    nft_transactions = nft_transactions.filter(
+                        transaction_type=transaction_type
+                    )
+                if stock_symbol:
+                    nft_transactions = nft_transactions.filter(
+                        stock__symbol__icontains=stock_symbol
+                    )
+                if start_date:
+                    nft_transactions = nft_transactions.filter(timestamp__gte=start_date)
+                if end_date:
+                    nft_transactions = nft_transactions.filter(timestamp__lte=end_date)
 
     items_per_page = 10
     paginator = Paginator(nft_transactions, items_per_page)
@@ -880,11 +894,11 @@ def nft_transaction_history(request):
         nft_transactions = paginator.page(1)
     except EmptyPage:
         nft_transactions = paginator.page(paginator.num_pages)
-
+    form = TransactionFilterForm(request.GET)
     return render(
         request,
-        "nft/nft_transaction_history.html",
-        {"nft_transactions": nft_transactions},
+        "transaction/nft_transaction_history.html",
+        {"nft_transactions": nft_transactions, 'form': form},
     )
 
 
@@ -913,9 +927,9 @@ def nft_user_holdings(request):
             holding = holdings.filter(nft=nft).first()
 
             if (
-                holding
-                and quantity_to_sell > 0
-                and quantity_to_sell <= holding.quantity
+                    holding
+                    and quantity_to_sell > 0
+                    and quantity_to_sell <= holding.quantity
             ):
                 sell_price = nft.current_price * quantity_to_sell
 
@@ -946,7 +960,7 @@ def nft_user_holdings(request):
 
     return render(
         request,
-        "nft/nft_user_holdings.html",
+        "userholding/nft_user_holdings.html",
         {"user": request.user, "holdings": holdings_page, "sell_form": sell_form},
     )
 
@@ -977,13 +991,13 @@ def convert(source, to, amount):
         # return str(amount) + " " + collective_dict[str(source)] + " = " + str(
         #     round(data['data'][source]['quote'][to]['price'], 4)) + " " + collective_dict[str(to)]
         return (
-            str(amount)
-            + " "
-            + collective_dict[str(source)]
-            + " = "
-            + str(round(data["data"]["quote"][to]["price"], 4))
-            + " "
-            + collective_dict[str(to)]
+                str(amount)
+                + " "
+                + collective_dict[str(source)]
+                + " = "
+                + str(round(data["data"]["quote"][to]["price"], 4))
+                + " "
+                + collective_dict[str(to)]
         )
     except:
         return "Some error occured"
