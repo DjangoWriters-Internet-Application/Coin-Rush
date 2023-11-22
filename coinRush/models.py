@@ -14,11 +14,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(default="", unique=True, blank=True, max_length=255)
     name = models.CharField(max_length=255, blank=True, default="")
 
-    # profile_pic = models.ImageField(upload_to="profile_pics/", null=True, blank=True)
-    # photo_id = models.ImageField(upload_to="photo_ids/", null=True, blank=True)
+    profile_pic = models.ImageField(upload_to="profile_pics/", null=True, blank=True)
+    photo_id = models.ImageField(upload_to="photo_ids/", null=True, blank=True)
 
-    profile_pic = models.TextField(null=True, blank=True, default="")
-    photo_id = models.TextField(null=True, blank=True, default="")
+    # profile_pic = models.TextField(null=True, blank=True, default="")
+    # photo_id = models.TextField(null=True, blank=True, default="")
 
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)

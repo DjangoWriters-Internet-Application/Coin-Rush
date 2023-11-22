@@ -5,10 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c1604f2-4a48-491f-b1c4-4c0af06d1c4c" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/coinRush/static/images/index-logo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/coinRush/static/images/nft_holding.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/coinRush/migrations/0002_alter_user_photo_id.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/coinRush/migrations/0003_alter_user_photo_id_alter_user_profile_pic.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/coinRush/static/css/learn.css" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/static/css/learn.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/Base/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/Base/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/Base/navbar.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/Base/navbar.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/Nft/buy_nft.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/Nft/buy_nft.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/Stocks/buy_stock.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/Stocks/buy_stock.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/registration/user-profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/registration/user-profile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/userholding/nft_user_holdings.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/userholding/nft_user_holdings.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/templates/userholding/user_holdings.html" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/templates/userholding/user_holdings.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/coinRush/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/coinRush/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,7 +58,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "megha",
     "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "E:/UoWSemester3/IADS/Coin-Rush/static/images/topic_images",
     "list.type.of.created.stylesheet": "CSS",
@@ -70,6 +80,7 @@
       <recent name="E:\UoWSemester3\IADS\Coin-Rush\coinRush\migrations" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\Internetapplication\Coin-Rush\coinRush\static\images" />
       <recent name="E:\UoWSemester3\IADS\Coin-Rush\coinRush\static\images" />
     </key>
   </component>
@@ -186,5 +197,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="LAST_COMMIT_MESSAGE" value="" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/Coin_Rush$manage.coverage" NAME="manage Coverage Results" MODIFIED="1698441220500" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
