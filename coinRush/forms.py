@@ -33,6 +33,7 @@ class UserCreationForm(forms.ModelForm):
 class CustomAuthenticationForm(AuthenticationForm):
     class Meta:
         model = User
+        fields = ["email", "password"]
 
     username = forms.CharField(
         label="USERNAME",
@@ -45,19 +46,20 @@ class CustomAuthenticationForm(AuthenticationForm):
         label_suffix="",
     )
 
-    error_messages = {
-        "invalid_login": (
-            "Please enter a correct username and password. Note that both "
-            "fields may be case-sensitive."
-        ),
-        "inactive": ("This account is inactive."),
-    }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["username"].widget.attrs.update(
+            {"class": "form-control", "placeholder": "Username"}
+        )
+        self.fields["password"].widget.attrs.update(
+            {"class": "form-control", "placeholder": "Password"}
+        )
 
 
 class RegistrationForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ["name", "email", "profile_pic", "is_superuser"]
+        fields = ["name", "email", "password", "is_superuser"]
 
     name = forms.CharField(
         label="NAME",
@@ -85,13 +87,13 @@ class RegistrationForm(UserCreationForm):
 
     def __init__(self, *args, **kwargs):
         super(UserCreationForm, self).__init__(*args, **kwargs)
-        self.fields["profile_pic"].required = False
         self.fields["is_superuser"].required = False
         self.fields["is_superuser"].initial = False
 
 
 class ProfileImageForm(forms.Form):
     profile_img = forms.ImageField()
+
 
 class PhotoIdForm(forms.Form):
     photo_id = forms.ImageField()
@@ -317,38 +319,36 @@ class TransactionFilterForm(forms.Form):
     TYPE = [("BUY", "Buy"), ("SELL", "Sell")]
 
     transaction_type = forms.ChoiceField(
-        label="Transaction Type",
-        choices=[('', 'All')] + TYPE,
-        required=False
+        label="Transaction Type", choices=[("", "All")] + TYPE, required=False
     )
 
     stock_symbol = forms.CharField(
         label="Search by Symbol",
         max_length=10,
         required=False,
-        widget=forms.TextInput()
+        widget=forms.TextInput(),
     )
 
     start_date = forms.DateField(
         label="Start Date",
         required=False,
-        widget=forms.TextInput(attrs={'type': 'date'})
+        widget=forms.TextInput(attrs={"type": "date"}),
     )
 
     end_date = forms.DateField(
-        label="End Date",
-        required=False,
-        widget=forms.TextInput(attrs={'type': 'date'})
+        label="End Date", required=False, widget=forms.TextInput(attrs={"type": "date"})
     )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['stock_symbol'].widget.attrs.update({'placeholder': 'Symbol to search'})
+        self.fields["stock_symbol"].widget.attrs.update(
+            {"placeholder": "Symbol to search"}
+        )
 
     def clean(self):
         cleaned_data = super().clean()
-        start_date = cleaned_data.get('start_date')
-        end_date = cleaned_data.get('end_date')
+        start_date = cleaned_data.get("start_date")
+        end_date = cleaned_data.get("end_date")
 
         if start_date and end_date and start_date > end_date:
             raise forms.ValidationError("Start date cannot be greater than end date.")
@@ -358,38 +358,36 @@ class TransactionFilterForm(forms.Form):
     TYPE = [("BUY", "Buy"), ("SELL", "Sell")]
 
     transaction_type = forms.ChoiceField(
-        label="Transaction Type",
-        choices=[('', 'All')] + TYPE,
-        required=False
+        label="Transaction Type", choices=[("", "All")] + TYPE, required=False
     )
 
     stock_symbol = forms.CharField(
         label="Search by Symbol",
         max_length=10,
         required=False,
-        widget=forms.TextInput()
+        widget=forms.TextInput(),
     )
 
     start_date = forms.DateField(
         label="Start Date",
         required=False,
-        widget=forms.TextInput(attrs={'type': 'date'})
+        widget=forms.TextInput(attrs={"type": "date"}),
     )
 
     end_date = forms.DateField(
-        label="End Date",
-        required=False,
-        widget=forms.TextInput(attrs={'type': 'date'})
+        label="End Date", required=False, widget=forms.TextInput(attrs={"type": "date"})
     )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['stock_symbol'].widget.attrs.update({'placeholder': 'Symbol to search'})
+        self.fields["stock_symbol"].widget.attrs.update(
+            {"placeholder": "Symbol to search"}
+        )
 
     def clean(self):
         cleaned_data = super().clean()
-        start_date = cleaned_data.get('start_date')
-        end_date = cleaned_data.get('end_date')
+        start_date = cleaned_data.get("start_date")
+        end_date = cleaned_data.get("end_date")
 
         if start_date and end_date and start_date > end_date:
             raise forms.ValidationError("Start date cannot be greater than end date.")

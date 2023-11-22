@@ -3,7 +3,7 @@ from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.auth import login, authenticate
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
 from decimal import Decimal
 import stripe
 from .filters import StockFilters
@@ -15,6 +15,8 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
+
+from .managers import AuthUserManager
 
 from .forms import (
     BuyNFTForm,
@@ -51,6 +53,7 @@ from .models import (
     GlossaryTerm,
     NFTTransaction,
     NFTUserHolding,
+    User,
 )
 
 stripe.api_key = settings.STRIPE_PRIVATE_KEY
@@ -90,27 +93,14 @@ def services(request):
     return render(request, "services.html")
 
 
-# class CustomLoginView(LoginView):
-#     form_class = CustomAuthenticationForm
-#     template_name = "registration/login.html"
-
-
 def custom_login_view(request):
     if request.method == "POST":
         form = CustomAuthenticationForm(request, request.POST)
 
-        print(form.data)
-
         if form.is_valid():
-            user = authenticate(
-                request,
-                username=form.cleaned_data["username"],
-                password=form.cleaned_data["password"],
-            )
+            user = User.objects.get(email=form.cleaned_data["username"])
 
-            print(user)
-
-            if user is not None:
+            if check_password(form.data["password"], user.password):
                 # Use the login() function to log in the user
                 login(request, user)
                 # Redirect to a success page or the home page
@@ -127,19 +117,28 @@ def register(request):
     if request.method == "POST":
         form = RegistrationForm(request.POST, request.FILES)
         if form.is_valid():
-            user = form.save(commit=False)
-            password = form.cleaned_data["password"]
-            hashed_password = make_password(password)
-            user.set_password(hashed_password)
+            # user = form.save(commit=False)
 
-            user.save()
+            # password = form.cleaned_data["password"]
+            # hashed_password = make_password(password)
+            # user.set_password(hashed_password)
+
+            user = User.objects.create_user(
+                email=form.cleaned_data["email"],
+                password=form.cleaned_data["password"],
+                name=form.cleaned_data["name"],
+            )
 
             print(user.email, user.password)
-            authenticate(username=user.email, password=user.password)
-            login(request, user)
+            # user.save()
 
-            # Redirect to the home page after registration
-            return redirect("home")
+            added_user = User.objects.get(email=user.email)
+
+            if check_password(form.cleaned_data["password"], added_user.password):
+                login(request, user)
+
+                # Redirect to the home page after registration
+                return redirect("home")
 
         context["errors"] = form.errors
         context["form"] = form
@@ -156,14 +155,15 @@ def user_profile(request):
 
     user = get_object_or_404(User, pk=request.user.id)
     if user:
-        binary_data = pybase64.b64decode(user.profile_pic)
-        photo_id_binary_data = pybase64.b64decode(user.photo_id)
+        if user.profile_pic is not None:
+            binary_data = pybase64.b64decode(user.profile_pic)
+            photo_id_binary_data = pybase64.b64decode(user.photo_id)
 
-        # Encode the binary data back to base64 to use in the template
-        encoded_image = pybase64.b64encode(binary_data).decode("utf-8")
-        photo_id_encoded_image = pybase64.b64encode(photo_id_binary_data).decode(
-            "utf-8"
-        )
+            # Encode the binary data back to base64 to use in the template
+            encoded_image = pybase64.b64encode(binary_data).decode("utf-8")
+            photo_id_encoded_image = pybase64.b64encode(photo_id_binary_data).decode(
+                "utf-8"
+            )
 
     return render(
         request,
@@ -316,7 +316,9 @@ def transaction_history(request):
         transactions = paginator.page(paginator.num_pages)
     form = TransactionFilterForm(request.GET)
     return render(
-        request, "transaction/transaction_history.html", {"transactions": transactions, 'form': form}
+        request,
+        "transaction/transaction_history.html",
+        {"transactions": transactions, "form": form},
     )
 
 
@@ -562,9 +564,9 @@ def user_holdings(request):
             stock = Stock.objects.get(symbol=stock_symbol)
             holding = holdings.filter(stock=stock).first()
             if (
-                    holding
-                    and quantity_to_sell > 0
-                    and quantity_to_sell <= holding.quantity
+                holding
+                and quantity_to_sell > 0
+                and quantity_to_sell <= holding.quantity
             ):
                 sell_price = stock.current_price * quantity_to_sell
 
@@ -880,7 +882,9 @@ def nft_transaction_history(request):
                         stock__symbol__icontains=stock_symbol
                     )
                 if start_date:
-                    nft_transactions = nft_transactions.filter(timestamp__gte=start_date)
+                    nft_transactions = nft_transactions.filter(
+                        timestamp__gte=start_date
+                    )
                 if end_date:
                     nft_transactions = nft_transactions.filter(timestamp__lte=end_date)
 
@@ -898,7 +902,7 @@ def nft_transaction_history(request):
     return render(
         request,
         "transaction/nft_transaction_history.html",
-        {"nft_transactions": nft_transactions, 'form': form},
+        {"nft_transactions": nft_transactions, "form": form},
     )
 
 
@@ -927,9 +931,9 @@ def nft_user_holdings(request):
             holding = holdings.filter(nft=nft).first()
 
             if (
-                    holding
-                    and quantity_to_sell > 0
-                    and quantity_to_sell <= holding.quantity
+                holding
+                and quantity_to_sell > 0
+                and quantity_to_sell <= holding.quantity
             ):
                 sell_price = nft.current_price * quantity_to_sell
 
@@ -991,13 +995,13 @@ def convert(source, to, amount):
         # return str(amount) + " " + collective_dict[str(source)] + " = " + str(
         #     round(data['data'][source]['quote'][to]['price'], 4)) + " " + collective_dict[str(to)]
         return (
-                str(amount)
-                + " "
-                + collective_dict[str(source)]
-                + " = "
-                + str(round(data["data"]["quote"][to]["price"], 4))
-                + " "
-                + collective_dict[str(to)]
+            str(amount)
+            + " "
+            + collective_dict[str(source)]
+            + " = "
+            + str(round(data["data"]["quote"][to]["price"], 4))
+            + " "
+            + collective_dict[str(to)]
         )
     except:
         return "Some error occured"
