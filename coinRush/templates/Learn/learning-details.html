@@ -10,8 +10,8 @@
 {% block content %}
 <div class="container">
     <div class="row g-2">
-        <h2>{{subject.title}}</h2>
-        <p>{{subject.description}}</p>
+        <h2 style="text-align: center">{{subject.title}}</h2><hr>
+        <p style="color: black">{{subject.description}}</p>
     </div>
     <h6>Was it helpful? Provide your feedback below.</h6>
     <form action="{% url 'submit_feedback' subject.id %}" method="POST">
