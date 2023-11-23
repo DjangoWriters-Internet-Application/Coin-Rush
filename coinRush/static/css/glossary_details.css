@@ -1,0 +1,7 @@
+.description {
+    font-family: "Your Desired Font", sans-serif; /* Replace "Your Desired Font" with the desired font name */
+    font-size: 24px; /* Adjust the font size as needed */
+    color: #000000; /* Black text color */
+    text-align: center; /* Center-align the text */
+    margin-bottom: 20px; /* Add some margin at the bottom */
+}
