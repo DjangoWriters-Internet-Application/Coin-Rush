@@ -2,82 +2,114 @@
 
 {% extends "Base/base.html" %}
 
-{% block title %}User Holding{% endblock %}
+{% block title %}NFT User Holding{% endblock %}
 {% load static %}
 
 {% block banner %}
-    <!-- Your banner code remains the same -->
+    <div class="container-fluid hero-header bg-light py-2 mb-5">
+        <div class="container ">
+            <div class="row g-5 align-items-center">
+                <div class="col-lg-9">
+                    <h1 class="display-4 mb-3 animated slideInDown">{{ user.get_short_name |capfirst }}'s NFT
+                        Holding</h1>
+                </div>
+                <div class="col-lg-3 animated fadeIn">
+                    <img class="img-fluid animated pulse infinite banner-img" src="{% static 'images/nft_holding.png' %}"
+                         alt="" style="width: 300px">
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block content %}
     <div class="container">
 
         {% if holdings %}
+
             <div class="table-responsive">
                 <table class="table table-striped">
                     <thead>
-                        <tr>
-                            <th>NFT</th>
-                            <th>Company</th>
-                            <th>Current Price</th>
-                            <th>Quantity</th>
-                            <th>Action</th>
-                        </tr>
+                    <tr>
+                        <th>NFT</th>
+                        <th>Company</th>
+                        <th>Current Price</th>
+                        <th>Quantity</th>
+                        <th>Action</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        {% for holding in holdings %}
-                            <tr>
-                                <td><img src="{{ holding.nft.image.url }}" alt="{{ holding.nft.symbol }}" width="30" height="30"> {{ holding.nft.symbol }}</td>
-                                <td>{{ holding.nft.company_name }}</td>
-                                <td>${{ holding.nft.current_price }}</td>
-                                <td>{{ holding.quantity }}</td>
-                                <td>
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sellModel{{ holding.nft.symbol }}">
-                                        <i class="bi bi-cash"></i> Sell
-                                    </button>
-                                </td>
-                            </tr>
+                    {% for holding in holdings %}
+                        <tr>
+                            <td><img src="{{ holding.nft.image.url }}" alt="{{ holding.nft.symbol }}" width="30"
+                                     height="30"> {{ holding.nft.symbol }}</td>
+                            <td>{{ holding.nft.company_name }}</td>
+                            <td>${{ holding.nft.current_price }}</td>
+                            <td>{{ holding.quantity }}</td>
+                            <td>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#sellModel{{ holding.nft.id }}">
+                                    <i class="bi bi-cash"></i> Sell
+                                </button>
+                            </td>
+                        </tr>
 
-                            <!-- Sell Modal -->
-                            <div class="modal fade" id="sellModel{{ holding.nft.symbol }}" tabindex="-1" aria-labelledby="sellModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="sellModalLabel">Sell {{ holding.nft.symbol }}</h5>
-                                            <button type="button" class="btn btn-outline-primary close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
+                        <!-- Sell Modal -->
+                        <div class="modal fade" id="sellModel{{ holding.nft.id }}" tabindex="-1"
+                             aria-labelledby="sellModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="sellModalLabel">Sell {{ holding.nft.symbol }}</h5>
+                                        <button type="button" class="btn btn-outline-primary close" data-dismiss="modal"
+                                                aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form method="post" action="{% url 'nft-user-holdings' %}">
+                                            {% csrf_token %}
+                                            <div class="form-group">
+                                                {{ sell_form.quantity.label_tag }}
+                                                {{ sell_form.quantity }}
+                                                {% if sell_form.errors.quantity %}
+                                                    <span class="text-danger">{{ sell_form.errors.quantity }}</span>
+                                                    <script>
+                                                        // Keep the modal open if there are errors
+                                                        $(document).ready(function () {
+                                                            $('#sellModel{{ holding.nft.id}}').modal('show');
+                                                        });
+                                                    </script>
+                                                {% endif %}
+                                            </div>
+                                            <input type="hidden" name="nft_symbol" value="{{ holding.nft.symbol }}">
+                                            <button type="submit" class="btn btn-primary mt-3"><i
+                                                    class="bi bi-cash"></i> Sell
                                             </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <form method="post" action="{% url 'nft-user-holdings' %}">
-                                                {% csrf_token %}
-                                                <div class="form-group">
-                                                    {{ sell_form.quantity.label_tag }}
-                                                    {{ sell_form.quantity }}
-                                                    {% if sell_form.errors.quantity %}
-                                                        <span class="text-danger">{{ sell_form.errors.quantity }}</span>
-                                                        <script>
-                                                            // Keep the modal open if there are errors
-                                                            $(document).ready(function () {
-                                                                $('#sellModel{{ holding.nft.symbol }}').modal('show');
-                                                            });
-                                                        </script>
-                                                    {% endif %}
-                                                </div>
-                                                <input type="hidden" name="nft_symbol" value="{{ holding.nft.symbol }}">
-                                                <button type="submit" class="btn btn-primary mt-3"><i class="bi bi-cash"></i> Sell</button>
-                                            </form>
-                                        </div>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
-                        {% endfor %}
+                        </div>
+                    {% endfor %}
                     </tbody>
                 </table>
             </div>
             <div class="pagination justify-content-center mb-5">
                 <span class="step-links">
-                    <!-- Pagination links remain the same -->
+                    {% if holdings.has_previous %}
+                        <a href="?page=1" class="btn btn-primary mx-2">&laquo; first</a>
+                        <a href="?page={{ holdings.previous_page_number }}" class="btn btn-primary mx-2">previous</a>
+                    {% endif %}
+
+                    <span class="current fw-bold">
+                Page {{ holdings.number }} of {{ holdings.paginator.num_pages }}.
+            </span>
+
+                    {% if holdings.has_next %}
+                        <a href="?page={{ holdings.next_page_number }}" class="btn btn-primary mx-2">next</a>
+                        <a href="?page={{ holdings.paginator.num_pages }}" class="btn btn-primary mx-2">last &raquo;</a>
+                    {% endif %}
                 </span>
             </div>
         {% else %}
