@@ -1,3 +1,5 @@
+<!-- NFTdetail.html -->
+
 {% extends "Base/base.html" %}
 {% load static %}
 
@@ -5,28 +7,48 @@
     <link rel="stylesheet" href="{% static 'css/nft_detail.css' %}">
 {% endblock extraHead %}
 
-{% block content %}
-    <div class="container-fluid mt-5">
-        <div class="row">
-            <div class="col-md-8">
-                <div class="card">
-                    <img src="{{ nft.image.url }}" class="card-img-top img-fluid" alt="{{ nft.description }}">
-                    <div class="card-body">
-                        <h1 class="card-title">{{ nft.tittle }}</h1>
-                        <p class="card-text">Owner: {{ nft.owner.get_short_name }}</p>
-                        <p class="card-text">Price: {{ nft.price }} {{ nft.currency }}</p>
-                        <p class="card-text">{{ nft.description }}</p>
-                        {% if nft.is_for_sale %}
-                            <button class="btn btn-primary">Buy Now</button>
-                        {% endif %}
-                        {% if nft.is_bidding_allowed %}
-                            <button class="btn btn-primary">Bid Now</button>
-                        {% endif %}
-                    </div>
+{% block banner %}
+    <div class="container-fluid hero-header bg-light py-2 mb-5">
+        <div class="container py-5">
+            <div class="row g-5 align-items-center">
+                <div class="col-lg-9">
+                    <h1 class="display-4 mb-3 animated slideInDown">{{ nft.symbol }}</h1>
                 </div>
             </div>
-            <div class="col-md-4">
-                <!-- Add additional content or sidebar here if needed -->
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid mt-5">
+        <div class="row align-items-center justify-content-center">
+            <div class="col-md-6 text-center">
+                <div class="col-lg-12 animated fadeIn">
+                    <img class="img-fluid animated pulse infinite banner-img"
+                         src="{{ nft.image.url }}" alt="">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="details-container">
+                    <p class="card-text"><strong>Owner:</strong> {{ nft.company_name }}</p>
+                    <p class="card-text"><strong>Price:</strong> {{ nft.current_price }} {{ nft.currency }}</p>
+                    <p class="card-text">{{ nft.description }}</p>
+                    {% if nft.is_for_sale %}
+                        <form method="post" action="{% url 'buy_nft' nft.symbol %}">
+                            {% csrf_token %}
+                            <div id="card-element">
+                                <!-- A Stripe Element will be inserted here. -->
+                            </div>
+                            <!-- Used to display form errors. -->
+                            <div id="card-errors" role="alert"></div>
+                            <input type="hidden" name="stripeToken">
+                            <button type="submit" class="btn btn-success">Buy NFT</button>
+                        </form>
+                    {% endif %}
+                    {% if nft.is_bidding_allowed %}
+                        <button class="btn btn-primary">Bid Now</button>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>

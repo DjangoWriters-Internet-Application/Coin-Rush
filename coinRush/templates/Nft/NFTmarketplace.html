@@ -8,10 +8,27 @@
     <!-- Add any additional stylesheets or scripts you need for this page -->
 {% endblock extraHead %}
 
+{% block banner %}
+     <div class="container-fluid hero-header bg-light py-2 mb-5">
+        <div class="container py-5">
+            <div class="row g-5 align-items-center">
+                <div class="col-lg-9">
+                    <h1 class="display-4 mb-3 animated slideInDown">NFT Market Place</h1>
+                </div>
+                <div class="col-lg-3 animated fadeIn">
+                    <img class="img-fluid animated pulse infinite banner-img"
+                         src="{% static 'images/nft-transactions.png' %}"  alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
 {% block content %}
     <div class="container mt-4">
-        <h1>NFT Marketplace</h1>
-        <a href="{% url 'create_nft' %}" class="btn btn-primary btn-sell-nft">Sell NFT</a>
+        <div class="d-flex justify-content-between align-items-center">
+            <a href="{% url 'create_nft' %}" class="btn btn-primary btn-sell-nft">Sell NFT</a>
+        </div>
     </div>
 
     <div class="container mt-4">
@@ -29,8 +46,6 @@
                                         <p class="card-text">Price: {{ nft.current_price }} {{ nft.currency }}</p>
                                         <form method="post" action="{% url 'buy_nft' nft.symbol%}">
                                             {% csrf_token %}
-                                            <label for="quantity">Quantity:</label>
-                                            <input type="number" name="quantity" value="1" min="1" required>
                                             <div id="card-element">
                                                 <!-- A Stripe Element will be inserted here. -->
                                             </div>

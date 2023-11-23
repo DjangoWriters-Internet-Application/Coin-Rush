@@ -1,0 +1,29 @@
+.nft-card {
+    margin-bottom: 20px; /* Adjust the value as needed for the desired spacing */
+}
+
+.row {
+    margin-bottom: 20px; /* Adjust the value as needed for the desired spacing */
+}
+
+.nft-card .btn-success {
+    background-color: #28a745; /* Green color for the button background */
+    color: #ffffff; /* White text color for the button */
+    border: none; /* Optional: Remove button border */
+    transition: transform 0.3s; /* Add a smooth transition effect for the transform property */
+}
+
+/* Grow the button on hover */
+.nft-card .btn-success:hover {
+    transform: scale(1.1); /* Increase the size by 10% on hover */
+}
+
+.btn-sell-nft {
+    font-size: 18px; /* Set the initial font size */
+    transition: font-size 0.3s; /* Add a smooth transition effect for the font size */
+}
+
+/* Increase font size on hover for a bigger button */
+.btn-sell-nft:hover {
+    font-size: 20px; /* Set the font size to a larger value on hover */
+}
