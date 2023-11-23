@@ -865,7 +865,7 @@ def nft_transaction_history(request):
         form = TransactionFilterForm(request.GET)
         if form.is_valid():
             transaction_type = form.cleaned_data.get("transaction_type")
-            stock_symbol = form.cleaned_data.get("stock_symbol")
+            stock_symbol = form.cleaned_data.get("nft_symbol")
             start_date = form.cleaned_data.get("start_date")
             end_date = form.cleaned_data.get("end_date")
             if start_date and end_date and start_date > end_date:
@@ -879,7 +879,7 @@ def nft_transaction_history(request):
                     )
                 if stock_symbol:
                     nft_transactions = nft_transactions.filter(
-                        stock__symbol__icontains=stock_symbol
+                        nft__symbol__icontains=stock_symbol
                     )
                 if start_date:
                     nft_transactions = nft_transactions.filter(

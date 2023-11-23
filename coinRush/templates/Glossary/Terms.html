@@ -1,45 +1,48 @@
 {% extends "Base/base.html" %}
+{% load static %}
+{% block extraHead %}
+    <link rel="stylesheet" href="{% static 'css/glossary.css' %}">
+    <!-- Add any additional stylesheets or scripts you need for this page -->
+{% endblock extraHead %}
 
+{% block banner %}
+     <div class="container-fluid hero-header bg-light py-2 mb-5">
+        <div class="container py-5">
+            <div class="row g-5 align-items-center">
+                <div class="col-lg-9">
+                    <h1 class="display-4 mb-3 animated slideInDown">Cryptoglossary</h1>
+                </div>
+                <div class="col-lg-3 animated fadeIn">
+                    <img class="img-fluid animated pulse infinite banner-img"
+                         src="{% static 'images/glossary.png' %}"  alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
 {% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cryptoglossary</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th, td {
-            border: 1px solid #dddddd;
-            text-align: left;
-            padding: 8px;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-    </style>
 </head>
 <body>
 
-<h1>Cryptoglossary</h1>
+<div class="alphabet-navigation">
+    <ul>
+        {% regroup terms by term|first as term_grouped %}
+        {% for group in term_grouped %}
+            <li><a href="#{{ group.grouper }}">{{ group.grouper }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
 
 {% regroup terms by term|first as term_grouped %}
 
 {% for group in term_grouped %}
-    <h2>{{ group.grouper }}</h2>
+    <h1 id="{{ group.grouper }}">{{ group.grouper }}</h1>
     <table>
-        <thead>
-            <tr>
-                <th>Term</th>
-                <!-- Add other header columns as needed -->
-            </tr>
-        </thead>
         <tbody>
             {% for term in group.list %}
                 <tr>
