@@ -791,7 +791,7 @@ def create_nft(request):
             if request.user.is_authenticated:
                 nft_instance.owner = request.user
                 nft_instance.save()
-                return redirect("nft_detail", nft_id=nft_instance.id)
+                return redirect("NFTMarketPlace")
             else:
                 # Handle the case when the user is not logged in (redirect to login page, for example)
                 return redirect("login")  # Replace 'login' with the actual login URL
