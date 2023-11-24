@@ -405,8 +405,8 @@ def discussion(request):
 
     post_list = Post.objects.all().order_by(
         order_string
-    )  # Replace with your queryset for your posts
-    paginator = Paginator(post_list, 2)  # Show 5 posts per page
+    )
+    paginator = Paginator(post_list, 5)  # Show 5 posts per page
     page = request.GET.get("page")
     posts = paginator.get_page(page)
     if request.method == "POST":
@@ -425,8 +425,8 @@ def discussion_single(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     comments = post.comment_set.all().order_by("-created_at")
 
-    # Add pagination for comments (e.g., 5 comments per page)
-    paginator = Paginator(comments, 1)
+
+    paginator = Paginator(comments, 5)
     page = request.GET.get("page")
     comments_page = paginator.get_page(page)
 
@@ -666,73 +666,6 @@ def submit_feedback(request, sub_id):
                     request, "Thank you! Your feedback has been submitted."
                 )
                 return redirect(url)
-
-
-def discussion(request):
-    ord_by = request.GET.get("order_by")
-    order_string = "-views"
-    if ord_by == None or ord_by == "max-views" or ord_by == "":
-        order_string = "-views"
-    elif ord_by == "min-views":
-        order_string = "views"
-    elif ord_by == "latest":
-        order_string = "-created_at"
-    elif ord_by == "oldest":
-        order_string = "created_at"
-
-    post_list = Post.objects.all().order_by(
-        order_string
-    )  # Replace with your queryset for your posts
-    paginator = Paginator(post_list, 2)  # Show 5 posts per page
-    page = request.GET.get("page")
-    posts = paginator.get_page(page)
-    if request.method == "POST":
-        form = PostForm(request.POST)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.created_by = request.user  # Assign the logged-in user
-            post.save()
-            return redirect("discussion")
-    else:
-        form = PostForm()
-    return render(request, "posts/discussion_all.html", {"posts": posts, "form": form})
-
-
-def discussion_single(request, post_id):
-    post = get_object_or_404(Post, pk=post_id)
-    comments = post.comment_set.all().order_by("-created_at")
-
-    # Add pagination for comments (e.g., 5 comments per page)
-    paginator = Paginator(comments, 1)
-    page = request.GET.get("page")
-    comments_page = paginator.get_page(page)
-
-    # Construct a unique session key for the post
-    session_key = f"visited_post_{post_id}"
-
-    if not request.session.get(session_key, False):
-        # If the session key is not present, increment views and set the session
-        post.views += 1
-        post.save()
-        request.session[session_key] = True
-
-    if request.method == "POST":
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.post = post
-            comment.created_by = request.user
-            comment.save()
-            return redirect("discussion_single", post_id=post_id)
-
-    else:
-        form = CommentForm()
-
-    return render(
-        request,
-        "posts/discussion_single.html",
-        {"post": post, "comments": comments_page, "form": form},
-    )
 
 
 def stock_chart(request, stock_id):
