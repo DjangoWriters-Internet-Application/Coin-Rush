@@ -1,7 +1,25 @@
 {% extends "Base/base.html" %}
+{% load static %}
+{% block extraHead %}
+    <link rel="stylesheet" href="{% static 'css/glossary_details.css' %}">
+    <!-- Add any additional stylesheets or scripts you need for this page -->
+{% endblock extraHead %}
+
+{% block banner %}
+    <div class="container-fluid hero-header bg-light py-2 mb-5">
+        <div class="container py-5">
+            <div class="row g-5 align-items-center">
+                <div class="col-lg-9">
+                    <h1 class="display-4 mb-3 animated slideInDown">{{ term.term }}</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
 
 {% block content %}
-  <h2>{{ term.term }}</h2>
-  <p>{{ term.definition }}</p>
-  <!-- You can include more information here as needed -->
+    <div class="container text-center">
+        <p class="description">{{ term.definition }}</p>
+        <!-- You can include more information here as needed -->
+    </div>
 {% endblock %}
