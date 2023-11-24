@@ -1,0 +1,66 @@
+/* glossary.css */
+
+body {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.content {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.alphabet-navigation {
+    margin-top: 10px;
+}
+
+.alphabet-navigation ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.alphabet-navigation li {
+    margin: 0 10px;
+}
+
+.alphabet-navigation a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    transition: transform 0.3s;
+    display: inline-block;
+}
+
+/* Increase the size on hover */
+.alphabet-navigation a:hover {
+    transform: scale(1.2);
+}
+
+table {
+    width: 80%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+th, td {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+.content h1 {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    align-self: flex-start;
+}

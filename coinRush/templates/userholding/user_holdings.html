@@ -7,11 +7,11 @@
         <div class="container ">
             <div class="row g-5 align-items-center">
                 <div class="col-lg-9">
-                    <h1 class="display-4 mb-3 animated slideInDown">{{ user.name|capfirst }}'s Holding</h1>
+                    <h1 class="display-4 mb-3 animated slideInDown">{{ user.get_short_name |capfirst }}'s Holding</h1>
                 </div>
                 <div class="col-lg-3 animated fadeIn">
-                    <img class="img-fluid animated pulse infinite banner-img"
-                         src="{% static 'images/holding2.png' %}" alt="" style="width: 300px">
+                    <img class="img-fluid animated pulse infinite banner-img" src="{% static 'images/holding2.png' %}"
+                         alt="" style="width: 300px">
                 </div>
             </div>
         </div>
@@ -42,7 +42,7 @@
                             <td>{{ holding.quantity }}</td>
                             <td>
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                        data-bs-target="#sellModel{{ holding.stock }}">
+                                        data-bs-target="#sellModel{{ holding.stock.id }}">
                                     <i class="bi bi-cash"></i> Sell
                                 </button>
 
@@ -50,9 +50,8 @@
                         </tr>
 
                         <!-- Sell Modal -->
-                        <div class="modal fade " id="sellModel{{ holding.stock }}" tabindex="-1"
-                             aria-labelledby="sellModalLabel"
-                             aria-hidden="true">
+                        <div class="modal fade " id="sellModel{{ holding.stock.id }}" tabindex="-1"
+                             aria-labelledby="sellModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -73,7 +72,7 @@
                                                     <script>
                                                         // Keep the modal open if there are errors
                                                         $(document).ready(function () {
-                                                            $('#sellModel{{ holding.stock }}').modal('show');
+                                                            $('#sellModel{{ holding.stock.id }}').modal('show');
                                                         });
                                                     </script>
                                                 {% endif %}
@@ -108,6 +107,7 @@
             {% endif %}
         </span>
             </div>
+
         {% else %}
             <p class="fw-bold text-primary mb-5" style="font-size: 40px">No current holdings</p>
         {% endif %}

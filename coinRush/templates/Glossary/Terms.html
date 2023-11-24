@@ -1,0 +1,59 @@
+{% extends "Base/base.html" %}
+{% load static %}
+{% block extraHead %}
+    <link rel="stylesheet" href="{% static 'css/glossary.css' %}">
+    <!-- Add any additional stylesheets or scripts you need for this page -->
+{% endblock extraHead %}
+
+{% block banner %}
+     <div class="container-fluid hero-header bg-light py-2 mb-5">
+        <div class="container py-5">
+            <div class="row g-5 align-items-center">
+                <div class="col-lg-9">
+                    <h1 class="display-4 mb-3 animated slideInDown">Cryptoglossary</h1>
+                </div>
+                <div class="col-lg-3 animated fadeIn">
+                    <img class="img-fluid animated pulse infinite banner-img"
+                         src="{% static 'images/glossary.png' %}"  alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<div class="alphabet-navigation">
+    <ul>
+        {% regroup terms by term|first as term_grouped %}
+        {% for group in term_grouped %}
+            <li><a href="#{{ group.grouper }}">{{ group.grouper }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+
+{% regroup terms by term|first as term_grouped %}
+
+{% for group in term_grouped %}
+    <h1 id="{{ group.grouper }}">{{ group.grouper }}</h1>
+    <table>
+        <tbody>
+            {% for term in group.list %}
+                <tr>
+                    <td><a href="{% url 'term_detail' term_id=term.id %}">{{ term.term }}</a></td>
+                    <!-- Add other columns as needed -->
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endfor %}
+
+</body>
+</html>
+{% endblock %}
