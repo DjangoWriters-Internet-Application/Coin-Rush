@@ -1,17 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock Price Chart</title>
-    <!-- Include Chart.js from CDN -->
+{% extends "Base/base.html" %}
+{% block title %}Coin-Rush Stocks{% endblock %}
+{% load static %}
+{% block extraHead %}
+<link rel="stylesheet" href="{% static 'css/stocks.css' %}">
+<!-- Include Bootstrap JS, Popper.js, and jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Include Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+    integrity="sha384-lY6vUp9BEi3iIdva62I0pbTXJswAfPp7bg5+5lU7I95NXRSFQ6F6gJHSa9PxI1Wi" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+{% endblock extraHead %}
+{% block content %}
+<div class="container">
+    <div class="d-flex align-items-center">
+    <img src="{{ stock.image.url }}" alt="{{ stock.symbol }}" width="100" height="100"><a
+                            href="{% url 'stock_chart' stock_id=stock.pk %}"><h1>{{ stock.symbol }}</h1></a></div>
 
-</head>
-<body>
     <div style="width: 80%; margin: auto;">
         <canvas id="stockPriceChart"></canvas>
+    </div>
     </div>
 
     <script>
@@ -71,5 +82,4 @@ prices = sortedData.map(item => item.price);
             console.error("Chart.js is not loaded.");
         }
     </script>
-</body>
-</html>
+{% endblock %}

@@ -69,7 +69,8 @@
 
                         <div class="d-md-block d-none col-md-3 d-flex-column ">
 
-                            <p class="card-text d-flex justify-content-center align-content-center"><img class="img img-fluid rounded-circle" id="profile-pic" src="{% if  post.created_by.profile_pic.url and post.created_by.profile_pic.url is not None%} {{post.created_by.profile_pic.url}} {% else %} {% static 'images/sample-avatar.png' %} {% endif %}">
+                            <p class="card-text d-flex justify-content-center align-content-center"><img class="img img-fluid rounded-circle" id="profile-pic" src="
+                            {% if post.created_by.profile_pic %} data:image/jpg;base64,{{post.created_by.profile_pic}} {% else %} {% static 'images/sample-avatar.png' %} {% endif %}">
                                 <span class="fw-bold mx-2 align-self-center">{{ post.created_by.name | title }}</span></p>
                             <p class="card-text"><small class="text-muted">{{ post.created_at|date:"F j, Y" }}</small></p>
                              <p class="card-text d-flex justify-content-between "><span><i class="fa fa-eye"></i> {{ post.views }} views</span> <a href="{% url 'discussion_single' post.id %}" class="btn btn-primary">View</a></p>

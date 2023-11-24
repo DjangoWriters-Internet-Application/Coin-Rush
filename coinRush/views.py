@@ -740,7 +740,7 @@ def stock_chart(request, stock_id):
     priced_stock = StockPrice.objects.filter(stock=stock).order_by("date")
     dates = [str(stock.date) for stock in priced_stock]
     price = [str(stock.price) for stock in priced_stock]
-    return render(request, "stock_prices_chart.html", {"price": price, "dates": dates})
+    return render(request, "stock_prices_chart.html", {"price": price, "dates": dates,'stock':stock})
 
 
 def newsDetails(request, news_id):

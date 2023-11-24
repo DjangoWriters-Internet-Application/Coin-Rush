@@ -53,13 +53,7 @@
           <div class="invalid-feedback">{{ form.currency.errors }}</div>
         {% endif %}
       </div>
-      <div class="mb-3">
-        {{ form.is_bidding_allowed.label_tag }}
-        {{ form.is_bidding_allowed }}
-        {% if form.is_bidding_allowed.errors %}
-          <div class="invalid-feedback">{{ form.is_bidding_allowed.errors }}</div>
-        {% endif %}
-      </div>
+
       <button type="submit" class="btn btn-primary">Create NFT</button>
     </form>
   </div>

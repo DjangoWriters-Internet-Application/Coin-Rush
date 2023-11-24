@@ -21,11 +21,13 @@
 {% block content %}
     <div class="container">
  <form method="get" class="mb-3">
-        <div class="mb-2">
+       <div class="mb-2 d-flex justify-content-between flex-wrap my-2">
 
             {% for field in form %}
+            <div class="form-group">
                 {{ field.label_tag }}
                 {{ field }}
+                </div>
             {% endfor %}
         {{ form.non_field_errors }}
         </div>

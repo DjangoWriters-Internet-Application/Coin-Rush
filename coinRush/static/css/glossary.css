@@ -27,8 +27,8 @@ body {
 }
 
 .alphabet-navigation a {
-    text-decoration: none;
-    color: #333;
+    text-decoration: underline;
+
     font-weight: bold;
     transition: transform 0.3s;
     display: inline-block;

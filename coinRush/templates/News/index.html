@@ -52,22 +52,25 @@
                         <p class="description">{{ n.description }}</p>
 
                         <div class="news-card-footer">
-                            <span><i class="bi bi-heart"></i> {{ n.likes.count }}</span>
+
                             {% if user.is_authenticated %}
                             {% if n.likes.count > 0 and n in user.liked_news.all %}
                             <form method="post" action="{% url 'news' %}">
                                 {% csrf_token %}
                                 <input type="hidden" name="unlike_news" value="{{ n.id }}">
-                                <button class="like-btn" type="submit"><i class="bi bi-hand-thumbs-down"></i></button>
+                                <span><button class="like-btn" type="submit"><i class="bi bi-hand-thumbs-up-fill" style="color:blue"></i></button>{{ n.likes.count }}</span>
                             </form>
-                            {% elif n.likes.count == 0 %}
+                            {% else%}
                             <!-- Show like button when count is 0 -->
                             <form method="post" action="{% url 'news' %}">
                                 {% csrf_token %}
                                 <input type="hidden" name="like_news" value="{{ n.id }}">
-                                <button class="like-btn" type="submit"><i class="bi bi-hand-thumbs-up"></i></button>
+                                <span><button class="like-btn" type="submit"><i class="bi bi-hand-thumbs-up" style="color:blue"></i></button>{{ n.likes.count }}</span>
+
                             </form>
-                            {% endif %}
+                             {% endif %}
+                            <a class="news-card-link btn btn-small btn-primary" href="{% url 'news_details' news_id=n.id %}">Read</a>
+
                             {% endif %}
                         </div>
                     </div>

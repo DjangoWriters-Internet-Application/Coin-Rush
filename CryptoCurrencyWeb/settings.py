@@ -57,7 +57,7 @@ MIDDLEWARE = [
 
 # Set session engine and other session-related settings
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
-SESSION_COOKIE_AGE = 300  # Set the session timeout to 300 seconds (5 minutes)
+SESSION_COOKIE_AGE = 1209600
 
 ROOT_URLCONF = "CryptoCurrencyWeb.urls"
 
