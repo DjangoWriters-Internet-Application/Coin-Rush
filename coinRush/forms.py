@@ -59,7 +59,8 @@ class CustomAuthenticationForm(AuthenticationForm):
 class RegistrationForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ["name", "email", "password", "is_superuser"]
+        fields = ["name", "email", "password"]
+        # "is_superuser"
 
     name = forms.CharField(
         label="NAME",
@@ -79,16 +80,16 @@ class RegistrationForm(UserCreationForm):
         label_suffix="",
     )
 
-    is_superuser = forms.BooleanField(
-        label="IS_SUPERUSER",
-        widget=forms.CheckboxInput(attrs={"class": "form-check-input"}),
-        label_suffix="",
-    )
+    # is_superuser = forms.BooleanField(
+    #     label="IS_SUPERUSER",
+    #     widget=forms.CheckboxInput(attrs={"class": "form-check-input"}),
+    #     label_suffix="",
+    # )
 
     def __init__(self, *args, **kwargs):
         super(UserCreationForm, self).__init__(*args, **kwargs)
-        self.fields["is_superuser"].required = False
-        self.fields["is_superuser"].initial = False
+        # self.fields["is_superuser"].required = False
+        # self.fields["is_superuser"].initial = False
 
 
 class ProfileImageForm(forms.Form):
