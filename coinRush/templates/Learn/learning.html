@@ -12,6 +12,29 @@
             </div>
         {% endfor %}
     {% endif %}
+
+    <div class="container-fluid hero-header bg-light py-2 mb-5">
+        <div class="container ">
+            <div class="row g-5 align-items-center py-5">
+                <div class="col-lg-9">
+                    <h1 class="display-4 mb-3 animated slideInDown">Learn about blockchain, crypto and NFTs</h1>
+                </div>
+                <div class="col-lg-3 animated fadeIn">
+                    <img class="img-fluid animated pulse infinite banner-img"
+                         src="{% static 'images/topic_images/learn_page.png' %}"
+                         alt="" style="width: 300px">
+                </div>
+            </div>
+        </div>
+    </div><br/>
+    <h4>Browse by topic</h4>
+
+    <!-- Scrollable container for buttons -->
+    <center><div class="centered-buttons-scroll">
+        {% for category in categories %}
+            <button class="button1" type="button" onclick="scrollToCategory('{{ category.name }}')">{{ category.name }}</button>&nbsp;&nbsp;
+        {% endfor %}
+    </div></center>
     {% if user.is_superuser %}
     <div class="container mt-3">
         <!-- Centered container for the "Create New Topic" and "Create Learn" buttons -->
@@ -23,7 +46,7 @@
             <div style="width: 10px;"></div>
             <!-- Create Learn button -->
             <button type="button" class="btn btn-primary ml-2" data-toggle="modal" data-target="#learnModal">
-                Create Subject
+                Create Subtopic
             </button>
         </div>
 
@@ -42,7 +65,7 @@
                         <!-- Form for creating a new topic -->
                         <form method="post" action="">
                             {% csrf_token %}
-                            <table>{{ form.as_table }}</table><hr>
+                            <table>{{ form.as_table }}</table><hr style="margin: 35px 2px">
                             <button type="submit"  class="btn btn-primary">Create</button>
                         </form>
                     </div>
@@ -65,7 +88,7 @@
                         <!-- Form for creating a new Learn entry -->
                         <form method="post" action="">
                             {% csrf_token %}
-                            <table>{{ form2.as_table }}</table><hr>
+                            <table>{{ form2.as_table }}</table><hr style="margin: 35px 2px">
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </form>
                     </div>
@@ -74,22 +97,11 @@
         </div>
     </div>
     {% endif %}
-
-    <h1>Learn about blockchain, crypto and NFTs</h1><br/>
-    <h4>Browse by topic</h4>
-
-    <!-- Scrollable container for buttons -->
-    <center><div class="centered-buttons-scroll">
-        {% for category in categories %}
-            <button class="button1" type="button" onclick="scrollToCategory('{{ category.name }}')">{{ category.name }}</button>&nbsp;&nbsp;
-        {% endfor %}
-    </div></center>
-
     <div class="container">
         <div class="row">
             {% for category in categories %}
                 <h3 id="{{category.name}}">{{ category.name }}</h3>
-                <hr>
+                <hr style="margin-left: auto; margin-right: auto">
                 {% for course in category.learn_set.all %}
                     <a class="card" href="/learn/{{ course.slug }}/">
                         <div class="header">
