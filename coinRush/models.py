@@ -159,9 +159,6 @@ class StockPrice(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     user_holdings = GenericRelation(UserHolding)
 
-    # def __str__(self):
-    #     return self.stock
-
 
 class News(models.Model):
     title = models.CharField(max_length=255)
