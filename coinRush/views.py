@@ -77,12 +77,15 @@ def home(request):
     stocks_page = paginator.get_page(page)
     top_10_stocks = Stock.objects.all().order_by("-current_price")[:10]
     trendingNews = News.objects.all().order_by('-likes')[:3]
+    trendingDiscussion = Post.objects.all().order_by('-views')[:3]
+
 
     context = {
         "stocks": stocks_page,
         "form": stock_filter.form,
         "top_stocks": top_10_stocks,
-        "trendingNews":trendingNews
+        "trendingNews":trendingNews,
+        "trendingDiscussion":trendingDiscussion,
     }
     return render(request, "index.html", context)
 
