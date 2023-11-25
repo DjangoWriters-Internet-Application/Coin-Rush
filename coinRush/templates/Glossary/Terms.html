@@ -21,39 +21,30 @@
     </div>
 {% endblock %}
 {% block content %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
-
-<div class="alphabet-navigation">
+<div class="container">
+<div class=" container alphabet-navigation">
     <ul>
         {% regroup terms by term|first as term_grouped %}
         {% for group in term_grouped %}
-            <li><a href="#{{ group.grouper }}">{{ group.grouper }}</a></li>
+            <li ><a href="#{{ group.grouper }}" class="text-link text-underline">{{ group.grouper }}</a></li>
         {% endfor %}
     </ul>
 </div>
-
 {% regroup terms by term|first as term_grouped %}
 
 {% for group in term_grouped %}
-    <h1 id="{{ group.grouper }}">{{ group.grouper }}</h1>
-    <table>
+    <span>
+    <h1 id="{{ group.grouper }}" class="text-secondary">#{{ group.grouper }}</h1></span>
+    <table class="table">
         <tbody>
             {% for term in group.list %}
-                <tr>
-                    <td><a href="{% url 'term_detail' term_id=term.id %}">{{ term.term }}</a></td>
+                <tr class="rounded">
+                    <td><a href="{% url 'term_detail' term_id=term.id %}" class="text-link">{{ term.term }}</a></td>
                     <!-- Add other columns as needed -->
                 </tr>
             {% endfor %}
         </tbody>
     </table>
 {% endfor %}
-
-</body>
-</html>
+</div>
 {% endblock %}

@@ -96,7 +96,7 @@ class NFT(models.Model):
         max_digits=10, decimal_places=2, null=True, blank=True
     )
     currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES, default="USD")
-    is_bidding_allowed = models.BooleanField(default=False)
+
 
     def __str__(self):
         return self.symbol
@@ -226,14 +226,6 @@ class Feedback(models.Model):
 
     def __str__(self):
         return self.subject
-
-
-class Bid(models.Model):
-    nft = models.ForeignKey(NFT, on_delete=models.CASCADE)
-    bidder = models.ForeignKey(User, on_delete=models.CASCADE)
-    bid_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    timestamp = models.DateTimeField(auto_now_add=True)
-
 
 class GlossaryTerm(models.Model):
     term = models.CharField(max_length=100, unique=True)

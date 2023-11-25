@@ -1,6 +1,6 @@
 /********** Template CSS **********/
 :root {
-    --primary: #16D5FF;
+    --primary: #30336B;
     --secondary: #999999;
     --light: #F2F8FE;
     --dark: #111111;
@@ -437,7 +437,9 @@ h6,
     left: 50%;
     transform: translate(-50%, -50%);
 }
-
+.icon-size-md {
+    font-size: 15px;
+}
 /* Mobile First */
 @media (min-width: 42em) {
 

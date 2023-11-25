@@ -8,3 +8,4 @@ class StockFilters(django_filters.FilterSet):
             "company_name":["icontains"],
         "current_price":["lt","gt"]
         }
+

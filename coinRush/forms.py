@@ -21,6 +21,9 @@ from .models import (
 )
 
 
+from django import forms
+from .models import NFTTransaction
+
 class UserCreationForm(forms.ModelForm):
     class Meta:
         model = User
@@ -220,7 +223,6 @@ class FeedbackRatingForm(forms.ModelForm):
         model = Feedback
         fields = ["subject", "feedback", "rating"]
 
-
 class NFTForm(forms.ModelForm):
     class Meta:
         model = NFT
@@ -232,13 +234,15 @@ class NFTForm(forms.ModelForm):
             "is_for_sale",
             "current_price",
             "currency",
-            "is_bidding_allowed",
         ]
 
-
-from django import forms
-from .models import NFTTransaction
-
+    def __init__(self, *args, **kwargs):
+        super(NFTForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            if field_name=='is_for_sale':
+                pass
+            else:
+                field.widget.attrs['class'] = 'form-control'
 
 class BuyNFTForm(forms.Form):
     quantity = forms.IntegerField(
@@ -289,23 +293,29 @@ class TopicCreateForm(forms.ModelForm):
         model = CourseCategory
         fields = ["name"]
 
+        widgets = {
+            "name": forms.TextInput(attrs={"class": "form-control"}),
+
+        }
+
 
 class SubjectCreateForm(forms.ModelForm):
     class Meta:
         model = Learn
         fields = ["title", "description", "category", "image"]
         exclude = ["slug"]
+        widgets = {
+            "title": forms.TextInput(attrs={"class": "form-control"}),
+            "description": forms.Textarea(attrs={"class": "form-control"}),
+            "category": forms.Select(attrs={"class": "form-control"}),
+            "image": forms.FileInput(attrs={"class": "form-control"}),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["category"].queryset = CourseCategory.objects.all()
 
-    widgets = {
-        "title": forms.TextInput(attrs={"class": "form-control"}),
-        "description": forms.Textarea(attrs={"class": "form-control"}),
-        "category": forms.Select(attrs={"class": "form-control"}),
-        "image": forms.FileInput(attrs={"class": "form-control"}),
-    }
+
 
     def save(self, commit=True):
         instance = super().save(commit=False)
@@ -359,24 +369,26 @@ class TransactionFilterForm(forms.Form):
     TYPE = [("BUY", "Buy"), ("SELL", "Sell")]
 
     transaction_type = forms.ChoiceField(
-        label="Transaction Type", choices=[("", "All")] + TYPE, required=False
+        label="Transaction Type", choices=[("", "All")] + TYPE,
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control'}),
     )
 
     stock_symbol = forms.CharField(
         label="Search by Symbol",
         max_length=10,
         required=False,
-        widget=forms.TextInput(),
+        widget=forms.TextInput(attrs={"class": "form-control"}),
     )
 
     start_date = forms.DateField(
         label="Start Date",
         required=False,
-        widget=forms.TextInput(attrs={"type": "date"}),
+        widget=forms.TextInput(attrs={"type": "date","class": "form-control"}),
     )
 
     end_date = forms.DateField(
-        label="End Date", required=False, widget=forms.TextInput(attrs={"type": "date"})
+        label="End Date", required=False, widget=forms.TextInput(attrs={"type": "date","class": "form-control"})
     )
 
     def __init__(self, *args, **kwargs):

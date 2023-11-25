@@ -10,7 +10,7 @@
                 <h1 class="display-4 mb-3 animated slideInDown">{{ user.get_short_name |capfirst }}'s Profile</h1>
             </div>
             <div class="col-lg-3 animated fadeIn">
-                <img class="img-fluid animated pulse infinite banner-img" src="{% static 'images/holding2.png' %}"
+                <img class="img-fluid animated pulse infinite banner-img" src="{% static 'images/holding21.png' %}"
                     alt="" style="width: 300px">
             </div>
         </div>
@@ -21,15 +21,18 @@
 
 <div class="container">
     <div class="d-flex justify-content-around align-items-center my-4">
-        <div>Profile Picture</div>
-        <div>
+        <div class="row w-100">
+        <div class="col-md-2 align-items-center d-flex justify-content-around"><strong>Profile Picture</strong></div>
+        <div class="my-2 offset-md-4 col-md-6">
             {% if user.profile_pic %}
-            <div class="my-2">
+            <div >
+
                 <img class="img-fluid" src="data:image/jpg;base64,{{ encoded_image }}"
                     alt="{{ user.get_short_name }}'s Profile Picture" />
             </div>
+
             <div class="text-center">
-                <button id="delete_profile_pic" class="btn btn-danger">Delete Profile Picture</button>
+                <button id="delete_profile_pic" class="btn btn-danger my-2">Delete Profile Picture</button>
             </div>
             {% else %}
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#profile_pic_modal">
@@ -37,10 +40,12 @@
             </button>
             {% endif %}
         </div>
+            </div>
     </div>
-    <div class="d-flex justify-content-around align-items-center">
-        <div>Photo Id</div>
-        <div>
+    <div class="d-flex  justify-content-around align-items-center">
+        <div class="row w-100">
+            <div class="col-md-2 align-items-center d-flex justify-content-around font-weight-bold"><strong>Photo Id</strong></div>
+         <div class="my-2 offset-md-4 col-md-6">
             {% if user.photo_id %}
             <img class="img-fluid" src="data:image/jpg;base64,{{ photo_id_encoded_image }}"
                 alt="{{ user.get_short_name }}'s Photo Id">

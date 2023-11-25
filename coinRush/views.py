@@ -86,7 +86,6 @@ def home(request):
         "top_stocks": top_10_stocks,
         "trendingNews":trendingNews,
         "trendingDiscussion":trendingDiscussion,
-
     }
     return render(request, "index.html", context)
 

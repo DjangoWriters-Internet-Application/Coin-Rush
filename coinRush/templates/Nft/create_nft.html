@@ -1,6 +1,6 @@
 {% extends "Base/base.html" %}
 {% block content %}
-  <div class="container">
+  <div class="container my-4">
     <h2 class="mt-4 mb-4">Create NFT</h2>
     <form method="post" action="{% url 'create_nft' %}" enctype="multipart/form-data">
       {% csrf_token %}
@@ -53,13 +53,7 @@
           <div class="invalid-feedback">{{ form.currency.errors }}</div>
         {% endif %}
       </div>
-      <div class="mb-3">
-        {{ form.is_bidding_allowed.label_tag }}
-        {{ form.is_bidding_allowed }}
-        {% if form.is_bidding_allowed.errors %}
-          <div class="invalid-feedback">{{ form.is_bidding_allowed.errors }}</div>
-        {% endif %}
-      </div>
+
       <button type="submit" class="btn btn-primary">Create NFT</button>
     </form>
   </div>

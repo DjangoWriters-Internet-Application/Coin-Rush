@@ -37,7 +37,7 @@
                 {% for nft in nfts %}
                     {% if nft.is_for_sale %}
                         <div class="col-md-4 nft-card">
-                            <a href="{% url 'nft_detail' nft.id %}">
+                            <a href="{% url 'nft_detail' nft.id %}" class="text-decoration-none">
                                 <div class="card h-100">
                                     <img src="{{ nft.image.url }}" class="card-img-top" alt="NFT Image">
                                     <div class="card-body">
