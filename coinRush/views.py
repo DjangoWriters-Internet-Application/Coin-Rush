@@ -76,11 +76,13 @@ def home(request):
     page = request.GET.get("page")
     stocks_page = paginator.get_page(page)
     top_10_stocks = Stock.objects.all().order_by("-current_price")[:10]
+    trendingNews = News.objects.all().order_by('-likes')[:3]
 
     context = {
         "stocks": stocks_page,
         "form": stock_filter.form,
         "top_stocks": top_10_stocks,
+        "trendingNews":trendingNews
     }
     return render(request, "index.html", context)
 
@@ -467,20 +469,21 @@ def stock_chart(request, stock_id):
 
 
 def newsDetails(request, news_id):
+    news_instance = get_object_or_404(News, pk=news_id)
     if "like_news" in request.POST:
         news_id = request.POST["like_news"]
-        news_instance = get_object_or_404(News, pk=news_id)
         request.user.liked_news.add(news_instance)
         news_instance.likes.add(request.user)
     elif "unlike_news" in request.POST:
         news_id = request.POST["unlike_news"]
-        news_instance = get_object_or_404(News, pk=news_id)
         request.user.liked_news.remove(news_instance)
         news_instance.likes.remove(request.user)
 
+    news_instance.save()
     newsDetails = get_object_or_404(News, pk=news_id)
     form = NewsCommentForm()
-    return render(request, "NewsDetails/index.html", {"news": newsDetails})
+    userLikedNews = request.user.liked_news.all()
+    return render(request, "NewsDetails/index.html", {"news": newsDetails,'userLikedNews':userLikedNews})
 
 
 @login_required(login_url="/login/")
@@ -677,31 +680,32 @@ def stock_chart(request, stock_id):
 
 
 def newsDetails(request, news_id):
+    news_instance = get_object_or_404(News, pk=news_id)
     if "like_news" in request.POST:
         news_id = request.POST["like_news"]
-        news_instance = get_object_or_404(News, pk=news_id)
         request.user.liked_news.add(news_instance)
         news_instance.likes.add(request.user)
+        news_instance.save()
     elif "unlike_news" in request.POST:
         news_id = request.POST["unlike_news"]
-        news_instance = get_object_or_404(News, pk=news_id)
         request.user.liked_news.remove(news_instance)
         news_instance.likes.remove(request.user)
+        news_instance.save()
 
     newsDetails = get_object_or_404(News, pk=news_id)
-    form = NewsCommentForm()
-    return render(request, "NewsDetails/index.html", {"news": newsDetails})
+    userLikedNews = request.user.liked_news.all()
+    return render(request, "NewsDetails/index.html", {"news": newsDetails, "userLikedNews":userLikedNews})
 
 
-def newsDetails(request, news_id):
-    if request.method == "POST":
-        comment = NewsCommentForm(request.POST)
-
-    newsDetails = get_object_or_404(News, pk=news_id)
-    form = NewsCommentForm()
-    return render(
-        request, "NewsDetails/index.html", {"news": newsDetails, "form": form}
-    )
+# def newsDetails(request, news_id):
+#     if request.method == "POST":
+#         comment = NewsCommentForm(request.POST)
+#
+#     newsDetails = get_object_or_404(News, pk=news_id)
+#     form = NewsCommentForm()
+#     return render(
+#         request, "NewsDetails/index.html", {"news": newsDetails, "form": form}
+#     )
 
 
 def nftmarketplace(request):

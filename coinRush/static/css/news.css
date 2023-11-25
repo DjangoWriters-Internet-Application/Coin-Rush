@@ -157,3 +157,29 @@ textarea {
 i {
     font-size: 25px;
 }
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.no-news-animation {
+    text-align: center;
+    padding: 50px 0;
+}
+
+.background-img-color {
+    background: #e2e2e2;
+    margin-bottom: 10px;
+}
+
+.no-news-animation img {
+    width: 150px; /* Adjust as needed */
+    animation: pulse 2s infinite;
+}

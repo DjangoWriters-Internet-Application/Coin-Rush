@@ -1,92 +1,131 @@
 {% extends "Base/base.html" %}
 {% load static %}
 {% block extraHead %}
-<link rel="stylesheet" href="{% static 'css/news.css' %}">
+    <link rel="stylesheet" href="{% static 'css/news.css' %}">
 {% endblock extraHead %}
 
 {% block content %}
-<!-- Display success messages -->
-{% if messages %}
-{% for message in messages %}
-<div class="alert alert-success">
-    {{ message }}
-</div>
-{% endfor %}
-{% endif %}
-<div class="container">
-    {% if user.is_superuser %}
-    <button class="btn btn-primary" onclick="openForm()">Create News</button>
-    <div id="newsFormContainer" class="form-container">
-        <form id="newsForm" method="post" action="{% url 'news' %}" enctype="multipart/form-data">
-            {% csrf_token %}
-
-            {% for field in newsForm %}
-            <div class="form-group">
-                {{ field.label_tag }}
-                {{ field }}
-                {% if field.help_text %}
-                <small>{{ field.help_text }}</small>
-                {% endif %}
+    <!-- Display success messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success">
+                {{ message }}
             </div>
-            {% endfor %}
-            <button type="submit" class="submit-button">Submit</button>
-            <button class="cancel-button" onclick="cancelForm()">Cancel</button>
-        </form>
-    </div>
-    <hr/>
+        {% endfor %}
     {% endif %}
-
-    <div class="row g-2">
-        {% for n in news %}
-        <div class="col-4">
-            <div class="p-3">
-                <a class="news-card-link" href="{% url 'news_details' news_id=n.id %}">
-                    <div class="news-card">
-                        {% if n.cover_image %}
-                        <img class="news-card-cover" src="{{ n.cover_image.url }}" alt="Cover Image">
-                        {% else %}
-                        <img src="{% static 'news_covers/placeholder.png' %}" alt="Placeholder Image">
-                        {% endif %}
-                        <h2 class="title">{{ n.title }}</h2>
-                        <p class="sub-title">{{ n.sub_title }}</p>
-                        <p class="description">{{ n.description }}</p>
-
-                        <div class="news-card-footer">
-
-                            {% if user.is_authenticated %}
-                            {% if n.likes.count > 0 and n in user.liked_news.all %}
-                            <form method="post" action="{% url 'news' %}">
-                                {% csrf_token %}
-                                <input type="hidden" name="unlike_news" value="{{ n.id }}">
-                                <span><button class="like-btn" type="submit"><i class="bi bi-hand-thumbs-up-fill" style="color:blue"></i></button>{{ n.likes.count }}</span>
-                            </form>
-                            {% else%}
-                            <!-- Show like button when count is 0 -->
-                            <form method="post" action="{% url 'news' %}">
-                                {% csrf_token %}
-                                <input type="hidden" name="like_news" value="{{ n.id }}">
-                                <span><button class="like-btn" type="submit"><i class="bi bi-hand-thumbs-up" style="color:blue"></i></button>{{ n.likes.count }}</span>
-
-                            </form>
-                             {% endif %}
-                            <a class="news-card-link btn btn-small btn-primary" href="{% url 'news_details' news_id=n.id %}">Read</a>
-
-                            {% endif %}
-                        </div>
+    <div class="container-fluid hero-header bg-light py-2 mb-5">
+        <div class="container ">
+            <div class="row g-5 align-items-center py-5">
+                <div class="col-lg-9">
+                    <h1 class="display-4 mb-3 animated slideInDown">News</h1>
+                    <div style="font-size: 20px;">
+                        Step into the Pulse of the Market with Coin Rush News – your premier hub for the latest insights
+                        and trends in the world of cryptocurrencies, stocks, and NFTs. Stay ahead of the curve with our
+                        real-time updates and expert analyses, unraveling the complexities of digital finance. Every
+                        headline, every article, is more than just news; it’s a window into the heartbeat of an
+                        ever-evolving digital economy. Whether you're a seasoned trader or a curious newcomer, Coin Rush
+                        News is your reliable source for making informed decisions in the bustling marketplace of
+                        digital assets.
                     </div>
-                </a>
+                </div>
+                <div class="col-lg-3 animated fadeIn">
+                    <img class="img-fluid animated pulse infinite banner-img"
+                         src="{% static 'images/hero-news.jpg' %}"
+                         alt="" style="width: 300px">
+                </div>
             </div>
         </div>
-        {% if forloop.counter|divisibleby:3 and not forloop.last %}
     </div>
-    <div class="row g-2">
+    <div class="container">
+
+        {% if user.is_superuser %}
+            <button class="btn btn-primary" onclick="openForm()">Create News</button>
+            <div id="newsFormContainer" class="form-container">
+                <form id="newsForm" method="post" action="{% url 'news' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    {% for field in newsForm %}
+                        <div class="form-group">
+                            {{ field.label_tag }}
+                            {{ field }}
+                            {% if field.help_text %}
+                                <small>{{ field.help_text }}</small>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    <button type="submit" class="submit-button">Submit</button>
+                    <button class="cancel-button" onclick="cancelForm()">Cancel</button>
+                </form>
+            </div>
+            <hr/>
         {% endif %}
-        {% endfor %}
+
+        <div class="row g-4">
+            {% if news %}
+                {% for n in news %}
+                    <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+                        {#                        <div class="p-3">#}
+                        <a class="news-card-link" href="{% url 'news_details' news_id=n.id %}">
+                            <div class="news-card">
+                                {% if n.cover_image %}
+                                    <img class="news-card-cover" src="{{ n.cover_image.url }}" alt="Cover Image">
+                                {% else %}
+                                    <img src="{% static 'news_covers/placeholder.png' %}" alt="Placeholder Image">
+                                {% endif %}
+                                <h2 class="title">{{ n.title }}</h2>
+                                <p class="sub-title">{{ n.sub_title }}</p>
+                                <p class="description">{{ n.description }}</p>
+
+                                <div class="news-card-footer">
+
+                                    {% if user.is_authenticated %}
+                                        {% if n.likes.count > 0 and n in user.liked_news.all %}
+                                            <form method="post" action="{% url 'news' %}">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="unlike_news" value="{{ n.id }}">
+                                                <span><button class="like-btn" type="submit"><i
+                                                        class="bi bi-hand-thumbs-up-fill"
+                                                        style="color:blue"></i></button>
+                                                    {{ n.likes.count }}</span>
+                                            </form>
+                                        {% else %}
+                                            <!-- Show like button when count is 0 -->
+                                            <form method="post" action="{% url 'news' %}">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="like_news" value="{{ n.id }}">
+                                                <span><button class="like-btn" type="submit"><i
+                                                        class="bi bi-hand-thumbs-up"
+                                                        style="color:blue"></i></button>
+                                                    {{ n.likes.count }}</span>
+
+                                            </form>
+                                        {% endif %}
+                                        <a class="news-card-link btn btn-small btn-primary"
+                                           href="{% url 'news_details' news_id=n.id %}">Read</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </a>
+                        {#                        </div>#}
+                    </div>
+                    {% if forloop.counter|divisibleby:3 and not forloop.last %}
+                        </div>
+                        <div class="row g-4">
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <div class="col-12">
+                    <div class="no-news-animation">
+                        <img src="{% static 'images/No_news_placeholder.png' %}" alt="No News Available">
+                        <p>No news available at the moment.</p>
+                    </div>
+                </div>
+            {% endif %}
+            </div>
     </div>
-</div>
 
 {% endblock content %}
 
 {% block script %}
-<script src="{% static 'js/news.js' %}"></script>
+    <script src="{% static 'js/news.js' %}"></script>
 {% endblock script %}
