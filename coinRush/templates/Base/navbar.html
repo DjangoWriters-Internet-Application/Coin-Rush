@@ -11,7 +11,14 @@
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <div class="navbar-nav ms-auto py-4 py-lg-0">
             <a href="{% url 'home' %}" class="nav-item nav-link active">Home</a>
-            <a href="{% url 'NFTMarketPlace' %}" class="nav-item nav-link ">NFT</a>
+            <div class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">NFT</a>
+                <div class="dropdown-menu shadow-sm m-0">
+                    <a href="{% url 'NFTMarketPlace' %}" class="dropdown-item">NFT MarketPlace</a>
+                    <a href="{% url 'nft-transaction-history' %}" class="dropdown-item">Transaction History (NFT)</a>
+                    <a href="{% url 'nft-user-holdings' %}" class="dropdown-item">User Holdings (NFT)</a>
+                </div>
+            </div>
             <a href="{% url 'discussion' %}" class="nav-item nav-link">Discussion</a>
             <a href="{% url 'news' %}" class="nav-item nav-link">News</a>
             <div class="nav-item dropdown">
@@ -19,8 +26,6 @@
                 <div class="dropdown-menu shadow-sm m-0">
                     <a href="{% url 'transaction-history' %}" class="dropdown-item">Transaction History</a>
                     <a href="{% url 'user-holdings' %}" class="dropdown-item">User Holdings</a>
-                    <a href="{% url 'nft-transaction-history' %}" class="dropdown-item">Transaction History (NFT)</a>
-                    <a href="{% url 'nft-user-holdings' %}" class="dropdown-item">User Holdings (NFT)</a>
                     <a href="{% url 'cryptocurrency_data' %}" class="dropdown-item">Converter</a>
                     <a href="{% url 'courses' %}" class="dropdown-item">Learn</a>
                     <a href="{% url 'glossary' %}" class="dropdown-item">Glossary</a>
