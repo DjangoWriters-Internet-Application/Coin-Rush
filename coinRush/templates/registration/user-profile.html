@@ -3,130 +3,162 @@
 {% block title %}User Profile{% endblock %}
 {% load static %}
 {% block banner %}
-<div class="container-fluid hero-header bg-light py-2 mb-5">
-    <div class="container ">
-        <div class="row g-5 align-items-center">
-            <div class="col-lg-9">
-                <h1 class="display-4 mb-3 animated slideInDown">{{ user.get_short_name |capfirst }}'s Profile</h1>
-            </div>
-            <div class="col-lg-3 animated fadeIn">
-                <img class="img-fluid animated pulse infinite banner-img" src="{% static 'images/holding21.png' %}"
-                    alt="" style="width: 300px">
+    <div class="container-fluid hero-header bg-light py-2 mb-5">
+        <div class="container ">
+            <div class="row g-5 align-items-center">
+                <div class="col-lg-9">
+                    <h1 class="display-4 mb-3 animated slideInDown">{{ user.get_short_name |capfirst }}'s Profile</h1>
+                </div>
+                <div class="col-lg-3 animated fadeIn">
+                    <img class="img-fluid animated pulse infinite banner-img" src="{% static 'images/holding21.png' %}"
+                         alt="" style="width: 300px">
+                </div>
             </div>
         </div>
     </div>
-</div>
 {% endblock %}
 {% block content %}
 
-<div class="container">
-    <div class="d-flex justify-content-around align-items-center my-4">
-        <div class="row w-100">
-        <div class="col-md-2 align-items-center d-flex justify-content-around"><strong>Profile Picture</strong></div>
-        <div class="my-2 offset-md-4 col-md-6">
-            {% if user.profile_pic %}
-            <div >
+    <div class="container">
+        <div class="d-flex justify-content-around align-items-center my-4">
+            <div class="row w-100">
+                <div class="col-md-2 align-items-center d-flex justify-content-around"><strong>Profile Picture</strong>
+                </div>
+                <div class="my-2 offset-md-4 col-md-6">
+                    {% if user.profile_pic %}
+                        <div>
 
-                <img class="img-fluid" src="data:image/jpg;base64,{{ encoded_image }}"
-                    alt="{{ user.get_short_name }}'s Profile Picture" />
-            </div>
+                            <img class="img-fluid" src="data:image/jpg;base64,{{ encoded_image }}"
+                                 alt="{{ user.get_short_name }}'s Profile Picture"/>
+                        </div>
 
-            <div class="text-center">
-                <button id="delete_profile_pic" class="btn btn-danger my-2">Delete Profile Picture</button>
-            </div>
-            {% else %}
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#profile_pic_modal">
-                Upload Profile Picture
-            </button>
-            {% endif %}
-        </div>
-            </div>
-    </div>
-    <div class="d-flex  justify-content-around align-items-center">
-        <div class="row w-100">
-            <div class="col-md-2 align-items-center d-flex justify-content-around font-weight-bold"><strong>Photo Id</strong></div>
-         <div class="my-2 offset-md-4 col-md-6">
-            {% if user.photo_id %}
-            <img class="img-fluid" src="data:image/jpg;base64,{{ photo_id_encoded_image }}"
-                alt="{{ user.get_short_name }}'s Photo Id">
-            {% else %}
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#photo_id_modal">
-                Upload Photo Id
-            </button>
-            {% endif %}
-        </div>
-    </div>
-</div>
-
-<!-- Profile Pic Modal -->
-<div class="modal fade" id="profile_pic_modal" tabindex="-1" aria-labelledby="profile_pic_modalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="profile_pic_modalLabel">Upload Profile Picture</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-
-                <form class="form-group" action="{% url 'upload-image' %}" id="profile_pic_form" method="post"
-                    enctype="multipart/form-data">
-                    {% csrf_token %}
-
-                    {{profile_image_form.as_p}}
-
-
-                    <button type="button" class="btn btn-secondary me-3 my-3" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" id="saveBtn" class="btn btn-primary">Save</button>
-                </form>
+                        <div class="text-center">
+                            <button id="delete_profile_pic" class="btn btn-danger my-2">Delete Profile Picture</button>
+                        </div>
+                    {% else %}
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#profile_pic_modal">
+                            Upload Profile Picture
+                        </button>
+                    {% endif %}
+                </div>
             </div>
         </div>
-    </div>
-</div>
-
-<!-- Photo Id Modal -->
-<div class="modal fade" id="photo_id_modal" tabindex="-1" aria-labelledby="photo_id_modalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="photo_id_modalLabel">Upload Profile Picture</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-
-                <form class="form-group" action="{% url 'upload-photo-image' %}" id="photo_id_form" method="post"
-                    enctype="multipart/form-data">
-                    {% csrf_token %}
-
-                    {{photo_id_form.as_p}}
-
-
-                    <button type="button" class="btn btn-secondary me-3 my-3" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" id="photo_idsaveBtn" class="btn btn-primary">Save</button>
-                </form>
+        <div class="d-flex  justify-content-around align-items-center mb-4">
+            <div class="row w-100">
+                <div class="col-md-2 align-items-center d-flex justify-content-around font-weight-bold"><strong>Photo
+                    Id</strong></div>
+                <div class="my-2 offset-md-4 col-md-6">
+                    {% if user.photo_id %}
+                        <img class="img-fluid" src="data:image/jpg;base64,{{ photo_id_encoded_image }}"
+                             alt="{{ user.get_short_name }}'s Photo Id">
+                    {% else %}
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#photo_id_modal">
+                            Upload Photo Id
+                        </button>
+                    {% endif %}
+                </div>
             </div>
         </div>
-    </div>
-</div>
+        <div class="d-flex  justify-content-around align-items-center mb-4">
+            <div class="col-md-2 align-items-center d-flex justify-content-around font-weight-bold">
+                <strong>Wallet</strong></div>
+            <div class="my-2 offset-md-4 col-md-6">
+                <div class="row">
+                    <div class="col-6"> ${{ wallet }}</div>
+                    <div class="col-6">
+                        <form method="post" action="{% url 'user-profile' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-primary" name="claim_wallet">Claim It</button>
+                        </form>
+                    </div>
+                </div>
 
-<script>
-    $(document).ready(function () {
-        $("#delete_profile_pic").click(function () {
-            // Make an AJAX request to your Django view
-            $.ajax({
-                url: "{% url 'delete-profile-pic' %}",
-                type: "GET",
-                success: function (data) {
-                    console.log("View executed successfully");
-                    location.reload();
+            </div>
 
-                },
-                error: function (error) {
-                    console.error("Error executing view:", error);
-                }
+        </div>
+        {% if messages %}
+            <div class="container mt-3">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <!-- Profile Pic Modal -->
+        <div class="modal fade" id="profile_pic_modal" tabindex="-1" aria-labelledby="profile_pic_modalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="profile_pic_modalLabel">Upload Profile Picture</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+
+                        <form class="form-group" action="{% url 'upload-image' %}" id="profile_pic_form" method="post"
+                              enctype="multipart/form-data">
+                            {% csrf_token %}
+
+                            {{ profile_image_form.as_p }}
+
+
+                            <button type="button" class="btn btn-secondary me-3 my-3" data-bs-dismiss="modal">Close
+                            </button>
+                            <button type="submit" id="saveBtn" class="btn btn-primary">Save</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Photo Id Modal -->
+        <div class="modal fade" id="photo_id_modal" tabindex="-1" aria-labelledby="photo_id_modalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="photo_id_modalLabel">Upload Profile Picture</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+
+                        <form class="form-group" action="{% url 'upload-photo-image' %}" id="photo_id_form"
+                              method="post"
+                              enctype="multipart/form-data">
+                            {% csrf_token %}
+
+                            {{ photo_id_form.as_p }}
+
+
+                            <button type="button" class="btn btn-secondary me-3 my-3" data-bs-dismiss="modal">Close
+                            </button>
+                            <button type="submit" id="photo_idsaveBtn" class="btn btn-primary">Save</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            $(document).ready(function () {
+                $("#delete_profile_pic").click(function () {
+                    // Make an AJAX request to your Django view
+                    $.ajax({
+                        url: "{% url 'delete-profile-pic' %}",
+                        type: "GET",
+                        success: function (data) {
+                            console.log("View executed successfully");
+                            location.reload();
+
+                        },
+                        error: function (error) {
+                            console.error("Error executing view:", error);
+                        }
+                    });
+                });
             });
-        });
-    });
-</script>
+
+        </script>
 
 {% endblock %}
