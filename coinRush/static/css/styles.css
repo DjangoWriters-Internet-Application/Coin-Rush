@@ -440,6 +440,19 @@ h6,
 .icon-size-md {
     font-size: 15px;
 }
+
+.news-inline-card{
+    width: 100%;
+    gap: 5px;
+}
+.news-inline-card-title{
+    width: 60%;
+}
+
+.news-inline-card > .like-text {
+    font-size: 14px;
+    text-wrap: nowrap;
+}
 /* Mobile First */
 @media (min-width: 42em) {
 

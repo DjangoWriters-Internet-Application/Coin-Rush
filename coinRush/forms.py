@@ -330,45 +330,6 @@ class TransactionFilterForm(forms.Form):
     TYPE = [("BUY", "Buy"), ("SELL", "Sell")]
 
     transaction_type = forms.ChoiceField(
-        label="Transaction Type", choices=[("", "All")] + TYPE, required=False
-    )
-
-    stock_symbol = forms.CharField(
-        label="Search by Symbol",
-        max_length=10,
-        required=False,
-        widget=forms.TextInput(),
-    )
-
-    start_date = forms.DateField(
-        label="Start Date",
-        required=False,
-        widget=forms.TextInput(attrs={"type": "date"}),
-    )
-
-    end_date = forms.DateField(
-        label="End Date", required=False, widget=forms.TextInput(attrs={"type": "date"})
-    )
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["stock_symbol"].widget.attrs.update(
-            {"placeholder": "Symbol to search"}
-        )
-
-    def clean(self):
-        cleaned_data = super().clean()
-        start_date = cleaned_data.get("start_date")
-        end_date = cleaned_data.get("end_date")
-
-        if start_date and end_date and start_date > end_date:
-            raise forms.ValidationError("Start date cannot be greater than end date.")
-
-
-class TransactionFilterForm(forms.Form):
-    TYPE = [("BUY", "Buy"), ("SELL", "Sell")]
-
-    transaction_type = forms.ChoiceField(
         label="Transaction Type", choices=[("", "All")] + TYPE,
         required=False,
         widget=forms.Select(attrs={'class': 'form-control'}),
