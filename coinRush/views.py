@@ -55,7 +55,8 @@ from .models import (
     NFTUserHolding,
     User,
 )
-
+import random
+import string
 stripe.api_key = settings.STRIPE_PRIVATE_KEY
 
 
@@ -152,6 +153,8 @@ def register(request):
         context["form"] = form
     return render(request, "registration/register.html", context)
 
+def generate_reference_id():
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
 
 @login_required(login_url="/login/")
 def user_profile(request):
@@ -170,13 +173,9 @@ def user_profile(request):
                 "utf-8"
             )
         if request.method == "POST" and "claim_wallet" in request.POST:
-            # Check if the user has uploaded the photo ID
             if user.photo_id:
-                # User has uploaded the photo ID, claim the money
-                user.wallet = 0.0
-                user.save()
-                messages.success(request, "Money has been claimed successfully!")
-
+                reference_id = generate_reference_id()
+                messages.success(request, f'Your money has been claimed successfully. Please email coinrush@gmail.com with the reference ID {reference_id} to complete the process.\n\nThank you!')
             else:
                 # User has not uploaded the photo ID, show a message
                 messages.warning(request, "Please upload your photo ID before claiming the money.")
