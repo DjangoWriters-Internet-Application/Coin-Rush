@@ -169,6 +169,17 @@ def user_profile(request):
             photo_id_encoded_image = pybase64.b64encode(photo_id_binary_data).decode(
                 "utf-8"
             )
+        if request.method == "POST" and "claim_wallet" in request.POST:
+            # Check if the user has uploaded the photo ID
+            if user.photo_id:
+                # User has uploaded the photo ID, claim the money
+                user.wallet = 0.0
+                user.save()
+                messages.success(request, "Money has been claimed successfully!")
+
+            else:
+                # User has not uploaded the photo ID, show a message
+                messages.warning(request, "Please upload your photo ID before claiming the money.")
 
     return render(
         request,
@@ -178,6 +189,7 @@ def user_profile(request):
             "photo_id_form": photo_id_form,
             "encoded_image": encoded_image,
             "photo_id_encoded_image": photo_id_encoded_image,
+            "wallet":user.wallet
         },
     )
 

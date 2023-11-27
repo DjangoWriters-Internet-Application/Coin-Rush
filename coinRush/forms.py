@@ -404,3 +404,4 @@ class TransactionFilterForm(forms.Form):
 
         if start_date and end_date and start_date > end_date:
             raise forms.ValidationError("Start date cannot be greater than end date.")
+
