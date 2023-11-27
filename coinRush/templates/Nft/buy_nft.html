@@ -6,7 +6,7 @@
     <link href="{% static 'css/buy_nft.css' %}" rel="stylesheet"/>
 {% endblock %}
 {% block banner %}
-    <!-- Your banner code remains the same -->
+
 {% endblock %}
 {% block content %}
     <form method="post">
@@ -37,12 +37,12 @@
             <div class="col-md-6">
                 <label class="mb-2 text-primary fw-bold" style="font-size: 28px" for="card-element">Card Information:</label>
                 <div class="row mb-3">
-                    <!-- Payment method icons here -->
+
                 </div>
                 <div id="card-element" class="d-flex flex-column">
-                    <!-- A Stripe Element will be inserted here. -->
+
                 </div>
-                <!-- Used to display form errors. -->
+
                 <div id="card-errors" role="alert"></div>
                 {{ form.stripeToken }}
                 <button class="btn btn-primary mt-3" type="submit"><i class="bi bi-cart"></i> Buy NFT</button>

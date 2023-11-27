@@ -125,10 +125,10 @@
 
                     {% for post  in trendingDiscussion %}
                             <div class="card-body row d-flex justify-content-between align-items-center">
-                                <div class="col-9"><p class="card-title">{{ post.title }}</p>
+                                <div class="col-8"><p class="card-title">{{ post.title }}</p>
 
                                 </div>
-                                <div class="col-3">
+                                <div class="col-4">
                                     <small class="text-muted me-3">Views: {{ post.views }}</small>
 
                                     <a href="{% url 'discussion_single' post.id %}">Read</a>

@@ -6,7 +6,7 @@ from django.conf.urls.static import static
 from . import views
 
 urlpatterns = [
-    path("", lambda request: redirect("login/"), name="redirect_to_login"),
+    path("/", lambda request: redirect("home/"), name="redirect_to_home"),
     path("accounts/", include("django.contrib.auth.urls")),
     path("login/", views.custom_login_view, name="login"),
     path("register/", views.register, name="register"),
@@ -15,6 +15,7 @@ urlpatterns = [
     path("upload-photo-image/", views.upload_photo_image, name="upload-photo-image"),
     path("delete-profile-pic/", views.delete_profile_pic, name="delete-profile-pic"),
     path("home/", views.home, name="home"),
+    path("", views.home, name="home"),
     path("about/", views.about, name="about"),
     path("services/", views.services, name="services"),
     path("news/", views.news, name="news"),
@@ -39,7 +40,6 @@ urlpatterns = [
         views.nft_transaction_history,
         name="nft-transaction-history",
     ),
-    path("test/", views.convert_data, name="cryptocurrency_data"),
     path("glossary/", views.glossary, name="glossary"),
     path("glossary/<int:term_id>/", views.term_detail, name="term_detail"),
     path("converter/", views.convert_data, name="cryptocurrency_data"),

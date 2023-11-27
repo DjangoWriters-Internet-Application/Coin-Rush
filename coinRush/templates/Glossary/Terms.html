@@ -2,7 +2,6 @@
 {% load static %}
 {% block extraHead %}
     <link rel="stylesheet" href="{% static 'css/glossary.css' %}">
-    <!-- Add any additional stylesheets or scripts you need for this page -->
 {% endblock extraHead %}
 
 {% block banner %}
@@ -40,7 +39,7 @@
             {% for term in group.list %}
                 <tr class="rounded">
                     <td><a href="{% url 'term_detail' term_id=term.id %}" class="text-link">{{ term.term }}</a></td>
-                    <!-- Add other columns as needed -->
+
                 </tr>
             {% endfor %}
         </tbody>
