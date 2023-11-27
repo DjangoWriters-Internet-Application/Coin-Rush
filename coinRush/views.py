@@ -411,7 +411,7 @@ def discussion(request):
     post_list = Post.objects.all().order_by(
         order_string
     )
-    paginator = Paginator(post_list, 5)  # Show 5 posts per page
+    paginator = Paginator(post_list, 3)  # Show 5 posts per page
     page = request.GET.get("page")
     posts = paginator.get_page(page)
     if request.method == "POST":
@@ -431,7 +431,7 @@ def discussion_single(request, post_id):
     comments = post.comment_set.all().order_by("-created_at")
 
 
-    paginator = Paginator(comments, 5)
+    paginator = Paginator(comments, 3)
     page = request.GET.get("page")
     comments_page = paginator.get_page(page)
 

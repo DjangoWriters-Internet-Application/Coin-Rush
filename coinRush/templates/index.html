@@ -35,21 +35,31 @@
 {% endblock %}
 {% block content %}
     <div class="container mt-4">
+        <div id="filterPopup" class="popup">
+            <span class="close" onclick="closePopup()">&times;</span>
+
+            <h2><i class="fas fa-filter"></i> Filter Options</h2>
+            <form method="get" action="{% url 'home' %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Apply Filters</button>
+            </form>
+        </div>
         <div class="d-flex justify-content-end align-items-center mb-3">
             <div class="text-primary d-flex align-items-center" data-toggle="collapse" data-target="#stockCarousel"
                  aria-expanded="false" aria-controls="stockCarousel" id="toggleButton">
-                <i class="fas fa-toggle-off mx-2" style="font-size: 20px;"></i>
+                <i class="fas fa-toggle-on mx-2" style="font-size: 20px;"></i>
                 <span style="font-size: 16px;">Highlights</span>
             </div>
         </div>
 
         <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-4 ">
             <!-- Your existing carousel -->
-            <div id="stockCarousel" class="carousel slide collapse border border-2  border-primary p-3"
+            <div id="stockCarousel" class=" carousel slide show bg-light rounded p-3"
                 data-ride="carousel" data-interval="1500">
                 <div class="carousel-inner">
-                                           <h5>Trending Stocks</h5>
+                                           <h5>Trending Cryptos</h5>
 
                     {% for stock in top_stocks %}
                     <div class="carousel-item {% if forloop.first %}active{% endif %}">
@@ -60,12 +70,11 @@
                                 <p class="mb-1">Current Price: ${{ stock.current_price }}</p>
                                 <p class="mb-1">Market Cap: ${{ stock.market_cap }}</p>
                             </div>
-                            <div class="col-md-4 text-right">
-                                {% if stock.current_price > 100 %}
-                                <!-- Adjust the threshold as needed -->
-                                <span class="badge badge-success">Higher Price</span>
-                                {% endif %}
-                            </div>
+<!--                            <div class="col-md-4 text-right">-->
+<!--                                {% if stock.current_price > 100 %}-->
+<!--                                <span class=" text-success badge badge-success">Higher Price</span>-->
+<!--                                {% endif %}-->
+<!--                            </div>-->
                         </div>
                     </div>
                     {% endfor %}
@@ -83,7 +92,7 @@
 
                    <div class="col-md-4">
             <!-- Your existing carousel -->
-            <div id="stockCarousel" class="carousel slide collapse border border-2  border-primary p-3"
+            <div id="stockCarousel" class="carousel slide show rounded bg-light p-3"
                 data-ride="carousel" data-interval="1500">
                 <div class="carousel-inner">
                                            <h5>Trending News</h5>
@@ -109,21 +118,20 @@
             
                    <div class="col-md-4">
             <!-- Your existing carousel -->
-            <div id="stockCarousel" class="carousel slide collapse border border-2  border-primary p-3"
+            <div id="stockCarousel" class="carousel slide show bg-light rounded p-3"
                 data-ride="carousel" data-interval="1500">
                 <div class="carousel-inner">
                                                                <h5>Trending Discussion</h5>
 
                     {% for post  in trendingDiscussion %}
-                            <div class="card-body d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h5 class="card-title">{{ post.title }}</h5>
-                                    <!-- Include a short description or other details here -->
+                            <div class="card-body row d-flex justify-content-between align-items-center">
+                                <div class="col-9"><p class="card-title">{{ post.title }}</p>
+
                                 </div>
-                                <div>
+                                <div class="col-3">
                                     <small class="text-muted me-3">Views: {{ post.views }}</small>
 
-                                    <a href="{% url 'discussion_single' post.id %}">Read123</a>
+                                    <a href="{% url 'discussion_single' post.id %}">Read</a>
                                     <a href=""></a>
                                 </div>
                             </div>
@@ -133,16 +141,7 @@
         </div>
 
 
-        <div id="filterPopup" class="popup">
-            <span class="close" onclick="closePopup()">&times;</span>
 
-            <h2><i class="fas fa-filter"></i> Filter Options</h2>
-            <form method="get" action="{% url 'home' %}">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit">Apply Filters</button>
-            </form>
-        </div>
         <div class="overlay" id="overlay" onclick="closePopup()"></div>
 
         <div class="row my-4 d-flex justify-content-center align-items-center">
@@ -173,7 +172,7 @@
                 <button class="btn btn-primary stock-button" onclick="openPopup()">Stock Filters</button>
             </div>
         </div>
-        <div class="mb-5">
+        <div class="mb-5 table-responsive">
 
             {% if stocks %}
                 <table class="table table-striped">
