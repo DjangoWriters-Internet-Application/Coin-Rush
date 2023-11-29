@@ -485,23 +485,24 @@ def stock_chart(request, stock_id):
     return render(request, "stock_prices_chart.html", {"price": price, "dates": dates})
 
 
-def newsDetails(request, news_id):
-    news_instance = get_object_or_404(News, pk=news_id)
-    if "like_news" in request.POST:
-        news_id = request.POST["like_news"]
-        request.user.liked_news.add(news_instance)
-        news_instance.likes.add(request.user)
-    elif "unlike_news" in request.POST:
-        news_id = request.POST["unlike_news"]
-        request.user.liked_news.remove(news_instance)
-        news_instance.likes.remove(request.user)
-
-    news_instance.save()
-    newsDetails = get_object_or_404(News, pk=news_id)
-    form = NewsCommentForm()
-    userLikedNews = request.user.liked_news.all()
-    return render(request, "NewsDetails/index.html", {"news": newsDetails,'userLikedNews':userLikedNews})
-
+# def newsDetails(request, news_id):
+#     news_instance = get_object_or_404(News, pk=news_id)
+#     if request.method=='POST':
+#         if "like_news" in request.POST:
+#             news_id = request.POST["like_news"]
+#             request.user.liked_news.add(news_instance)
+#             news_instance.likes.add(request.user)
+#         elif "unlike_news" in request.POST:
+#             news_id = request.POST["unlike_news"]
+#             request.user.liked_news.remove(news_instance)
+#             news_instance.likes.remove(request.user)
+#         news_instance.save()
+#     else:
+#         userLikedNews=None
+#         if request.user.is_authenticated:
+#             userLikedNews = request.user.liked_news.all()
+#     return render(request, "NewsDetails/index.html", {"news": newsDetails,'userLikedNews':userLikedNews})
+#
 
 @login_required(login_url="/login/")
 def buy_stock(request, stock_symbol):
@@ -698,31 +699,22 @@ def stock_chart(request, stock_id):
 
 def newsDetails(request, news_id):
     news_instance = get_object_or_404(News, pk=news_id)
-    if "like_news" in request.POST:
-        news_id = request.POST["like_news"]
-        request.user.liked_news.add(news_instance)
-        news_instance.likes.add(request.user)
-        news_instance.save()
-    elif "unlike_news" in request.POST:
-        news_id = request.POST["unlike_news"]
-        request.user.liked_news.remove(news_instance)
-        news_instance.likes.remove(request.user)
-        news_instance.save()
-
-    newsDetails = get_object_or_404(News, pk=news_id)
-    userLikedNews = request.user.liked_news.all()
+    newsDetails=news_instance
+    if request.method == 'POST':
+        if "like_news" in request.POST:
+            news_id = request.POST["like_news"]
+            request.user.liked_news.add(news_instance)
+            news_instance.likes.add(request.user)
+            news_instance.save()
+        elif "unlike_news" in request.POST:
+            news_id = request.POST["unlike_news"]
+            request.user.liked_news.remove(news_instance)
+            news_instance.likes.remove(request.user)
+            news_instance.save()
+    userLikedNews = None
+    if request.user.is_authenticated:
+        userLikedNews = request.user.liked_news.all()
     return render(request, "NewsDetails/index.html", {"news": newsDetails, "userLikedNews":userLikedNews})
-
-
-# def newsDetails(request, news_id):
-#     if request.method == "POST":
-#         comment = NewsCommentForm(request.POST)
-#
-#     newsDetails = get_object_or_404(News, pk=news_id)
-#     form = NewsCommentForm()
-#     return render(
-#         request, "NewsDetails/index.html", {"news": newsDetails, "form": form}
-#     )
 
 
 def nftmarketplace(request):
