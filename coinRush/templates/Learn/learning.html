@@ -35,7 +35,7 @@
             <button class="button1" type="button" onclick="scrollToCategory('{{ category.name }}')">{{ category.name }}</button>&nbsp;&nbsp;
         {% endfor %}
     </div></center>
-    {% if user.is_superuser %}
+    {% if user.is_superuser or user.is_staff %}
     <div class="container mt-3">
         <!-- Centered container for the "Create New Topic" and "Create Learn" buttons -->
         <div class="d-flex justify-content-center">
