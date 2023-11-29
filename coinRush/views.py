@@ -747,6 +747,7 @@ def create_nft(request):
     return render(request, "nft/create_nft.html", {"form": form})
 
 
+
 @login_required(login_url="/login/")
 def buy_nft(request, nft_symbol):
     error_message = ""
