@@ -24,6 +24,7 @@ from .models import (
 from django import forms
 from .models import NFTTransaction
 
+
 class UserCreationForm(forms.ModelForm):
     class Meta:
         model = User
@@ -39,7 +40,7 @@ class CustomAuthenticationForm(AuthenticationForm):
         fields = ["email", "password"]
 
     username = forms.CharField(
-        label="USERNAME",
+        label="EMAIL",
         widget=forms.TextInput(attrs={"class": "form-control"}),
         label_suffix="",
     )
@@ -52,11 +53,32 @@ class CustomAuthenticationForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["username"].widget.attrs.update(
-            {"class": "form-control", "placeholder": "Username"}
+            {"class": "form-control", "placeholder": "EMAIL"}
         )
         self.fields["password"].widget.attrs.update(
-            {"class": "form-control", "placeholder": "Password"}
+            {"class": "form-control", "placeholder": "PASSWORD"}
         )
+
+
+class ForgetPasswordForm(forms.Form):
+    email = forms.EmailField(
+        label="EMAIL",
+        max_length=255,
+        widget=forms.EmailInput(
+            attrs={"class": "form-control", "placeholder": "EMAIL"}
+        ),
+    )
+    password = forms.CharField(
+        label="PASSWORD",
+        widget=forms.PasswordInput(
+            attrs={"class": "form-control", "placeholder": "PASSWORD"}
+        ),
+        label_suffix="",
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(ForgetPasswordForm, self).__init__(*args, **kwargs)
+        self.fields["password"].required = False
 
 
 class RegistrationForm(UserCreationForm):
@@ -83,24 +105,25 @@ class RegistrationForm(UserCreationForm):
         label_suffix="",
     )
 
-    # is_superuser = forms.BooleanField(
-    #     label="IS_SUPERUSER",
-    #     widget=forms.CheckboxInput(attrs={"class": "form-check-input"}),
-    #     label_suffix="",
-    # )
+    def clean_password(self):
+        password = self.cleaned_data.get("password")
 
-    def __init__(self, *args, **kwargs):
-        super(UserCreationForm, self).__init__(*args, **kwargs)
-        # self.fields["is_superuser"].required = False
-        # self.fields["is_superuser"].initial = False
+        if len(password) < 8:
+            raise forms.ValidationError("Password must be at least 8 characters long.")
+
+        return password
 
 
 class ProfileImageForm(forms.Form):
-    profile_img = forms.ImageField()
+    profile_img = forms.ImageField(
+        widget=forms.ClearableFileInput(attrs={"class": "form-control"})
+    )
 
 
 class PhotoIdForm(forms.Form):
-    photo_id = forms.ImageField()
+    photo_id = forms.ImageField(
+        widget=forms.ClearableFileInput(attrs={"class": "form-control"})
+    )
 
 
 class PostForm(forms.ModelForm):
@@ -223,6 +246,7 @@ class FeedbackRatingForm(forms.ModelForm):
         model = Feedback
         fields = ["subject", "feedback", "rating"]
 
+
 class NFTForm(forms.ModelForm):
     class Meta:
         model = NFT
@@ -239,10 +263,11 @@ class NFTForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(NFTForm, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
-            if field_name=='is_for_sale':
+            if field_name == "is_for_sale":
                 pass
             else:
-                field.widget.attrs['class'] = 'form-control'
+                field.widget.attrs["class"] = "form-control"
+
 
 class BuyNFTForm(forms.Form):
     quantity = forms.IntegerField(
@@ -295,7 +320,6 @@ class TopicCreateForm(forms.ModelForm):
 
         widgets = {
             "name": forms.TextInput(attrs={"class": "form-control"}),
-
         }
 
 
@@ -334,9 +358,10 @@ class TransactionFilterForm(forms.Form):
     TYPE = [("BUY", "Buy"), ("SELL", "Sell")]
 
     transaction_type = forms.ChoiceField(
-        label="Transaction Type", choices=[("", "All")] + TYPE,
+        label="Transaction Type",
+        choices=[("", "All")] + TYPE,
         required=False,
-        widget=forms.Select(attrs={'class': 'form-control'}),
+        widget=forms.Select(attrs={"class": "form-control"}),
     )
 
     stock_symbol = forms.CharField(
@@ -349,11 +374,13 @@ class TransactionFilterForm(forms.Form):
     start_date = forms.DateField(
         label="Start Date",
         required=False,
-        widget=forms.TextInput(attrs={"type": "date","class": "form-control"}),
+        widget=forms.TextInput(attrs={"type": "date", "class": "form-control"}),
     )
 
     end_date = forms.DateField(
-        label="End Date", required=False, widget=forms.TextInput(attrs={"type": "date","class": "form-control"})
+        label="End Date",
+        required=False,
+        widget=forms.TextInput(attrs={"type": "date", "class": "form-control"}),
     )
 
     def __init__(self, *args, **kwargs):
