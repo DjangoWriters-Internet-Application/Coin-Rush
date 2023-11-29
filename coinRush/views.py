@@ -725,7 +725,7 @@ def nft_detail(request, nft_id):
     nft = get_object_or_404(NFT, pk=nft_id)
     return render(request, "nft/NFT.html", {"nft": nft})
 
-
+@login_required(login_url="/login/")
 def create_nft(request):
     if request.method == "POST":
         form = NFTForm(request.POST, request.FILES)
