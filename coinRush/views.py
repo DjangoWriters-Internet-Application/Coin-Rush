@@ -3,7 +3,7 @@ from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.auth import login, authenticate
-from django.contrib.auth.hashers import make_password, check_password
+from django.contrib.auth.hashers import check_password
 from decimal import Decimal
 import stripe
 from .filters import StockFilters
@@ -37,6 +37,7 @@ from .forms import (
     SellNFTForm,
     ProfileImageForm,
     PhotoIdForm,
+    ForgetPasswordForm,
 )
 
 from .models import (
@@ -78,13 +79,15 @@ def home(request):
     page = request.GET.get("page")
     stocks_page = paginator.get_page(page)
     top_10_stocks = Stock.objects.all().order_by("-current_price")[:10]
-    trendingNews = News.objects.all().order_by('-likes')[:3]
-    trendingDiscussion = Post.objects.all().order_by('-views')[:3]
+    trendingNews = News.objects.all().order_by("-likes")[:3]
+    trendingDiscussion = Post.objects.all().order_by("-views")[:3]
 
     context = {
         "stocks": stocks_page,
         "form": stock_filter.form,
         "top_stocks": top_10_stocks,
+        "trendingNews": trendingNews,
+        "trendingDiscussion": trendingDiscussion,
         "trendingNews": trendingNews,
         "trendingDiscussion": trendingDiscussion,
     }
@@ -118,17 +121,53 @@ def custom_login_view(request):
     return render(request, "registration/login.html", {"form": form})
 
 
+def forget_password(request):
+    if request.method == "POST":
+        form = ForgetPasswordForm(request.POST)
+
+        if form.is_valid():
+            if not form.fields["password"].required:
+                form.fields["password"].required = True
+
+            password = form.cleaned_data["password"]
+            if password:
+                if len(password) < 8:
+                    form.add_error(
+                        "password", "New Password must be at least 8 characters long."
+                    )
+                else:
+                    user = User.objects.get(email=form.cleaned_data["email"])
+                    user.set_password(password)
+                    user.save()
+
+                    return redirect("login")
+
+            return render(
+                request,
+                "registration/forget-password.html",
+                {"form": form, "type": True, "errors": form.errors},
+            )
+        else:
+            return render(
+                request,
+                "registration/forget-password.html",
+                {"form": form, "errors": form.errors},
+            )
+    else:
+        form = ForgetPasswordForm()
+
+    return render(
+        request,
+        "registration/forget-password.html",
+        {"form": form, "errors": form.errors},
+    )
+
+
 def register(request):
     context = {"form": "", "errors": ""}
     if request.method == "POST":
         form = RegistrationForm(request.POST, request.FILES)
         if form.is_valid():
-            # user = form.save(commit=False)
-
-            # password = form.cleaned_data["password"]
-            # hashed_password = make_password(password)
-            # user.set_password(hashed_password)
-
             user = User.objects.create_user(
                 email=form.cleaned_data["email"],
                 password=form.cleaned_data["password"],
@@ -155,7 +194,7 @@ def register(request):
 
 
 def generate_reference_id():
-    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
+    return "".join(random.choices(string.ascii_uppercase + string.digits, k=10))
 
 
 @login_required(login_url="/login/")
@@ -177,11 +216,15 @@ def user_profile(request):
     if request.method == "POST" and "claim_wallet" in request.POST:
         if user.photo_id:
             reference_id = generate_reference_id()
-            messages.success(request,
-                             f'Your money has been claimed successfully. Please email coinrush@gmail.com with the reference ID {reference_id} to complete the process.\n\nThank you!')
+            messages.success(
+                request,
+                f"Your money has been claimed successfully. Please email coinrush@gmail.com with the reference ID {reference_id} to complete the process.\n\nThank you!",
+            )
         else:
             # User has not uploaded the photo ID, show a message
-            messages.warning(request, "Please upload your photo ID before claiming the money.")
+            messages.warning(
+                request, "Please upload your photo ID before claiming the money."
+            )
 
     return render(
         request,
@@ -191,7 +234,7 @@ def user_profile(request):
             "photo_id_form": photo_id_form,
             "encoded_image": encoded_image,
             "photo_id_encoded_image": photo_id_encoded_image,
-            "wallet": user.wallet
+            "wallet": user.wallet,
         },
     )
 
@@ -422,9 +465,7 @@ def discussion(request):
     elif ord_by == "oldest":
         order_string = "created_at"
 
-    post_list = Post.objects.all().order_by(
-        order_string
-    )
+    post_list = Post.objects.all().order_by(order_string)
     paginator = Paginator(post_list, 3)  # Show 5 posts per page
     page = request.GET.get("page")
     posts = paginator.get_page(page)
@@ -502,6 +543,7 @@ def stock_chart(request, stock_id):
 #             userLikedNews = request.user.liked_news.all()
 #     return render(request, "NewsDetails/index.html", {"news": newsDetails,'userLikedNews':userLikedNews})
 #
+
 
 @login_required(login_url="/login/")
 def buy_stock(request, stock_symbol):
@@ -584,9 +626,9 @@ def user_holdings(request):
             stock = Stock.objects.get(symbol=stock_symbol)
             holding = holdings.filter(stock=stock).first()
             if (
-                    holding
-                    and quantity_to_sell > 0
-                    and quantity_to_sell <= holding.quantity
+                holding
+                and quantity_to_sell > 0
+                and quantity_to_sell <= holding.quantity
             ):
                 sell_price = stock.current_price * quantity_to_sell
 
@@ -693,13 +735,17 @@ def stock_chart(request, stock_id):
     priced_stock = StockPrice.objects.filter(stock=stock).order_by("date")
     dates = [str(stock.date) for stock in priced_stock]
     price = [str(stock.price) for stock in priced_stock]
-    return render(request, "stock_prices_chart.html", {"price": price, "dates": dates, 'stock': stock})
+    return render(
+        request,
+        "stock_prices_chart.html",
+        {"price": price, "dates": dates, "stock": stock},
+    )
 
 
 def newsDetails(request, news_id):
     news_instance = get_object_or_404(News, pk=news_id)
     newsDetails = news_instance
-    if request.method == 'POST':
+    if request.method == "POST":
         if "like_news" in request.POST:
             news_id = request.POST["like_news"]
             request.user.liked_news.add(news_instance)
@@ -713,7 +759,11 @@ def newsDetails(request, news_id):
     userLikedNews = None
     if request.user.is_authenticated:
         userLikedNews = request.user.liked_news.all()
-    return render(request, "NewsDetails/index.html", {"news": newsDetails, "userLikedNews": userLikedNews})
+    return render(
+        request,
+        "NewsDetails/index.html",
+        {"news": newsDetails, "userLikedNews": userLikedNews},
+    )
 
 
 def nftmarketplace(request):
@@ -724,6 +774,7 @@ def nftmarketplace(request):
 def nft_detail(request, nft_id):
     nft = get_object_or_404(NFT, pk=nft_id)
     return render(request, "nft/NFT.html", {"nft": nft})
+
 
 @login_required(login_url="/login/")
 def create_nft(request):
@@ -756,7 +807,7 @@ def buy_nft(request, nft_symbol):
         form = BuyNFTForm(request.POST)
 
         if form.is_valid():
-            quantity_to_buy  = form.cleaned_data["quantity"]
+            quantity_to_buy = form.cleaned_data["quantity"]
             if quantity_to_buy <= nft.quantity:
                 total_price = nft.current_price * quantity_to_buy
 
@@ -883,9 +934,9 @@ def nft_user_holdings(request):
             holding = holdings.filter(nft=nft).first()
 
             if (
-                    holding
-                    and quantity_to_sell > 0
-                    and quantity_to_sell <= holding.quantity
+                holding
+                and quantity_to_sell > 0
+                and quantity_to_sell <= holding.quantity
             ):
                 sell_price = nft.current_price * quantity_to_sell
 
@@ -947,13 +998,13 @@ def convert(source, to, amount):
         # return str(amount) + " " + collective_dict[str(source)] + " = " + str(
         #     round(data['data'][source]['quote'][to]['price'], 4)) + " " + collective_dict[str(to)]
         return (
-                str(amount)
-                + " "
-                + collective_dict[str(source)]
-                + " = "
-                + str(round(data["data"]["quote"][to]["price"], 4))
-                + " "
-                + collective_dict[str(to)]
+            str(amount)
+            + " "
+            + collective_dict[str(source)]
+            + " = "
+            + str(round(data["data"]["quote"][to]["price"], 4))
+            + " "
+            + collective_dict[str(to)]
         )
     except:
         return "Some error occured"

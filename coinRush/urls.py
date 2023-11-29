@@ -9,6 +9,7 @@ urlpatterns = [
     path("/", lambda request: redirect("home/"), name="redirect_to_home"),
     path("accounts/", include("django.contrib.auth.urls")),
     path("login/", views.custom_login_view, name="login"),
+    path("forget-password/", views.forget_password, name="forget-password"),
     path("register/", views.register, name="register"),
     path("profile/", views.user_profile, name="user-profile"),
     path("upload-image/", views.upload_image, name="upload-image"),

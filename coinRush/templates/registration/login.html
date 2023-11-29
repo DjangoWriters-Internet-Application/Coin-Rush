@@ -23,7 +23,7 @@
             </div>
             {% endif %}
             <div class="form-group my-3">
-              <label for="{{ form.username.id_for_label }}" class="form-control-label">USERNAME</label>
+              <label for="{{ form.username.id_for_label }}" class="form-control-label">EMAIL</label>
               {{ form.username }}
             </div>
             <div class="form-group my-3">
@@ -32,6 +32,9 @@
                 {{ form.password }}
                 <i class="fa fa-eye password_eye" id="password_eye"></i>
               </div>
+            </div>
+            <div class="text-left my-3">
+              <a href="{% url 'forget-password' %}" class="text-secondary fw-bold">Forgot Password?</a>
             </div>
             <div class="text-center login-button my-3">
               <button type="submit" class="btn btn-outline-primary">LOGIN</button>
