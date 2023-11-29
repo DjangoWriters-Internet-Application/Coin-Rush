@@ -73,7 +73,7 @@
             </div>
         </div>
 
-        <!-- Modal for Create Learn -->
+        <!-- Modal for Creating Subtopic -->
         <div class="modal position-fixed" id="learnModal" tabindex="-1" role="dialog" aria-labelledby="learnModalLabel"
              aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -86,7 +86,7 @@
                     </div>
                     <div class="modal-body">
                         <!-- Form for creating a new Learn entry -->
-                        <form method="post" action="">
+                        <form method="post" action="" enctype="multipart/form-data">
                             {% csrf_token %}
                             <table>{{ form2.as_table }}</table><hr style="margin: 35px 2px">
                             <button type="submit" class="btn btn-primary">Submit</button>
@@ -108,7 +108,7 @@
                             {% if course.image %}
                             <img class="img-fluid me-2" src="{{ course.image.url }}" alt="{{ course.title }}">
                             {% else %}
-                            <img class="img-fluid me-2" src="{% static 'topic_images/no-image-available.png' %}" alt="{{ course.title }}">
+                            <img src="{% static 'images/topic_images/no-image-available.png' %}" alt="{{ course.title }}">
                             {% endif %}
                             <h4>{{ course.title }}</h4>
                         </div>

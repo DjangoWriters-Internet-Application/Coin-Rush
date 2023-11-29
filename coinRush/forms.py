@@ -315,11 +315,15 @@ class SubjectCreateForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields["category"].queryset = CourseCategory.objects.all()
 
-
-
     def save(self, commit=True):
         instance = super().save(commit=False)
         instance.slug = slugify(instance.title)
+
+        counter = 1
+        while Learn.objects.filter(slug=instance.slug).exists():
+            instance.slug = f"{slugify(instance.title)}-{counter}"
+            counter += 1
+
         if commit:
             instance.save()
         else:
