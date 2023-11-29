@@ -82,8 +82,8 @@ class Stock(models.Model):
 class NFT(models.Model):
     CURRENCY_CHOICES = [
         ("USD", "US Dollar"),
-        ("BTC", "Bitcoin"),
-        ("ETH", "Ethereum"),
+        # ("BTC", "Bitcoin"),
+        # ("ETH", "Ethereum"),
     ]
 
     symbol = models.CharField(max_length=15, blank=True)

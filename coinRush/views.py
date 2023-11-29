@@ -3,7 +3,7 @@ from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.auth import login, authenticate
-from django.contrib.auth.hashers import check_password
+from django.contrib.auth.hashers import make_password, check_password
 from decimal import Decimal
 import stripe
 from .filters import StockFilters
@@ -19,6 +19,7 @@ from django.conf import settings
 from .managers import AuthUserManager
 
 from .forms import (
+    is_strong_password,
     BuyNFTForm,
     RegistrationForm,
     PostForm,
@@ -37,7 +38,7 @@ from .forms import (
     SellNFTForm,
     ProfileImageForm,
     PhotoIdForm,
-    ForgetPasswordForm,
+    ForgetPasswordForm
 )
 
 from .models import (
@@ -79,17 +80,16 @@ def home(request):
     page = request.GET.get("page")
     stocks_page = paginator.get_page(page)
     top_10_stocks = Stock.objects.all().order_by("-current_price")[:10]
-    trendingNews = News.objects.all().order_by("-likes")[:3]
-    trendingDiscussion = Post.objects.all().order_by("-views")[:3]
+    trendingNews = News.objects.all().order_by('-likes')[:3]
+    trendingDiscussion = Post.objects.all().order_by('-views')[:3]
+
 
     context = {
         "stocks": stocks_page,
         "form": stock_filter.form,
         "top_stocks": top_10_stocks,
-        "trendingNews": trendingNews,
-        "trendingDiscussion": trendingDiscussion,
-        "trendingNews": trendingNews,
-        "trendingDiscussion": trendingDiscussion,
+        "trendingNews":trendingNews,
+        "trendingDiscussion":trendingDiscussion,
     }
     return render(request, "index.html", context)
 
@@ -121,6 +121,7 @@ def custom_login_view(request):
     return render(request, "registration/login.html", {"form": form})
 
 
+
 def forget_password(request):
     if request.method == "POST":
         form = ForgetPasswordForm(request.POST)
@@ -130,18 +131,29 @@ def forget_password(request):
                 form.fields["password"].required = True
 
             password = form.cleaned_data["password"]
-            if password:
-                if len(password) < 8:
-                    form.add_error(
-                        "password", "New Password must be at least 8 characters long."
-                    )
-                else:
+            if is_strong_password(password):
+
+                try:
                     user = User.objects.get(email=form.cleaned_data["email"])
                     user.set_password(password)
                     user.save()
 
                     return redirect("login")
+                except:
+                    form.add_error(
+                        "email", "Email Id doesnot exist."
+                    )
+                    return render(
+                        request,
+                        "registration/forget-password.html",
+                        {"form": form, "type": True, "errors": form.errors},
+                    )
 
+            else:
+                form.add_error(
+                    "password",
+                    "Password must have least one alphabet, one digit, one special character, and a minimum length of 8 characters"
+                )
             return render(
                 request,
                 "registration/forget-password.html",
@@ -161,13 +173,13 @@ def forget_password(request):
         "registration/forget-password.html",
         {"form": form, "errors": form.errors},
     )
-
-
 def register(request):
     context = {"form": "", "errors": ""}
     if request.method == "POST":
         form = RegistrationForm(request.POST, request.FILES)
         if form.is_valid():
+
+
             user = User.objects.create_user(
                 email=form.cleaned_data["email"],
                 password=form.cleaned_data["password"],
@@ -194,8 +206,7 @@ def register(request):
 
 
 def generate_reference_id():
-    return "".join(random.choices(string.ascii_uppercase + string.digits, k=10))
-
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
 
 @login_required(login_url="/login/")
 def user_profile(request):
@@ -216,15 +227,11 @@ def user_profile(request):
     if request.method == "POST" and "claim_wallet" in request.POST:
         if user.photo_id:
             reference_id = generate_reference_id()
-            messages.success(
-                request,
-                f"Your money has been claimed successfully. Please email coinrush@gmail.com with the reference ID {reference_id} to complete the process.\n\nThank you!",
-            )
+            messages.success(request,
+                             f'Your money has been claimed successfully. Please email coinrush@gmail.com with the reference ID {reference_id} to complete the process.\n\nThank you!')
         else:
             # User has not uploaded the photo ID, show a message
-            messages.warning(
-                request, "Please upload your photo ID before claiming the money."
-            )
+            messages.warning(request, "Please upload your photo ID before claiming the money.")
 
     return render(
         request,
@@ -234,7 +241,7 @@ def user_profile(request):
             "photo_id_form": photo_id_form,
             "encoded_image": encoded_image,
             "photo_id_encoded_image": photo_id_encoded_image,
-            "wallet": user.wallet,
+            "wallet": user.wallet
         },
     )
 
@@ -384,6 +391,7 @@ def transaction_history(request):
     )
 
 
+
 def categories_course(request):
     categories = CourseCategory.objects.all()
     url = request.META.get("HTTP_REFERER")
@@ -465,7 +473,9 @@ def discussion(request):
     elif ord_by == "oldest":
         order_string = "created_at"
 
-    post_list = Post.objects.all().order_by(order_string)
+    post_list = Post.objects.all().order_by(
+        order_string
+    )
     paginator = Paginator(post_list, 3)  # Show 5 posts per page
     page = request.GET.get("page")
     posts = paginator.get_page(page)
@@ -484,6 +494,7 @@ def discussion(request):
 def discussion_single(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     comments = post.comment_set.all().order_by("-created_at")
+
 
     paginator = Paginator(comments, 3)
     page = request.GET.get("page")
@@ -543,7 +554,6 @@ def stock_chart(request, stock_id):
 #             userLikedNews = request.user.liked_news.all()
 #     return render(request, "NewsDetails/index.html", {"news": newsDetails,'userLikedNews':userLikedNews})
 #
-
 
 @login_required(login_url="/login/")
 def buy_stock(request, stock_symbol):
@@ -735,17 +745,13 @@ def stock_chart(request, stock_id):
     priced_stock = StockPrice.objects.filter(stock=stock).order_by("date")
     dates = [str(stock.date) for stock in priced_stock]
     price = [str(stock.price) for stock in priced_stock]
-    return render(
-        request,
-        "stock_prices_chart.html",
-        {"price": price, "dates": dates, "stock": stock},
-    )
+    return render(request, "stock_prices_chart.html", {"price": price, "dates": dates,'stock':stock})
 
 
 def newsDetails(request, news_id):
     news_instance = get_object_or_404(News, pk=news_id)
-    newsDetails = news_instance
-    if request.method == "POST":
+    newsDetails=news_instance
+    if request.method == 'POST':
         if "like_news" in request.POST:
             news_id = request.POST["like_news"]
             request.user.liked_news.add(news_instance)
@@ -759,11 +765,7 @@ def newsDetails(request, news_id):
     userLikedNews = None
     if request.user.is_authenticated:
         userLikedNews = request.user.liked_news.all()
-    return render(
-        request,
-        "NewsDetails/index.html",
-        {"news": newsDetails, "userLikedNews": userLikedNews},
-    )
+    return render(request, "NewsDetails/index.html", {"news": newsDetails, "userLikedNews":userLikedNews})
 
 
 def nftmarketplace(request):
@@ -785,7 +787,7 @@ def create_nft(request):
 
             # Check if the user is authenticated (logged in)
             if request.user.is_authenticated:
-                nft_instance.owner = request.user
+                nft_instance.company_name = request.user.get_short_name()
                 nft_instance.save()
                 return redirect("NFTMarketPlace")
             else:
@@ -807,7 +809,7 @@ def buy_nft(request, nft_symbol):
         form = BuyNFTForm(request.POST)
 
         if form.is_valid():
-            quantity_to_buy = form.cleaned_data["quantity"]
+            quantity_to_buy  = form.cleaned_data["quantity"]
             if quantity_to_buy <= nft.quantity:
                 total_price = nft.current_price * quantity_to_buy
 
@@ -858,7 +860,6 @@ def buy_nft(request, nft_symbol):
     }
 
     return render(request, "nft/buy_nft.html", context)
-
 
 @login_required(login_url="/login/")
 def nft_transaction_history(request):

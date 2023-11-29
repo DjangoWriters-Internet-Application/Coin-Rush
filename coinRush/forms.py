@@ -3,7 +3,7 @@ from .models import User, Post, Comment, Transaction, NewsComments, News
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.utils.text import slugify
-
+import re
 # from django.contrib.auth.forms import UserCreationForm
 
 from .models import (
@@ -23,7 +23,6 @@ from .models import (
 
 from django import forms
 from .models import NFTTransaction
-
 
 class UserCreationForm(forms.ModelForm):
     class Meta:
@@ -59,7 +58,6 @@ class CustomAuthenticationForm(AuthenticationForm):
             {"class": "form-control", "placeholder": "PASSWORD"}
         )
 
-
 class ForgetPasswordForm(forms.Form):
     email = forms.EmailField(
         label="EMAIL",
@@ -79,6 +77,17 @@ class ForgetPasswordForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(ForgetPasswordForm, self).__init__(*args, **kwargs)
         self.fields["password"].required = False
+
+
+def is_strong_password(password):
+    # Regex pattern for a strong password
+    pattern = r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$"
+
+    # Check if the password matches the pattern
+    if re.match(pattern, password):
+        return True
+    else:
+        return False
 
 
 class RegistrationForm(UserCreationForm):
@@ -105,13 +114,25 @@ class RegistrationForm(UserCreationForm):
         label_suffix="",
     )
 
+    # is_superuser = forms.BooleanField(
+    #     label="IS_SUPERUSER",
+    #     widget=forms.CheckboxInput(attrs={"class": "form-check-input"}),
+    #     label_suffix="",
+    # )
     def clean_password(self):
         password = self.cleaned_data.get("password")
 
-        if len(password) < 8:
-            raise forms.ValidationError("Password must be at least 8 characters long.")
+        if is_strong_password(password):
+            pass
+        else:
+            raise forms.ValidationError("Password must have least one alphabet, one digit, one special character, and a minimum length of 8 characters")
 
         return password
+
+    def __init__(self, *args, **kwargs):
+        super(UserCreationForm, self).__init__(*args, **kwargs)
+        # self.fields["is_superuser"].required = False
+        # self.fields["is_superuser"].initial = False
 
 
 class ProfileImageForm(forms.Form):
@@ -124,8 +145,6 @@ class PhotoIdForm(forms.Form):
     photo_id = forms.ImageField(
         widget=forms.ClearableFileInput(attrs={"class": "form-control"})
     )
-
-
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
@@ -246,12 +265,12 @@ class FeedbackRatingForm(forms.ModelForm):
         model = Feedback
         fields = ["subject", "feedback", "rating"]
 
-
 class NFTForm(forms.ModelForm):
     class Meta:
         model = NFT
         fields = [
             "image",
+
             "symbol",
             "description",
             "quantity",
@@ -263,11 +282,10 @@ class NFTForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(NFTForm, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
-            if field_name == "is_for_sale":
+            if field_name=='is_for_sale':
                 pass
             else:
-                field.widget.attrs["class"] = "form-control"
-
+                field.widget.attrs['class'] = 'form-control'
 
 class BuyNFTForm(forms.Form):
     quantity = forms.IntegerField(
@@ -320,6 +338,7 @@ class TopicCreateForm(forms.ModelForm):
 
         widgets = {
             "name": forms.TextInput(attrs={"class": "form-control"}),
+
         }
 
 
@@ -339,15 +358,15 @@ class SubjectCreateForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields["category"].queryset = CourseCategory.objects.all()
 
+
+
     def save(self, commit=True):
         instance = super().save(commit=False)
         instance.slug = slugify(instance.title)
-
         counter = 1
         while Learn.objects.filter(slug=instance.slug).exists():
             instance.slug = f"{slugify(instance.title)}-{counter}"
             counter += 1
-
         if commit:
             instance.save()
         else:
@@ -358,10 +377,9 @@ class TransactionFilterForm(forms.Form):
     TYPE = [("BUY", "Buy"), ("SELL", "Sell")]
 
     transaction_type = forms.ChoiceField(
-        label="Transaction Type",
-        choices=[("", "All")] + TYPE,
+        label="Transaction Type", choices=[("", "All")] + TYPE,
         required=False,
-        widget=forms.Select(attrs={"class": "form-control"}),
+        widget=forms.Select(attrs={'class': 'form-control'}),
     )
 
     stock_symbol = forms.CharField(
@@ -374,13 +392,11 @@ class TransactionFilterForm(forms.Form):
     start_date = forms.DateField(
         label="Start Date",
         required=False,
-        widget=forms.TextInput(attrs={"type": "date", "class": "form-control"}),
+        widget=forms.TextInput(attrs={"type": "date","class": "form-control"}),
     )
 
     end_date = forms.DateField(
-        label="End Date",
-        required=False,
-        widget=forms.TextInput(attrs={"type": "date", "class": "form-control"}),
+        label="End Date", required=False, widget=forms.TextInput(attrs={"type": "date","class": "form-control"})
     )
 
     def __init__(self, *args, **kwargs):
