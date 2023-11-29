@@ -9,7 +9,7 @@
 {% endblock extraHead %}
 
 {% block banner %}
-     <div class="container-fluid hero-header bg-light py-2 mb-5">
+    <div class="container-fluid hero-header bg-light py-2 mb-5">
         <div class="container py-5">
             <div class="row g-5 align-items-center">
                 <div class="col-lg-9">
@@ -17,7 +17,7 @@
                 </div>
                 <div class="col-lg-3 animated fadeIn">
                     <img class="img-fluid animated pulse infinite banner-img"
-                         src="{% static 'images/nft-transactions.png' %}"  alt="">
+                         src="{% static 'images/nft-transactions.png' %}" alt="">
                 </div>
             </div>
         </div>
@@ -32,7 +32,7 @@
     </div>
 
     <div class="container mt-4">
-        <section class="nft-cards">         
+        <section class="nft-cards">
             <div class="row">
                 {% for nft in nfts %}
                     {% if nft.is_for_sale %}
@@ -44,7 +44,8 @@
                                         <h3 class="card-title">{{ nft.symbol }}</h3>
                                         <p class="card-text">Owner: {{ nft.company_name }}</p>
                                         <p class="card-text">Price: {{ nft.current_price }} {{ nft.currency }}</p>
-                                        <form method="post" action="{% url 'buy_nft' nft.symbol%}">
+                                        <p class="card-text">Available Quantity: {{ nft.quantity }}</p>
+                                        <form method="post" action="{% url 'buy_nft' nft.symbol %}">
                                             {% csrf_token %}
                                             <div id="card-element">
 
@@ -52,7 +53,9 @@
 
                                             <div id="card-errors" role="alert"></div>
                                             <input type="hidden" name="stripeToken">
-                                            <button type="submit" class="btn btn-success">Buy NFT</button>
+                                            <button type="submit" class="btn btn-success"
+                                                    {% if nft.quantity == 0 %}disabled{% endif %}>Buy NFT
+                                            </button>
                                         </form>
                                     </div>
                                 </div>
@@ -73,7 +76,7 @@
         var elements = stripe.elements();
         var card = elements.create('card');
         card.mount('#card-element');
-        card.addEventListener('change', function(event) {
+        card.addEventListener('change', function (event) {
             var displayError = document.getElementById('card-errors');
             if (event.error) {
                 displayError.textContent = event.error.message;
@@ -82,9 +85,9 @@
             }
         });
         var form = document.querySelector('form');
-        form.addEventListener('submit', function(event) {
+        form.addEventListener('submit', function (event) {
             event.preventDefault();
-            stripe.createToken(card).then(function(result) {
+            stripe.createToken(card).then(function (result) {
                 if (result.error) {
                     var errorElement = document.getElementById('card-errors');
                     errorElement.textContent = result.error.message;
