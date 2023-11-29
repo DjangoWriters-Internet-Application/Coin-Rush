@@ -81,13 +81,12 @@ def home(request):
     trendingNews = News.objects.all().order_by('-likes')[:3]
     trendingDiscussion = Post.objects.all().order_by('-views')[:3]
 
-
     context = {
         "stocks": stocks_page,
         "form": stock_filter.form,
         "top_stocks": top_10_stocks,
-        "trendingNews":trendingNews,
-        "trendingDiscussion":trendingDiscussion,
+        "trendingNews": trendingNews,
+        "trendingDiscussion": trendingDiscussion,
     }
     return render(request, "index.html", context)
 
@@ -157,6 +156,7 @@ def register(request):
 
 def generate_reference_id():
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
+
 
 @login_required(login_url="/login/")
 def user_profile(request):
@@ -444,7 +444,6 @@ def discussion_single(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     comments = post.comment_set.all().order_by("-created_at")
 
-
     paginator = Paginator(comments, 3)
     page = request.GET.get("page")
     comments_page = paginator.get_page(page)
@@ -585,9 +584,9 @@ def user_holdings(request):
             stock = Stock.objects.get(symbol=stock_symbol)
             holding = holdings.filter(stock=stock).first()
             if (
-                holding
-                and quantity_to_sell > 0
-                and quantity_to_sell <= holding.quantity
+                    holding
+                    and quantity_to_sell > 0
+                    and quantity_to_sell <= holding.quantity
             ):
                 sell_price = stock.current_price * quantity_to_sell
 
@@ -694,12 +693,12 @@ def stock_chart(request, stock_id):
     priced_stock = StockPrice.objects.filter(stock=stock).order_by("date")
     dates = [str(stock.date) for stock in priced_stock]
     price = [str(stock.price) for stock in priced_stock]
-    return render(request, "stock_prices_chart.html", {"price": price, "dates": dates,'stock':stock})
+    return render(request, "stock_prices_chart.html", {"price": price, "dates": dates, 'stock': stock})
 
 
 def newsDetails(request, news_id):
     news_instance = get_object_or_404(News, pk=news_id)
-    newsDetails=news_instance
+    newsDetails = news_instance
     if request.method == 'POST':
         if "like_news" in request.POST:
             news_id = request.POST["like_news"]
@@ -714,7 +713,7 @@ def newsDetails(request, news_id):
     userLikedNews = None
     if request.user.is_authenticated:
         userLikedNews = request.user.liked_news.all()
-    return render(request, "NewsDetails/index.html", {"news": newsDetails, "userLikedNews":userLikedNews})
+    return render(request, "NewsDetails/index.html", {"news": newsDetails, "userLikedNews": userLikedNews})
 
 
 def nftmarketplace(request):
@@ -757,38 +756,45 @@ def buy_nft(request, nft_symbol):
         form = BuyNFTForm(request.POST)
 
         if form.is_valid():
-            quantity = form.cleaned_data["quantity"]
-            total_price = nft.current_price * quantity
+            quantity_to_buy  = form.cleaned_data["quantity"]
+            if quantity_to_buy <= nft.quantity:
+                total_price = nft.current_price * quantity_to_buy
 
-            # Handle Stripe payment
-            token = form.cleaned_data["stripeToken"]
-            try:
-                charge = stripe.Charge.create(
-                    amount=int(total_price * 100),  # Amount in cents
-                    currency="cad",
-                    source=token,
-                    description=f"NFT Purchase: {nft_symbol}",
-                )
+                # Handle Stripe payment
+                token = form.cleaned_data["stripeToken"]
+                try:
+                    charge = stripe.Charge.create(
+                        amount=int(total_price * 100),  # Amount in cents
+                        currency="cad",
+                        source=token,
+                        description=f"NFT Purchase: {nft_symbol}",
+                    )
 
-                nft_transaction = NFTTransaction(
-                    user=request.user,
-                    nft=nft,
-                    transaction_type="BUY",
-                    quantity=quantity,
-                    price=total_price,
-                )
-                nft_transaction.save()
+                    nft_transaction = NFTTransaction(
+                        user=request.user,
+                        nft=nft,
+                        transaction_type="BUY",
+                        quantity=quantity_to_buy,
+                        price=total_price,
+                    )
+                    nft_transaction.save()
 
-                # Update user holdings
-                holding, created = NFTUserHolding.objects.get_or_create(
-                    user=request.user, nft=nft
-                )
-                holding.quantity += quantity
-                holding.save()
+                    # Update NFT quantity_available
+                    nft.quantity -= quantity_to_buy
+                    nft.save()
 
-                return redirect("nft-transaction-history")
-            except Exception as e:
-                error_message = str(e)
+                    # Update user holdings
+                    holding, created = NFTUserHolding.objects.get_or_create(
+                        user=request.user, nft=nft
+                    )
+                    holding.quantity += quantity_to_buy
+                    holding.save()
+
+                    return redirect("nft-transaction-history")
+                except Exception as e:
+                    error_message = str(e)
+            else:
+                error_message = "Not enough NFTs available to fulfill your request."
 
     else:
         form = BuyNFTForm()
@@ -877,9 +883,9 @@ def nft_user_holdings(request):
             holding = holdings.filter(nft=nft).first()
 
             if (
-                holding
-                and quantity_to_sell > 0
-                and quantity_to_sell <= holding.quantity
+                    holding
+                    and quantity_to_sell > 0
+                    and quantity_to_sell <= holding.quantity
             ):
                 sell_price = nft.current_price * quantity_to_sell
 
@@ -941,13 +947,13 @@ def convert(source, to, amount):
         # return str(amount) + " " + collective_dict[str(source)] + " = " + str(
         #     round(data['data'][source]['quote'][to]['price'], 4)) + " " + collective_dict[str(to)]
         return (
-            str(amount)
-            + " "
-            + collective_dict[str(source)]
-            + " = "
-            + str(round(data["data"]["quote"][to]["price"], 4))
-            + " "
-            + collective_dict[str(to)]
+                str(amount)
+                + " "
+                + collective_dict[str(source)]
+                + " = "
+                + str(round(data["data"]["quote"][to]["price"], 4))
+                + " "
+                + collective_dict[str(to)]
         )
     except:
         return "Some error occured"
